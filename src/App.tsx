@@ -13,7 +13,7 @@ function App() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
+    <div className="flex flex-col h-screen">
       <h1 className="text-3xl font-bold content-center">Welcome to kubeintel app!</h1>
       <form
         className="row"
