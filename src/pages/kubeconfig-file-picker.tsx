@@ -4,9 +4,11 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { homeDir, join } from '@tauri-apps/api/path';
 import { open } from '@tauri-apps/plugin-dialog';
 import { FolderOpen, ArrowRight } from "lucide-react";
+import { useNavigate } from 'react-router';
 
 const KubeconfigFilePicker = () => {
   const [selectedFile, setSelectedFile] = useState("");
+  const navigate = useNavigate();
 
   const openFileDialog = async () => {
     try {
@@ -52,7 +54,7 @@ const KubeconfigFilePicker = () => {
             <div className="text-sm font-bold break-all">
               Selected: {selectedFile}
             </div>
-            <Button className='my-2'>Continue <ArrowRight /></Button>
+            <Button className='my-2' onClick={(_) => {navigate('/cluster')}}>Continue <ArrowRight /></Button>
             </>
           )}
         </CardFooter>
