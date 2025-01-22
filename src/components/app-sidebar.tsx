@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+import { Calendar, Boxes, Inbox, Search, Settings } from "lucide-react"
 
 import {
   Sidebar,
@@ -15,35 +15,35 @@ import { NavLink } from "react-router"
 // Menu items.
 const items = [
   {
-    title: "cluster",
+    title: "cluster Info",
     url: "/cluster",
-    icon: Home,
+    icon: Boxes,
   },
   {
-    title: "Inbox",
-    url: "/inbox",
+    title: "Pods",
+    url: "/pods",
     icon: Inbox,
   },
   {
-    title: "Calendar",
-    url: "/calendar",
+    title: "Deployments",
+    url: "/deployments",
     icon: Calendar,
   },
   {
-    title: "Search",
-    url: "/search",
+    title: "DaemonSets",
+    url: "/daemonsets",
     icon: Search,
   },
   {
-    title: "Settings",
-    url: "/settings",
+    title: "statefulSets",
+    url: "/statefulsets",
     icon: Settings,
   },
 ]
 
 export function AppSidebar() {
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
@@ -55,8 +55,11 @@ export function AppSidebar() {
                     <NavLink to={item.url}>
                       {({ isActive }) => (
                         <>
-                          <item.icon />
-                          <span className={isActive ? "text-red-500" : "text-green-600"}>
+                          <item.icon
+                            strokeWidth={isActive ? 3 : 2}
+                            size={isActive ? 36 : 24}
+                            />
+                          <span className={isActive ? "font-bold" : ""}>
                             {item.title}
                           </span>
                         </>
