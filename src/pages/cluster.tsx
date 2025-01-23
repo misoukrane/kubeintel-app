@@ -1,7 +1,7 @@
 import { useConfigStore } from "@/stores/use-config-store";
 
 
-const Cluster = () => {
+export const Cluster = () => {
   const  cfgState = useConfigStore();
   return (
     <div>
@@ -10,5 +10,3 @@ const Cluster = () => {
     </div>
   )
 };
-
-export { Cluster };

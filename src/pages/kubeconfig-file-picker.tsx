@@ -7,7 +7,7 @@ import { FolderOpen, ArrowRight } from "lucide-react";
 import { useNavigate } from 'react-router';
 import { useConfigStore } from '@/stores/use-config-store';
 
-const KubeconfigFilePicker = () => {
+export const KubeconfigFilePicker = () => {
   const [selectedFile, setSelectedFile] = useState("");
   const  cfgState = useConfigStore();
   const navigate = useNavigate();
@@ -71,5 +71,3 @@ const KubeconfigFilePicker = () => {
     </div>
   );
 };
-
-export { KubeconfigFilePicker }; 
