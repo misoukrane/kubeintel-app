@@ -8,6 +8,12 @@
   "permissions": [
     "core:default",
     "opener:default",
-    "dialog:default"
+    "dialog:default",
+    "fs:default",
+    "fs:read-all",
+    {
+      "identifier": "fs:read-all",
+      "allow": ["**/*"]
+    }
   ]
 }
