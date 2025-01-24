@@ -1,15 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { homeDir, join } from '@tauri-apps/api/path';
 import { open } from '@tauri-apps/plugin-dialog';
-import { FolderOpen, ArrowRight } from "lucide-react";
+import { FolderOpen, ArrowRight, DeleteIcon, Trash2 } from "lucide-react";
 import { useNavigate } from 'react-router';
 import { useConfigStore } from '@/stores/use-config-store';
 
 export const KubeconfigFilePicker = () => {
   const [selectedFile, setSelectedFile] = useState("");
-  const  cfgState = useConfigStore();
+  const cfgState = useConfigStore();
   const navigate = useNavigate();
 
   const openFileDialog = async () => {
@@ -60,14 +60,51 @@ export const KubeconfigFilePicker = () => {
         <CardFooter className="flex flex-col items-center justify-center">
           {selectedFile && (
             <>
-            <div className="text-sm font-bold break-all">
-              Selected: {selectedFile}
-            </div>
-            <Button className='my-2' onClick={onContinue}>Continue <ArrowRight /></Button>
+              <div className="text-sm font-bold break-all">
+                Selected: {selectedFile}
+              </div>
+              <Button className='my-2' onClick={onContinue}>Continue <ArrowRight /></Button>
             </>
           )}
         </CardFooter>
       </Card>
+      {cfgState.kubeconfigs.length > 0 && (
+        <Card className="w-full max-w-xl mx-auto mt-4">
+          <CardHeader>
+            <CardTitle>Saved Kubeconfig Files</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-1">
+              {cfgState.kubeconfigs.map((config) => (
+                <div
+                  key={config}
+                  className="flex items-center justify-between rounded-lg"
+                >
+                  <span className="text-sm truncate flex-1 mr-2">{config}</span>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      onClick={() => cfgState.removeKubeconfig(config)}
+                    >
+                      <Trash2 />
+                    </Button>
+                    <Button
+                      size="icon"
+                      onClick={() => {
+                        cfgState.setSelectedKubeconfig(config);
+                        navigate('/cluster');
+                      }}
+                    >
+                      <ArrowRight />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
