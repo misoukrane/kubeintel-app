@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { homeDir, join } from '@tauri-apps/api/path';
 import { open } from '@tauri-apps/plugin-dialog';
-import { FolderOpen, ArrowRight, DeleteIcon, Trash2 } from "lucide-react";
+import { FolderOpen, ArrowRight, Trash2 } from "lucide-react";
 import { useNavigate } from 'react-router';
 import { useConfigStore } from '@/stores/use-config-store';
 
@@ -37,7 +37,6 @@ export const KubeconfigFilePicker = () => {
   const onContinue = () => {
     cfgState.addKubeconfig(selectedFile);
     cfgState.setSelectedKubeconfig(selectedFile);
-    console.log(cfgState)
     navigate('/cluster');
   }
 

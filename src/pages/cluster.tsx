@@ -3,14 +3,12 @@ import { useConfigStore } from "@/stores/use-config-store";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { invoke } from '@tauri-apps/api/core';
-import * as k8s from '@kubernetes/client-node';
 
 
 export const Cluster = () => {
   const cfgState = useConfigStore();
   const [content, setContent] = useState<string>('');
   const navigate = useNavigate();
-  const kc = new k8s.KubeConfig();
 
 
   useEffect(() => {
@@ -23,10 +21,8 @@ export const Cluster = () => {
       }
       try {
         // tauri invoke command read_kubeconfig
-        const content = await invoke<string>('read_kubeconfig', { filepath: filePath });
+        const content = await invoke<any>('read_kubeconfig', { kubeconfigPath: filePath });
         setContent(content);
-        kc.loadFromString(content);
-        kc.
       } catch (error) {
         console.error('Error reading file:', error);
         setContent(`Error reading kubeconfig file: ${error}`);
@@ -45,10 +41,11 @@ export const Cluster = () => {
         <Button variant="outline" onClick={() => navigate('/')}>
           Back to config
         </Button>
-      </div><div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+      </div>
+      <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
         <div className="p-6">
           <pre className="text-sm bg-muted p-4 rounded-md overflow-auto">
-            {content}
+            {JSON.stringify(content, null, 2)}
           </pre>
         </div>
       </div>

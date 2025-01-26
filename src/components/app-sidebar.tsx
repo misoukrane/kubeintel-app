@@ -6,11 +6,13 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { NavLink } from "react-router"
+import { ContextSwitcher } from "./context-switcher"
 
 // Menu items.
 const items = [
@@ -41,9 +43,26 @@ const items = [
   },
 ]
 
-export function AppSidebar() {
+interface AppSidebarProps {
+  contexts: string[],
+  currentContext: string,
+  onContextChange: (context: string) => void
+  onKubeconfigChange: () => void
+}
+
+
+export function AppSidebar(props: AppSidebarProps) {
+
   return (
     <Sidebar collapsible="icon">
+      <SidebarHeader>
+        <ContextSwitcher
+          contexts={props.contexts}
+          currentContext={props.currentContext}
+          onContextChange={props.onContextChange}
+          onKubeconfigChange={props.onKubeconfigChange}
+        />
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
@@ -58,7 +77,7 @@ export function AppSidebar() {
                           <item.icon
                             strokeWidth={isActive ? 3 : 2}
                             size={isActive ? 36 : 24}
-                            />
+                          />
                           <span className={isActive ? "font-bold" : ""}>
                             {item.title}
                           </span>
