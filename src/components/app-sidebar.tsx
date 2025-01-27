@@ -53,6 +53,7 @@ interface AppSidebarProps {
   onKubeconfigChange: () => void;
   onAIConfig: () => void;
   onQuit: () => void;
+  onRelaunch: () => void;
 }
 
 export function AppSidebar(props: AppSidebarProps) {
@@ -99,6 +100,7 @@ export function AppSidebar(props: AppSidebarProps) {
           onKubeconfigChange={props.onKubeconfigChange}
           onAIConfig={props.onAIConfig}
           onQuit={props.onQuit}
+          onRelaunch={props.onRelaunch}
         />
       </SidebarFooter>
       <SidebarRail />
