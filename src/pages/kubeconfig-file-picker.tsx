@@ -1,14 +1,20 @@
 import { useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { homeDir, join } from '@tauri-apps/api/path';
 import { open } from '@tauri-apps/plugin-dialog';
-import { FolderOpen, ArrowRight, Trash2 } from "lucide-react";
+import { FolderOpen, ArrowRight, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useConfigStore } from '@/stores/use-config-store';
 
 export const KubeconfigFilePicker = () => {
-  const [selectedFile, setSelectedFile] = useState("");
+  const [selectedFile, setSelectedFile] = useState('');
   const cfgState = useConfigStore();
   const navigate = useNavigate();
 
@@ -20,10 +26,12 @@ export const KubeconfigFilePicker = () => {
         multiple: false,
         directory: false,
         defaultPath: kubePath,
-        filters: [{
-          name: 'All Files',
-          extensions: ['*.*']
-        }]
+        filters: [
+          {
+            name: 'All Files',
+            extensions: ['*.*'],
+          },
+        ],
       });
 
       if (selected) {
@@ -38,7 +46,7 @@ export const KubeconfigFilePicker = () => {
     cfgState.addKubeconfig(selectedFile);
     cfgState.setSelectedKubeconfig(selectedFile);
     navigate('/cluster');
-  }
+  };
 
   return (
     <div className="flex flex-col h-screen justify-center items-center">
@@ -62,7 +70,9 @@ export const KubeconfigFilePicker = () => {
               <div className="text-sm font-bold break-all">
                 Selected: {selectedFile}
               </div>
-              <Button className='my-2' onClick={onContinue}>Continue <ArrowRight /></Button>
+              <Button className="my-2" onClick={onContinue}>
+                Continue <ArrowRight />
+              </Button>
             </>
           )}
         </CardFooter>

@@ -1,6 +1,6 @@
-"use client"
+'use client';
 
-import { ChevronsUpDown, Plus } from "lucide-react"
+import { ChevronsUpDown, Plus } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -9,13 +9,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from '@/components/ui/dropdown-menu';
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from '@/components/ui/sidebar';
 
 export function ContextSwitcher({
   contexts,
@@ -23,12 +23,12 @@ export function ContextSwitcher({
   onContextChange,
   onKubeconfigChange,
 }: {
-  contexts: string[],
-  currentContext: string,
-  onContextChange: (context: string) => void
-  onKubeconfigChange: () => void
+  contexts: string[];
+  currentContext: string;
+  onContextChange: (context: string) => void;
+  onKubeconfigChange: () => void;
 }) {
-  const { isMobile } = useSidebar()
+  const { isMobile } = useSidebar();
 
   return (
     <SidebarMenu>
@@ -40,9 +40,7 @@ export function ContextSwitcher({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">
-                  {currentContext}
-                </span>
+                <span className="truncate font-semibold">{currentContext}</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
@@ -50,7 +48,7 @@ export function ContextSwitcher({
           <DropdownMenuContent
             className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
             align="start"
-            side={isMobile ? "bottom" : "right"}
+            side={isMobile ? 'bottom' : 'right'}
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-xs text-muted-foreground">
@@ -60,7 +58,7 @@ export function ContextSwitcher({
               <DropdownMenuItem
                 key={context}
                 onClick={() => {
-                  onContextChange(context)
+                  onContextChange(context);
                 }}
                 className="gap-2 p-2"
               >
@@ -69,15 +67,20 @@ export function ContextSwitcher({
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2" onClick={onKubeconfigChange}>
+            <DropdownMenuItem
+              className="gap-2 p-2"
+              onClick={onKubeconfigChange}
+            >
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                 <Plus className="size-4" />
               </div>
-              <div className="font-medium text-muted-foreground">Change/Add kubeconfig</div>
+              <div className="font-medium text-muted-foreground">
+                Change/Add kubeconfig
+              </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

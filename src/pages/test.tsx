@@ -1,3 +1,3 @@
 export function TestComp() {
-  return <div>TestComp</div>
+  return <div>TestComp</div>;
 }

@@ -1,27 +1,27 @@
-import { Button } from "@/components/ui/button";
-import { useConfigStore } from "@/stores/use-config-store";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { Button } from '@/components/ui/button';
+import { useConfigStore } from '@/stores/use-config-store';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { invoke } from '@tauri-apps/api/core';
-
 
 export const Cluster = () => {
   const cfgState = useConfigStore();
   const [content, setContent] = useState<string>('');
   const navigate = useNavigate();
 
-
   useEffect(() => {
     const readConfig = async () => {
       // use tauri to read the kubeconfig file
-      const filePath = cfgState.selectedKubeconfig
+      const filePath = cfgState.selectedKubeconfig;
       if (!filePath || filePath.length === 0) {
         navigate('/');
         return;
       }
       try {
         // tauri invoke command read_kubeconfig
-        const content = await invoke<any>('read_kubeconfig', { kubeconfigPath: filePath });
+        const content = await invoke<any>('read_kubeconfig', {
+          kubeconfigPath: filePath,
+        });
         setContent(content);
       } catch (error) {
         console.error('Error reading file:', error);
@@ -35,8 +35,12 @@ export const Cluster = () => {
     <>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Cluster Configuration</h1>
-          <p className="text-sm text-muted-foreground mt-1">{cfgState.selectedKubeconfig}</p>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Cluster Configuration
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            {cfgState.selectedKubeconfig}
+          </p>
         </div>
         <Button variant="outline" onClick={() => navigate('/')}>
           Back to config
@@ -50,5 +54,5 @@ export const Cluster = () => {
         </div>
       </div>
     </>
-  )
+  );
 };

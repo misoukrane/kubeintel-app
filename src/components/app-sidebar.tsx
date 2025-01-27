@@ -1,4 +1,4 @@
-import { Calendar, Boxes, Inbox, Search, Settings } from "lucide-react"
+import { Calendar, Boxes, Inbox, Search, Settings } from 'lucide-react';
 
 import {
   Sidebar,
@@ -12,52 +12,50 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "@/components/ui/sidebar"
-import { NavLink } from "react-router"
-import { ContextSwitcher } from "./context-switcher"
-import { NavSettings } from "./nav-settings"
+} from '@/components/ui/sidebar';
+import { NavLink } from 'react-router';
+import { ContextSwitcher } from './context-switcher';
+import { NavSettings } from './nav-settings';
 
 // Menu items.
 const items = [
   {
-    title: "cluster Info",
-    url: "/cluster",
+    title: 'cluster Info',
+    url: '/cluster',
     icon: Boxes,
   },
   {
-    title: "Pods",
-    url: "/pods",
+    title: 'Pods',
+    url: '/pods',
     icon: Inbox,
   },
   {
-    title: "Deployments",
-    url: "/deployments",
+    title: 'Deployments',
+    url: '/deployments',
     icon: Calendar,
   },
   {
-    title: "DaemonSets",
-    url: "/daemonsets",
+    title: 'DaemonSets',
+    url: '/daemonsets',
     icon: Search,
   },
   {
-    title: "statefulSets",
-    url: "/statefulsets",
+    title: 'statefulSets',
+    url: '/statefulsets',
     icon: Settings,
   },
-]
+];
 
 interface AppSidebarProps {
-  contexts: string[],
-  currentContext: string,
-  onContextChange: (context: string) => void,
-  onKubeconfigChange: () => void,
-  onAIConfig: () => void,
-  onQuit: () => void,
+  contexts: string[];
+  currentContext: string;
+  onContextChange: (context: string) => void;
+  onKubeconfigChange: () => void;
+  onAIConfig: () => void;
+  onQuit: () => void;
 }
 
-
 export function AppSidebar(props: AppSidebarProps) {
-
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -83,7 +81,7 @@ export function AppSidebar(props: AppSidebarProps) {
                             strokeWidth={isActive ? 3 : 2}
                             size={isActive ? 36 : 24}
                           />
-                          <span className={isActive ? "font-bold" : ""}>
+                          <span className={isActive ? 'font-bold' : ''}>
                             {item.title}
                           </span>
                         </>
@@ -105,5 +103,5 @@ export function AppSidebar(props: AppSidebarProps) {
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }
