@@ -19,7 +19,7 @@ export const Cluster = () => {
       }
       try {
         // tauri invoke command read_kubeconfig
-        const content = await invoke<any>('read_kubeconfig', {
+        const content = await invoke<any>('cluster_version', {
           kubeconfigPath: filePath,
         });
         setContent(content);
