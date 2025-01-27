@@ -4,6 +4,7 @@ import { useNavigate, Outlet } from "react-router";
 import { useConfigStore } from "@/stores/use-config-store";
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { exit } from '@tauri-apps/plugin-process';
 
 
 
@@ -48,6 +49,12 @@ export default function Layout() {
           setContexts([]);
           setCurrentContext('');
           navigate('/');
+        }}
+        onAIConfig={() => {
+          navigate('/config/ai');
+        }}
+        onQuit={async () => {
+          await exit(0);
         }}
       />
       <main className="flex-1 overflow-y-auto p-6 lg:p-8">

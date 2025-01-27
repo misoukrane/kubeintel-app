@@ -13,7 +13,10 @@
     "fs:read-all",
     {
       "identifier": "fs:read-all",
-      "allow": ["**/*"]
-    }
+      "allow": [
+        "**/*"
+      ]
+    },
+    "process:default"
   ]
 }

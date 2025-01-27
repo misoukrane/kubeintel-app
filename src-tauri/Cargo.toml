@@ -26,4 +26,5 @@ tauri-plugin-dialog = "2"
 tauri-plugin-fs = "2"
 kube = { version = "0.98.0", features = ["runtime", "derive"] }
 k8s-openapi = { version = "0.24.0", features = ["latest"] }
+tauri-plugin-process = "2"
 

@@ -3,6 +3,7 @@ import { Calendar, Boxes, Inbox, Search, Settings } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -10,9 +11,11 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarRail,
 } from "@/components/ui/sidebar"
 import { NavLink } from "react-router"
 import { ContextSwitcher } from "./context-switcher"
+import { NavSettings } from "./nav-settings"
 
 // Menu items.
 const items = [
@@ -46,8 +49,10 @@ const items = [
 interface AppSidebarProps {
   contexts: string[],
   currentContext: string,
-  onContextChange: (context: string) => void
-  onKubeconfigChange: () => void
+  onContextChange: (context: string) => void,
+  onKubeconfigChange: () => void,
+  onAIConfig: () => void,
+  onQuit: () => void,
 }
 
 
@@ -91,6 +96,14 @@ export function AppSidebar(props: AppSidebarProps) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <NavSettings
+          onKubeconfigChange={props.onKubeconfigChange}
+          onAIConfig={props.onAIConfig}
+          onQuit={props.onQuit}
+        />
+      </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   )
 }
