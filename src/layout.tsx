@@ -27,6 +27,7 @@ export default function Layout() {
         const content = await invoke<any>('read_kubeconfig', { kubeconfigPath: filePath });
         setContexts(content.contexts.map((ctx: any) => ctx.name));
         setCurrentContext(content['current-context']);
+        cfgState.setCurrentContext(content['current-context']);
       } catch (error) {
         console.error('Error reading file:', error);
       }
@@ -41,6 +42,7 @@ export default function Layout() {
         contexts={contexts}
         currentContext={currentContext}
         onContextChange={(context) => {
+          cfgState.setCurrentContext(context);
           setCurrentContext(context);
         }}
 

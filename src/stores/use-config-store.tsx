@@ -5,9 +5,11 @@ import superjson from 'superjson';
 interface ConfigState {
   kubeconfigs: string[];
   selectedKubeconfig?: string;
+  currentContext?: string;
   addKubeconfig: (filePath: string) => void;
   removeKubeconfig: (filePath: string) => void;
   setSelectedKubeconfig: (filePath: string) => void;
+  setCurrentContext: (context: string) => void;
 }
 
 const storage = {
@@ -33,6 +35,7 @@ export const useConfigStore = create<ConfigState>()(
   persist(
     (set) => ({
       kubeconfigs: [],
+      currentContext: undefined,
       addKubeconfig: (filePath) =>
         set((state) => ({
           kubeconfigs: [...state.kubeconfigs, filePath],
@@ -49,11 +52,17 @@ export const useConfigStore = create<ConfigState>()(
           return {
             kubeconfigs: newKubeconfigs,
             selectedKubeconfig: newSelectedKubeconfig,
+            currentContext: state.selectedKubeconfig === filePath ? undefined : state.currentContext,
           };
         }),
       setSelectedKubeconfig: (filePath) =>
         set(() => ({
           selectedKubeconfig: filePath,
+          currentContext: undefined, // Reset context when changing kubeconfig
+        })),
+      setCurrentContext: (context) =>
+        set(() => ({
+          currentContext: context,
         })),
     }),
     {

@@ -9,7 +9,7 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             k8s_config::read_kubeconfig,
-            k8s_config::cluster_version
+            k8s_config::cluster_info
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
