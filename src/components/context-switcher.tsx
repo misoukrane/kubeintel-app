@@ -24,7 +24,7 @@ export function ContextSwitcher({
   onKubeconfigChange,
 }: {
   contexts: string[];
-  currentContext: string;
+  currentContext?: string;
   onContextChange: (context: string) => void;
   onKubeconfigChange: () => void;
 }) {
@@ -40,7 +40,9 @@ export function ContextSwitcher({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{currentContext}</span>
+                <span className="truncate font-semibold">
+                  {currentContext || 'Select a context'}
+                </span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>

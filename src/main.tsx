@@ -6,6 +6,7 @@ import "./global.css";
 import Layout from "./layout";
 import { Cluster } from "./pages/cluster";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/toaster"
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -18,6 +19,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           </Route>
         </Routes>
       </BrowserRouter>
+      <Toaster />
     </ThemeProvider>
   </React.StrictMode>,
 );

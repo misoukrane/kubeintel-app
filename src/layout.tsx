@@ -2,65 +2,55 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { useNavigate, Outlet } from "react-router";
 import { useConfigStore } from "@/stores/use-config-store";
-import { useEffect, useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
-import { exit, relaunch } from '@tauri-apps/plugin-process';
-
+import { useEffect } from "react";
+import { ROUTES } from "@/lib/routes";
+import { quitApp, relaunchApp } from "@/lib/app-actions";
+import { useToast } from "@/hooks/use-toast"
 
 
 export default function Layout() {
   const navigate = useNavigate();
-  const cfgState = useConfigStore();
-  const [contexts, setContexts] = useState<Array<string>>([]);
-  const [currentContext, setCurrentContext] = useState<string>('');
+  const { toast } = useToast();
+  const {
+    selectedKubeconfig,
+    contexts,
+    currentContext,
+    loadKubeconfig,
+    setCurrentContext,
+    setSelectedKubeconfig
+  } = useConfigStore();
 
-
+  // Handle kubeconfig loading and errors
   useEffect(() => {
-    const readConfig = async () => {
-      // use tauri to read the kubeconfig file
-      const filePath = cfgState.selectedKubeconfig
-      if (!filePath || filePath.length === 0) {
-        return;
-      }
+    const load = async () => {
+      if (!selectedKubeconfig) return;
       try {
-        // tauri invoke command read_kubeconfig
-        const content = await invoke<any>('read_kubeconfig', { kubeconfigPath: filePath });
-        setContexts(content.contexts.map((ctx: any) => ctx.name));
-        setCurrentContext(content['current-context']);
-        cfgState.setCurrentContext(content['current-context']);
+        await loadKubeconfig(selectedKubeconfig);
       } catch (error) {
-        console.error('Error reading file:', error);
+        toast({
+          variant: "destructive",
+          title: "Error loading kubeconfig",
+          description: error instanceof Error ? error.message : "Unknown error"
+        });
       }
     };
-    readConfig();
-  }, [cfgState.selectedKubeconfig]);
 
+    load();
+  }, [selectedKubeconfig, loadKubeconfig, toast]);
 
   return (
     <SidebarProvider>
       <AppSidebar
         contexts={contexts}
         currentContext={currentContext}
-        onContextChange={(context) => {
-          cfgState.setCurrentContext(context);
-          setCurrentContext(context);
-        }}
-
+        onContextChange={setCurrentContext}
         onKubeconfigChange={() => {
-          cfgState.setSelectedKubeconfig('');
-          setContexts([]);
-          setCurrentContext('');
-          navigate('/');
+          setSelectedKubeconfig('');
+          navigate(ROUTES.HOME);
         }}
-        onAIConfig={() => {
-          navigate('/config/ai');
-        }}
-        onQuit={async () => {
-          await exit(0);
-        }}
-        onRelaunch={async () => {
-          await relaunch();
-        }}
+        onAIConfig={() => navigate(ROUTES.AI_CONFIG)}
+        onQuit={quitApp}
+        onRelaunch={relaunchApp}
       />
       <main className="flex-1 overflow-y-auto p-6 lg:p-8">
         <SidebarTrigger />
