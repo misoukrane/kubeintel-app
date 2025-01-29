@@ -52,7 +52,10 @@ export const useConfigStore = create<ConfigState>()(
           return {
             kubeconfigs: newKubeconfigs,
             selectedKubeconfig: newSelectedKubeconfig,
-            currentContext: state.selectedKubeconfig === filePath ? undefined : state.currentContext,
+            currentContext:
+              state.selectedKubeconfig === filePath
+                ? undefined
+                : state.currentContext,
           };
         }),
       setSelectedKubeconfig: (filePath) =>
