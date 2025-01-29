@@ -1,4 +1,4 @@
-use kube::{config::Kubeconfig, Client, Config};
+use kube::{config::KubeConfigOptions, config::Kubeconfig, Client, Config};
 use std::path::Path;
 
 #[tauri::command]
@@ -15,7 +15,7 @@ pub async fn cluster_info(kubeconfig_path: String, context: String) -> Result<St
         Kubeconfig::read_from(Path::new(&kubeconfig_path)).map_err(|e| e.to_string())?;
 
     // Create a client using the config
-    let options = kube::config::KubeConfigOptions {
+    let options = KubeConfigOptions {
         context: Some(context),
         ..Default::default()
     };

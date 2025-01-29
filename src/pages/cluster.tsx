@@ -14,16 +14,18 @@ export const Cluster = () => {
 
   useEffect(() => {
     const readConfig = async () => {
+      console.log("reading kubeconfig file", cfgState.selectedKubeconfig, cfgState.currentContext);
       // use tauri to read the kubeconfig file
       const filePath = cfgState.selectedKubeconfig;
-      if (!filePath || filePath.length === 0) {
-        navigate('/');
+      const currentContext = cfgState.currentContext;
+      if (filePath === undefined || currentContext === undefined) {
         return;
       }
       try {
         // tauri invoke command read_kubeconfig
         const content = await invoke<any>('cluster_info', {
           kubeconfigPath: filePath,
+          context: currentContext,
         });
         setContent(content);
         setLoading(false);
@@ -33,7 +35,7 @@ export const Cluster = () => {
       }
     };
     readConfig();
-  }, []);
+  }, [cfgState.selectedKubeconfig, cfgState.currentContext]);
 
   return (
     <>
