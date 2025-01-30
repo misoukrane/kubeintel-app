@@ -48,7 +48,7 @@ const items = [
 
 interface AppSidebarProps {
   contexts: string[];
-  currentContext: string;
+  currentContext?: string;
   onContextChange: (context: string) => void;
   onKubeconfigChange: () => void;
   onAIConfig: () => void;
