@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import superjson from 'superjson';
 import { invoke } from '@tauri-apps/api/core';
+import { V1Namespace } from '@kubernetes/client-node';
 
 interface Kubeconfig {
   contexts: { name: string; context: { namespace: string } }[];
@@ -27,19 +28,15 @@ interface ConfigState {
 
 const storage = {
   getItem: (name: string) => {
-    console.log('getItem:', name);
     const str = localStorage.getItem(name);
     if (!str) return null;
     const parsed = superjson.parse(str) as any;
-    console.log('getItem result:', parsed);
     return parsed;
   },
   setItem: (name: string, value: any) => {
-    console.log('setItem:', name, value);
     localStorage.setItem(name, superjson.stringify(value));
   },
   removeItem: (name: string) => {
-    console.log('removeItem:', name);
     localStorage.removeItem(name);
   },
 };
@@ -106,8 +103,6 @@ export const useConfigStore = create<ConfigState>()(
           const currentNamespace = config.contexts.find(
             (ctx) => ctx.name === config['current-context']
           )?.context.namespace;
-          console.log('from store', currentNamespace);
-          console.log('from store contexts', config.contexts);
           if (currentNamespace) {
             set({ currentNamespace });
           }
@@ -137,14 +132,11 @@ export const useConfigStore = create<ConfigState>()(
         }
 
         try {
-          const namespaces = await invoke<any>('list_namespaces', {
+          const namespaces = await invoke<V1Namespace[]>('list_namespaces', {
             kubeconfigPath: path,
             context,
           });
-          console.log(namespaces);
-          const nsList = namespaces.map(
-            (ns: { metadata: { name: any } }) => ns.metadata.name
-          );
+          const nsList = namespaces.map((ns) => ns.metadata?.name as string);
           set({
             namespaces: nsList,
             error: null,

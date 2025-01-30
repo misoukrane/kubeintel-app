@@ -29,7 +29,7 @@ export const KubeconfigFilePicker = () => {
         filters: [
           {
             name: 'All Files',
-            extensions: ['*.*'],
+            extensions: ['*.yaml', '*.yml'],
           },
         ],
       });
