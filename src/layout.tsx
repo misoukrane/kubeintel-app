@@ -34,7 +34,7 @@ export default function Layout() {
         toast({
           variant: "destructive",
           title: "Error loading kubeconfig",
-          description: error instanceof Error ? error.message : "Unknown error"
+          description: error instanceof Error ? error.message : JSON.stringify(error)
         });
       }
     };
@@ -43,20 +43,20 @@ export default function Layout() {
   }, [selectedKubeconfig, loadKubeconfig, toast]);
 
   // Handle loading namespaces and errors
-  useEffect(() => {
-    const load = async () => {
-      try {
-        await loadNamespaces(selectedKubeconfig, currentContext);
-      } catch (error) {
-        toast({
-          variant: "destructive",
-          title: "Error loading namespaces",
-          description: error instanceof Error ? error.message : "Unknown error"
-        });
-      }
-    };
+  const loadNs = async (selectedKubeconfig?: string, currentContext?: string) => {
+    try {
+      await loadNamespaces(selectedKubeconfig, currentContext);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error loading namespaces",
+        description: error instanceof Error ? error.message : JSON.stringify(error)
+      });
+    }
+  };
 
-    load();
+  useEffect(() => {
+    loadNs(selectedKubeconfig, currentContext);
   }, [selectedKubeconfig, currentContext, loadNamespaces, toast]);
 
   return (
@@ -75,7 +75,7 @@ export default function Layout() {
           setCurrentNamespace(namespace);
           navigate(ROUTES.CLUSTER);
         }}
-        onReloadNamespaces={() => loadNamespaces(selectedKubeconfig, currentContext)}
+        onReloadNamespaces={() => loadNs(selectedKubeconfig, currentContext)}
         onAIConfig={() => navigate(ROUTES.AI_CONFIG)}
         onQuit={quitApp}
         onRelaunch={relaunchApp}

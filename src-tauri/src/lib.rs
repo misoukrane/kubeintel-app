@@ -13,8 +13,8 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             k8s_config::read_kubeconfig,
             k8s_config::cluster_info,
-            namespaces::all_namespaces,
-            pods::all_pods
+            namespaces::list_namespaces,
+            pods::list_pods
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

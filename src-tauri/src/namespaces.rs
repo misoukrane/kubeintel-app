@@ -4,7 +4,7 @@ use kube::Api;
 
 // list all pods in a namespace
 #[tauri::command]
-pub async fn all_namespaces(
+pub async fn list_namespaces(
     kubeconfig_path: String,
     context: String,
 ) -> Result<Vec<Namespace>, String> {
