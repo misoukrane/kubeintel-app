@@ -15,9 +15,13 @@ export default function Layout() {
     selectedKubeconfig,
     contexts,
     currentContext,
+    namespaces,
+    currentNamespace,
     loadKubeconfig,
     setCurrentContext,
-    setSelectedKubeconfig
+    setSelectedKubeconfig,
+    setCurrentNamespace,
+    loadNamespaces,
   } = useConfigStore();
 
   // Handle kubeconfig loading and errors
@@ -38,16 +42,40 @@ export default function Layout() {
     load();
   }, [selectedKubeconfig, loadKubeconfig, toast]);
 
+  // Handle loading namespaces and errors
+  useEffect(() => {
+    const load = async () => {
+      try {
+        await loadNamespaces(selectedKubeconfig, currentContext);
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Error loading namespaces",
+          description: error instanceof Error ? error.message : "Unknown error"
+        });
+      }
+    };
+
+    load();
+  }, [selectedKubeconfig, currentContext, loadNamespaces, toast]);
+
   return (
     <SidebarProvider>
       <AppSidebar
         contexts={contexts}
         currentContext={currentContext}
+        namespaces={namespaces}
+        currentNamespace={currentNamespace}
         onContextChange={setCurrentContext}
         onKubeconfigChange={() => {
           setSelectedKubeconfig('');
           navigate(ROUTES.HOME);
         }}
+        onNamespaceChange={(namespace) => {
+          setCurrentNamespace(namespace);
+          navigate(ROUTES.CLUSTER);
+        }}
+        onReloadNamespaces={() => loadNamespaces(selectedKubeconfig, currentContext)}
         onAIConfig={() => navigate(ROUTES.AI_CONFIG)}
         onQuit={quitApp}
         onRelaunch={relaunchApp}

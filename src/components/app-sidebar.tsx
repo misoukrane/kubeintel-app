@@ -16,6 +16,7 @@ import {
 import { NavLink } from 'react-router';
 import { ContextSwitcher } from './context-switcher';
 import { NavSettings } from './nav-settings';
+import { NamespaceSwitcher } from './namespace-switcher';
 
 // Menu items.
 const items = [
@@ -49,8 +50,12 @@ const items = [
 interface AppSidebarProps {
   contexts: string[];
   currentContext?: string;
+  namespaces: string[];
+  currentNamespace?: string;
   onContextChange: (context: string) => void;
   onKubeconfigChange: () => void;
+  onNamespaceChange: (namespace: string) => void;
+  onReloadNamespaces: () => void;
   onAIConfig: () => void;
   onQuit: () => void;
   onRelaunch: () => void;
@@ -65,6 +70,12 @@ export function AppSidebar(props: AppSidebarProps) {
           currentContext={props.currentContext}
           onContextChange={props.onContextChange}
           onKubeconfigChange={props.onKubeconfigChange}
+        />
+        <NamespaceSwitcher
+          namespaces={props.namespaces}
+          currentNamespace={props.currentNamespace}
+          onNamespaceChange={props.onNamespaceChange}
+          onReloadNamespaces={props.onReloadNamespaces}
         />
       </SidebarHeader>
       <SidebarContent>

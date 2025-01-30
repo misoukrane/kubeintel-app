@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronsUpDown, Plus } from 'lucide-react';
+import { ChevronsUpDown, ListRestart } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -17,16 +17,16 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 
-export function ContextSwitcher({
-  contexts,
-  currentContext,
-  onContextChange,
-  onKubeconfigChange,
+export function NamespaceSwitcher({
+  namespaces,
+  currentNamespace,
+  onNamespaceChange,
+  onReloadNamespaces,
 }: {
-  contexts: string[];
-  currentContext?: string;
-  onContextChange: (context: string) => void;
-  onKubeconfigChange: () => void;
+  namespaces: string[];
+  currentNamespace?: string;
+  onNamespaceChange: (context: string) => void;
+  onReloadNamespaces: () => void;
 }) {
   const { isMobile } = useSidebar();
 
@@ -42,7 +42,7 @@ export function ContextSwitcher({
             >
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {currentContext || 'Select a context'}
+                  {currentNamespace || 'Select a namespace'}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto" />
@@ -55,30 +55,30 @@ export function ContextSwitcher({
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Contexts
+              Namespaces
             </DropdownMenuLabel>
-            {contexts.map((context, _) => (
+            {namespaces.map((ns, _) => (
               <DropdownMenuItem
-                key={context}
+                key={ns}
                 onClick={() => {
-                  onContextChange(context);
+                  onNamespaceChange(ns);
                 }}
                 className="gap-2 p-2"
               >
-                <small>{context}</small>
+                <small>{ns}</small>
                 {/* <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut> */}
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="gap-2 p-2"
-              onClick={onKubeconfigChange}
+              onClick={onReloadNamespaces}
             >
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                <Plus className="size-4" />
+                <ListRestart className="size-4" />
               </div>
               <div className="font-medium text-muted-foreground">
-                Change/Add kubeconfig
+                Reload Namespaces
               </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
