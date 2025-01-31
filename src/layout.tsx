@@ -73,7 +73,6 @@ export default function Layout() {
         }}
         onNamespaceChange={(namespace) => {
           setCurrentNamespace(namespace);
-          navigate(ROUTES.CLUSTER);
         }}
         onReloadNamespaces={() => loadNs(selectedKubeconfig, currentContext)}
         onAIConfig={() => navigate(ROUTES.AI_CONFIG)}

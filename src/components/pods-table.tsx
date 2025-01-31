@@ -1,15 +1,12 @@
-import { Link } from "react-router";
-import { V1Pod } from "@kubernetes/client-node";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Link } from 'react-router';
+import { V1Pod } from '@kubernetes/client-node';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
+} from '@/components/ui/accordion';
 import {
   Table,
   TableBody,
@@ -17,7 +14,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -27,11 +24,11 @@ import {
   useReactTable,
   SortingState,
   getSortedRowModel,
-} from "@tanstack/react-table";
-import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import { ArrowUpDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
+} from '@tanstack/react-table';
+import { Input } from '@/components/ui/input';
+import { useState } from 'react';
+import { ArrowUpDown } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface PodsTableProps {
   pods: Array<V1Pod>;
@@ -40,7 +37,7 @@ interface PodsTableProps {
 const SortableHeader = ({ column, title }: { column: any; title: string }) => (
   <Button
     variant="ghost"
-    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
   >
     {title}
     <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -53,32 +50,34 @@ export const PodsTable = ({ pods }: PodsTableProps) => {
 
   const columns: ColumnDef<V1Pod>[] = [
     {
-      accessorKey: "metadata.name",
+      accessorKey: 'metadata.name',
       header: ({ column }) => <SortableHeader column={column} title="Name" />,
       cell: ({ row }) => {
         const name = row.original.metadata?.name;
         const namespace = row.original.metadata?.namespace;
         return (
-          <Link
-            to={`/namespaces/${namespace}/pods/${name}`}
-          >
-            <Button variant="link" className="underline">{name}</Button>
+          <Link to={`/namespaces/${namespace}/pods/${name}`}>
+            <Button variant="link" className="underline">
+              {name}
+            </Button>
           </Link>
         );
       },
     },
     {
-      accessorKey: "metadata.namespace",
-      header: ({ column }) => <SortableHeader column={column} title="Namespace" />,
+      accessorKey: 'metadata.namespace',
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Namespace" />
+      ),
       cell: ({ row }) => row.original.metadata?.namespace,
     },
     {
-      accessorKey: "status.phase",
+      accessorKey: 'status.phase',
       header: ({ column }) => <SortableHeader column={column} title="Status" />,
       cell: ({ row }) => row.original.status?.phase,
     },
     {
-      accessorKey: "metadata.creationTimestamp",
+      accessorKey: 'metadata.creationTimestamp',
       header: ({ column }) => <SortableHeader column={column} title="Age" />,
       cell: ({ row }) => {
         const timestamp = row.original.metadata?.creationTimestamp;
@@ -86,8 +85,10 @@ export const PodsTable = ({ pods }: PodsTableProps) => {
       },
     },
     {
-      accessorKey: "restarts",
-      header: ({ column }) => <SortableHeader column={column} title="Restarts" />,
+      accessorKey: 'restarts',
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Restarts" />
+      ),
       cell: ({ row }) => {
         const containers = row.original.status?.containerStatuses || [];
         const totalRestarts = containers.reduce(
@@ -98,22 +99,26 @@ export const PodsTable = ({ pods }: PodsTableProps) => {
       },
     },
     {
-      accessorKey: "spec.nodeName",
+      accessorKey: 'spec.nodeName',
       header: ({ column }) => <SortableHeader column={column} title="Node" />,
       cell: ({ row }) => {
         const nodeName = row.original.spec?.nodeName;
         return nodeName ? (
-          <Link
-            to={`/nodes/${nodeName}`}
-          >
-            <Button variant="link" className="underline">{nodeName}</Button>
+          <Link to={`/nodes/${nodeName}`}>
+            <Button variant="link" className="underline">
+              {nodeName}
+            </Button>
           </Link>
-        ) : "";
+        ) : (
+          ''
+        );
       },
     },
     {
-      accessorKey: "ip",
-      header: ({ column }) => <SortableHeader column={column} title="IP Address" />,
+      accessorKey: 'ip',
+      header: ({ column }) => (
+        <SortableHeader column={column} title="IP Address" />
+      ),
       cell: ({ row }) => row.original.status?.podIP,
     },
   ];
@@ -144,14 +149,18 @@ export const PodsTable = ({ pods }: PodsTableProps) => {
                   {table
                     .getAllColumns()
                     .filter((column) =>
-                      ['metadata_name', 'status_phase', 'spec_nodeName'].includes(column.id)
+                      [
+                        'metadata_name',
+                        'status_phase',
+                        'spec_nodeName',
+                      ].includes(column.id)
                     )
                     .map((column) => {
                       return (
                         <div key={column.id}>
                           <Input
-                            placeholder={`Filter ${column.id.split('.').pop()}...`}
-                            value={(column.getFilterValue() as string) ?? ""}
+                            placeholder={`Filter ${column.id.split('_').pop()}...`}
+                            value={(column.getFilterValue() as string) ?? ''}
                             onChange={(e) =>
                               column.setFilterValue(e.target.value)
                             }
