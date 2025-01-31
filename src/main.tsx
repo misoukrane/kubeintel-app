@@ -5,8 +5,10 @@ import { KubeconfigFilePicker } from "@/pages/kubeconfig-file-picker";
 import "./global.css";
 import Layout from "./layout";
 import { Cluster } from "./pages/cluster";
+import { Pods } from "./pages/pods";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster"
+import { ROUTES } from "@/lib/routes";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -16,6 +18,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           <Route path="/" element={<KubeconfigFilePicker />} />
           <Route element={<Layout />} >
             <Route path="/cluster" element={<Cluster />} />
+            <Route path={ROUTES.PODS} element={<Pods />} />
           </Route>
         </Routes>
       </BrowserRouter>
