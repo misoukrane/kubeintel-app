@@ -9,6 +9,8 @@ import { Pods } from "./pages/pods";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster"
 import { ROUTES } from "@/lib/routes";
+import { Deployments } from "./pages/deployments";
+import { NotFound } from "@/pages/not-found";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -19,7 +21,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           <Route element={<Layout />} >
             <Route path="/cluster" element={<Cluster />} />
             <Route path={ROUTES.PODS} element={<Pods />} />
+            <Route path={ROUTES.DEPLOYMENTS} element={<Deployments />} />
           </Route>
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
       <Toaster />

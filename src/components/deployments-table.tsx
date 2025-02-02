@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import { V1Pod } from '@kubernetes/client-node';
+import { V1Deployment } from '@kubernetes/client-node';
 import { Card, CardContent } from '@/components/ui/card';
 import {
   Accordion,
@@ -30,23 +30,27 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { SortableHeader } from '@/components/table/sortable-header';
 
-interface PodsTableProps {
-  pods: Array<V1Pod>;
+interface DeploymentsTableProps {
+  deployments: Array<V1Deployment>;
 }
 
-export const PodsTable = ({ pods }: PodsTableProps) => {
+export const DeploymentsTable = ({ deployments }: DeploymentsTableProps) => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const columns: ColumnDef<V1Pod>[] = [
+  const columns: ColumnDef<V1Deployment>[] = [
     {
       accessorKey: 'metadata.name',
-      header: ({ column }) => <SortableHeader column={column} title="Name" />,
+      header: ({ column }) => (
+        <div>
+          <SortableHeader column={column} title="Name" />
+        </div>
+      ),
       cell: ({ row }) => {
         const name = row.original.metadata?.name;
         const namespace = row.original.metadata?.namespace;
         return (
-          <Link to={`/namespaces/${namespace}/pods/${name}`}>
+          <Link to={`/namespaces/${namespace}/deployments/${name}`}>
             <Button variant="link" className="underline">
               {name}
             </Button>
@@ -62,9 +66,26 @@ export const PodsTable = ({ pods }: PodsTableProps) => {
       cell: ({ row }) => row.original.metadata?.namespace,
     },
     {
-      accessorKey: 'status.phase',
-      header: ({ column }) => <SortableHeader column={column} title="Status" />,
-      cell: ({ row }) => row.original.status?.phase,
+      accessorKey: 'status.replicas',
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Replicas" />
+      ),
+      cell: ({ row }) =>
+        `${row.original.status?.availableReplicas ?? 0}/${row.original.spec?.replicas ?? 0}`,
+    },
+    {
+      accessorKey: 'status.updatedReplicas',
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Up-to-date" />
+      ),
+      cell: ({ row }) => row.original.status?.updatedReplicas ?? 0,
+    },
+    {
+      accessorKey: 'status.availableReplicas',
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Available" />
+      ),
+      cell: ({ row }) => row.original.status?.availableReplicas ?? 0,
     },
     {
       accessorKey: 'metadata.creationTimestamp',
@@ -74,47 +95,10 @@ export const PodsTable = ({ pods }: PodsTableProps) => {
         return timestamp ? new Date(timestamp).toLocaleString() : '';
       },
     },
-    {
-      accessorKey: 'restarts',
-      header: ({ column }) => (
-        <SortableHeader column={column} title="Restarts" />
-      ),
-      cell: ({ row }) => {
-        const containers = row.original.status?.containerStatuses || [];
-        const totalRestarts = containers.reduce(
-          (sum, container) => sum + (container.restartCount || 0),
-          0
-        );
-        return totalRestarts;
-      },
-    },
-    {
-      accessorKey: 'spec.nodeName',
-      header: ({ column }) => <SortableHeader column={column} title="Node" />,
-      cell: ({ row }) => {
-        const nodeName = row.original.spec?.nodeName;
-        return nodeName ? (
-          <Link to={`/nodes/${nodeName}`}>
-            <Button variant="link" className="underline">
-              {nodeName}
-            </Button>
-          </Link>
-        ) : (
-          ''
-        );
-      },
-    },
-    {
-      accessorKey: 'ip',
-      header: ({ column }) => (
-        <SortableHeader column={column} title="IP Address" />
-      ),
-      cell: ({ row }) => row.original.status?.podIP,
-    },
   ];
 
   const table = useReactTable({
-    data: pods,
+    data: deployments,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onColumnFiltersChange: setColumnFilters,
@@ -128,41 +112,37 @@ export const PodsTable = ({ pods }: PodsTableProps) => {
   });
 
   return (
-    <Card>
-      <CardContent>
-        <div className="space-y-4">
-          <Accordion type="single" collapsible defaultValue="item-1">
-            <AccordionItem value="item-1">
-              <AccordionTrigger>Filters</AccordionTrigger>
-              <AccordionContent className="p-4">
-                <div className="grid grid-cols-3 gap-4 mt-4">
-                  {table
-                    .getAllColumns()
-                    .filter((column) =>
-                      [
-                        'metadata_name',
-                        'status_phase',
-                        'spec_nodeName',
-                      ].includes(column.id)
-                    )
-                    .map((column) => {
-                      return (
-                        <div key={column.id}>
-                          <Input
-                            placeholder={`Filter ${column.id.split('_').pop()}...`}
-                            value={(column.getFilterValue() as string) ?? ''}
-                            onChange={(e) =>
-                              column.setFilterValue(e.target.value)
-                            }
-                            className="max-w-xs "
-                          />
-                        </div>
-                      );
-                    })}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+    <div className="space-y-4">
+      <Card>
+        <CardContent className="p-6">
+          <div className="space-y-4">
+            <Accordion type="single" collapsible defaultValue="item-1">
+              <AccordionItem value="item-1">
+                <AccordionTrigger>Filters</AccordionTrigger>
+                <AccordionContent className="p-4">
+                  <div className="grid grid-cols-3 gap-4 mt-4">
+                    {table
+                      .getAllColumns()
+                      .filter((column) => ['metadata_name'].includes(column.id))
+                      .map((column) => {
+                        return (
+                          <div key={column.id}>
+                            <Input
+                              placeholder={`Filter ${column.id.split('_').pop()}...`}
+                              value={(column.getFilterValue() as string) ?? ''}
+                              onChange={(e) =>
+                                column.setFilterValue(e.target.value)
+                              }
+                              className="max-w-xs "
+                            />
+                          </div>
+                        );
+                      })}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
           <div className="rounded-md border">
             <Table>
               <TableHeader>
@@ -199,15 +179,15 @@ export const PodsTable = ({ pods }: PodsTableProps) => {
                       colSpan={columns.length}
                       className="h-24 text-center"
                     >
-                      No pods found.
+                      No deployments found.
                     </TableCell>
                   </TableRow>
                 )}
               </TableBody>
             </Table>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
