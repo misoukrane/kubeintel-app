@@ -41,7 +41,7 @@ const items = [
     icon: Search,
   },
   {
-    title: 'statefulSets',
+    title: 'StatefulSets',
     url: '/statefulsets',
     icon: Settings,
   },

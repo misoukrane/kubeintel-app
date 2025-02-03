@@ -5,4 +5,5 @@ export const ROUTES = {
   DEPLOYMENTS: '/deployments',
   DAEMONSETS: '/daemonsets',
   AI_CONFIG: '/config/ai',
+  STATEFULSETS: '/statefulsets',
 } as const;

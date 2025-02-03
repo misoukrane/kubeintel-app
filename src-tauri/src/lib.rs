@@ -4,6 +4,7 @@ mod k8s_client;
 mod k8s_config;
 mod namespaces;
 mod pods;
+mod statefulsets;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -18,7 +19,8 @@ pub fn run() {
             namespaces::list_namespaces,
             pods::list_pods,
             deployments::list_deployments,
-            daemonsets::list_daemonsets
+            daemonsets::list_daemonsets,
+            statefulsets::list_statefulsets
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

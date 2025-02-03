@@ -1,44 +1,23 @@
 import { Link } from 'react-router';
-import { V1DaemonSet } from '@kubernetes/client-node';
+import { V1StatefulSet } from '@kubernetes/client-node';
 import { Card, CardContent } from '@/components/ui/card';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  useReactTable,
-  SortingState,
-  getSortedRowModel,
-} from '@tanstack/react-table';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, getFilteredRowModel, useReactTable, SortingState, getSortedRowModel } from '@tanstack/react-table';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { SortableHeader } from '@/components/table/sortable-header';
 
-interface DaemonSetsTableProps {
-  daemonsets: Array<V1DaemonSet>;
+interface StatefulSetsTableProps {
+  statefulsets: Array<V1StatefulSet>;
 }
 
-export const DaemonSetsTable = ({ daemonsets }: DaemonSetsTableProps) => {
+export const StatefulSetsTable = ({ statefulsets }: StatefulSetsTableProps) => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const columns: ColumnDef<V1DaemonSet>[] = [
+  const columns: ColumnDef<V1StatefulSet>[] = [
     {
       accessorKey: 'metadata.name',
       header: ({ column }) => (
@@ -50,53 +29,31 @@ export const DaemonSetsTable = ({ daemonsets }: DaemonSetsTableProps) => {
         const name = row.original.metadata?.name;
         const namespace = row.original.metadata?.namespace;
         return (
-          <Link to={`/namespaces/${namespace}/daemonsets/${name}`}>
-            <Button variant="link" className="underline">
-              {name}
-            </Button>
+          <Link to={`/namespaces/${namespace}/statefulsets/${name}`}>
+            <Button variant="link" className="underline">{name}</Button>
           </Link>
         );
       },
     },
     {
       accessorKey: 'metadata.namespace',
-      header: ({ column }) => (
-        <SortableHeader column={column} title="Namespace" />
-      ),
+      header: ({ column }) => <SortableHeader column={column} title="Namespace" />,
       cell: ({ row }) => row.original.metadata?.namespace,
     },
     {
-      accessorKey: 'status.desiredNumberScheduled',
-      header: ({ column }) => (
-        <SortableHeader column={column} title="Desired" />
-      ),
-      cell: ({ row }) => row.original.status?.desiredNumberScheduled ?? 0,
+      accessorKey: 'spec.replicas',
+      header: ({ column }) => <SortableHeader column={column} title="Replicas" />,
+      cell: ({ row }) => `${row.original.status?.readyReplicas ?? 0}/${row.original.spec?.replicas ?? 0}`,
     },
     {
-      accessorKey: 'status.currentNumberScheduled',
-      header: ({ column }) => (
-        <SortableHeader column={column} title="Current" />
-      ),
-      cell: ({ row }) => row.original.status?.currentNumberScheduled ?? 0,
+      accessorKey: 'status.currentReplicas',
+      header: ({ column }) => <SortableHeader column={column} title="Current" />,
+      cell: ({ row }) => row.original.status?.currentReplicas ?? 0,
     },
     {
-      accessorKey: 'status.numberReady',
-      header: ({ column }) => <SortableHeader column={column} title="Ready" />,
-      cell: ({ row }) => row.original.status?.numberReady ?? 0,
-    },
-    {
-      accessorKey: 'status.updatedNumberScheduled',
-      header: ({ column }) => (
-        <SortableHeader column={column} title="Up-to-date" />
-      ),
-      cell: ({ row }) => row.original.status?.updatedNumberScheduled ?? 0,
-    },
-    {
-      accessorKey: 'status.numberAvailable',
-      header: ({ column }) => (
-        <SortableHeader column={column} title="Available" />
-      ),
-      cell: ({ row }) => row.original.status?.numberAvailable ?? 0,
+      accessorKey: 'status.updatedReplicas',
+      header: ({ column }) => <SortableHeader column={column} title="Updated" />,
+      cell: ({ row }) => row.original.status?.updatedReplicas ?? 0,
     },
     {
       accessorKey: 'metadata.creationTimestamp',
@@ -109,7 +66,7 @@ export const DaemonSetsTable = ({ daemonsets }: DaemonSetsTableProps) => {
   ];
 
   const table = useReactTable({
-    data: daemonsets,
+    data: statefulsets,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onColumnFiltersChange: setColumnFilters,
@@ -135,20 +92,18 @@ export const DaemonSetsTable = ({ daemonsets }: DaemonSetsTableProps) => {
                     {table
                       .getAllColumns()
                       .filter((column) => ['metadata_name'].includes(column.id))
-                      .map((column) => {
-                        return (
-                          <div key={column.id}>
-                            <Input
-                              placeholder={`Filter ${column.id.split('_').pop()}...`}
-                              value={(column.getFilterValue() as string) ?? ''}
-                              onChange={(e) =>
-                                column.setFilterValue(e.target.value)
-                              }
-                              className="max-w-xs "
-                            />
-                          </div>
-                        );
-                      })}
+                      .map((column) => (
+                        <div key={column.id}>
+                          <Input
+                            placeholder={`Filter ${column.id.split('_').pop()}...`}
+                            value={(column.getFilterValue() as string) ?? ''}
+                            onChange={(e) =>
+                              column.setFilterValue(e.target.value)
+                            }
+                            className="max-w-xs"
+                          />
+                        </div>
+                      ))}
                   </div>
                 </AccordionContent>
               </AccordionItem>
@@ -190,7 +145,7 @@ export const DaemonSetsTable = ({ daemonsets }: DaemonSetsTableProps) => {
                       colSpan={columns.length}
                       className="h-24 text-center"
                     >
-                      No daemonsets found.
+                      No statefulsets found.
                     </TableCell>
                   </TableRow>
                 )}
