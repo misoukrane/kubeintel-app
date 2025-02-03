@@ -1,9 +1,30 @@
 import { Link } from 'react-router';
 import { V1StatefulSet } from '@kubernetes/client-node';
 import { Card, CardContent } from '@/components/ui/card';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, getFilteredRowModel, useReactTable, SortingState, getSortedRowModel } from '@tanstack/react-table';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  useReactTable,
+  SortingState,
+  getSortedRowModel,
+} from '@tanstack/react-table';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -30,29 +51,40 @@ export const StatefulSetsTable = ({ statefulsets }: StatefulSetsTableProps) => {
         const namespace = row.original.metadata?.namespace;
         return (
           <Link to={`/namespaces/${namespace}/statefulsets/${name}`}>
-            <Button variant="link" className="underline">{name}</Button>
+            <Button variant="link" className="underline">
+              {name}
+            </Button>
           </Link>
         );
       },
     },
     {
       accessorKey: 'metadata.namespace',
-      header: ({ column }) => <SortableHeader column={column} title="Namespace" />,
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Namespace" />
+      ),
       cell: ({ row }) => row.original.metadata?.namespace,
     },
     {
       accessorKey: 'spec.replicas',
-      header: ({ column }) => <SortableHeader column={column} title="Replicas" />,
-      cell: ({ row }) => `${row.original.status?.readyReplicas ?? 0}/${row.original.spec?.replicas ?? 0}`,
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Replicas" />
+      ),
+      cell: ({ row }) =>
+        `${row.original.status?.readyReplicas ?? 0}/${row.original.spec?.replicas ?? 0}`,
     },
     {
       accessorKey: 'status.currentReplicas',
-      header: ({ column }) => <SortableHeader column={column} title="Current" />,
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Current" />
+      ),
       cell: ({ row }) => row.original.status?.currentReplicas ?? 0,
     },
     {
       accessorKey: 'status.updatedReplicas',
-      header: ({ column }) => <SortableHeader column={column} title="Updated" />,
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Updated" />
+      ),
       cell: ({ row }) => row.original.status?.updatedReplicas ?? 0,
     },
     {

@@ -1,5 +1,4 @@
-import { Calendar, Boxes, Inbox, Search, Settings } from 'lucide-react';
-
+import { useSidebar } from '@/components/ui/sidebar';
 import {
   Sidebar,
   SidebarContent,
@@ -17,33 +16,38 @@ import { NavLink } from 'react-router';
 import { ContextSwitcher } from './context-switcher';
 import { NavSettings } from './nav-settings';
 import { NamespaceSwitcher } from './namespace-switcher';
+import { PodLogo } from '@/assets/pod';
+import { DeployLogo } from '@/assets/deploy';
+import { DsLogo } from '@/assets/ds';
+import { StsLogo } from '@/assets/sts';
+import { ControlPlaneLogo } from '@/assets/control-plane';
 
 // Menu items.
 const items = [
   {
     title: 'cluster Info',
     url: '/cluster',
-    icon: Boxes,
+    icon: ControlPlaneLogo,
   },
   {
     title: 'Pods',
     url: '/pods',
-    icon: Inbox,
+    icon: PodLogo,
   },
   {
     title: 'Deployments',
     url: '/deployments',
-    icon: Calendar,
+    icon: DeployLogo,
   },
   {
     title: 'DaemonSets',
     url: '/daemonsets',
-    icon: Search,
+    icon: DsLogo,
   },
   {
     title: 'StatefulSets',
     url: '/statefulsets',
-    icon: Settings,
+    icon: StsLogo,
   },
 ];
 
@@ -62,6 +66,7 @@ interface AppSidebarProps {
 }
 
 export function AppSidebar(props: AppSidebarProps) {
+  const { open } = useSidebar();
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -90,10 +95,13 @@ export function AppSidebar(props: AppSidebarProps) {
                       {({ isActive }) => (
                         <>
                           <item.icon
-                            strokeWidth={isActive ? 3 : 2}
-                            size={isActive ? 36 : 24}
+                            className="transition-all duration-250 ease-in-out transform"
+                            style={{
+                              width: isActive && open ? '2rem' : '1.5rem',
+                              height: isActive && open ? '2rem' : '1.5rem',
+                            }}
                           />
-                          <span className={isActive ? 'font-bold' : ''}>
+                          <span className={isActive ? 'font-bold ' : ''}>
                             {item.title}
                           </span>
                         </>

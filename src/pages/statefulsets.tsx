@@ -6,7 +6,8 @@ import { V1StatefulSet } from '@kubernetes/client-node';
 import { useListKubeResource } from '@/hooks/use-list-kube-resource';
 
 export const StatefulSets = () => {
-  const { selectedKubeconfig, currentContext, currentNamespace } = useConfigStore();
+  const { selectedKubeconfig, currentContext, currentNamespace } =
+    useConfigStore();
 
   const { resources, loading, error } = useListKubeResource<V1StatefulSet>({
     kubeconfigPath: selectedKubeconfig,
