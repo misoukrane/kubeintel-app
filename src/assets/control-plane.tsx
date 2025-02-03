@@ -46,7 +46,6 @@ export const ControlPlaneLogo = (props: any) => (
           overflow="visible"
           style={{
             lineHeight: 'normal',
-            InkscapeFontSpecification: 'Sans',
             textIndent: '0',
             textAlign: 'start',
             textDecorationLine: 'none',

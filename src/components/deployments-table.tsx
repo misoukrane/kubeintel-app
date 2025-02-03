@@ -24,11 +24,14 @@ import {
   useReactTable,
   SortingState,
   getSortedRowModel,
+  PaginationState,
+  getPaginationRowModel,
 } from '@tanstack/react-table';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { SortableHeader } from '@/components/table/sortable-header';
+import { DataTablePagination } from '@/components/table/data-table-pagination';
 
 interface DeploymentsTableProps {
   deployments: Array<V1Deployment>;
@@ -37,6 +40,10 @@ interface DeploymentsTableProps {
 export const DeploymentsTable = ({ deployments }: DeploymentsTableProps) => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
 
   const columns: ColumnDef<V1Deployment>[] = [
     {
@@ -105,89 +112,89 @@ export const DeploymentsTable = ({ deployments }: DeploymentsTableProps) => {
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onPaginationChange: setPagination,
     state: {
       columnFilters,
       sorting,
+      pagination,
     },
   });
 
   return (
-    <div className="space-y-4">
-      <Card>
-        <CardContent className="p-6">
-          <div className="space-y-4">
-            <Accordion type="single" collapsible defaultValue="item-1">
-              <AccordionItem value="item-1">
-                <AccordionTrigger>Filters</AccordionTrigger>
-                <AccordionContent className="p-4">
-                  <div className="grid grid-cols-3 gap-4 mt-4">
-                    {table
-                      .getAllColumns()
-                      .filter((column) => ['metadata_name'].includes(column.id))
-                      .map((column) => {
-                        return (
-                          <div key={column.id}>
-                            <Input
-                              placeholder={`Filter ${column.id.split('_').pop()}...`}
-                              value={(column.getFilterValue() as string) ?? ''}
-                              onChange={(e) =>
-                                column.setFilterValue(e.target.value)
-                              }
-                              className="max-w-xs "
-                            />
-                          </div>
-                        );
-                      })}
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
-                      <TableHead key={header.id}>
+    <Card>
+      <CardContent className="space-y-4">
+        <Accordion type="single" collapsible defaultValue="item-1">
+          <AccordionItem value="item-1">
+            <AccordionTrigger>Filters</AccordionTrigger>
+            <AccordionContent className="p-4">
+              <div className="grid grid-cols-3 gap-4 mt-4">
+                {table
+                  .getAllColumns()
+                  .filter((column) => ['metadata_name'].includes(column.id))
+                  .map((column) => {
+                    return (
+                      <div key={column.id}>
+                        <Input
+                          placeholder={`Filter ${column.id.split('_').pop()}...`}
+                          value={(column.getFilterValue() as string) ?? ''}
+                          onChange={(e) =>
+                            column.setFilterValue(e.target.value)
+                          }
+                          className="max-w-xs "
+                        />
+                      </div>
+                    );
+                  })}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <TableHead key={header.id}>
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id}>
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
                         {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
+                          cell.column.columnDef.cell,
+                          cell.getContext()
                         )}
-                      </TableHead>
+                      </TableCell>
                     ))}
                   </TableRow>
-                ))}
-              </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows.length ? (
-                  table.getRowModel().rows.map((row) => (
-                    <TableRow key={row.id}>
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-24 text-center"
-                    >
-                      No deployments found.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No deployments found.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+        <DataTablePagination table={table} />
+      </CardContent>
+    </Card>
   );
 };
