@@ -1,7 +1,7 @@
 use crate::k8s_client;
 use k8s_openapi::api::apps::v1::Deployment;
 
-// list all pods in a namespace
+// list all deployments in a namespace
 #[tauri::command]
 pub async fn list_deployments(
     kubeconfig_path: String,

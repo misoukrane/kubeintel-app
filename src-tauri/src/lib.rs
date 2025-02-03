@@ -1,3 +1,4 @@
+mod daemonsets;
 mod deployments;
 mod k8s_client;
 mod k8s_config;
@@ -16,7 +17,8 @@ pub fn run() {
             k8s_config::cluster_info,
             namespaces::list_namespaces,
             pods::list_pods,
-            deployments::list_deployments
+            deployments::list_deployments,
+            daemonsets::list_daemonsets
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
