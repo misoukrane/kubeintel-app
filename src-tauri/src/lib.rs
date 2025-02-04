@@ -20,7 +20,8 @@ pub fn run() {
             pods::list_pods,
             deployments::list_deployments,
             daemonsets::list_daemonsets,
-            statefulsets::list_statefulsets
+            statefulsets::list_statefulsets,
+            pods::get_pod,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

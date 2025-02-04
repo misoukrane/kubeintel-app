@@ -36,3 +36,16 @@ where
         .map_err(|e| e.to_string())?;
     Ok(list.items)
 }
+
+pub async fn get_resource<T>(client: Client, namespace: &str, name: &str) -> Result<T, String>
+where
+    T: Resource<Scope = kube::core::NamespaceResourceScope>
+        + Clone
+        + std::fmt::Debug
+        + k8s_openapi::Metadata<Ty = k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta>
+        + serde::de::DeserializeOwned,
+{
+    let api = Api::namespaced(client, namespace);
+    let resource = api.get(name).await.map_err(|e| e.to_string())?;
+    Ok(resource)
+}

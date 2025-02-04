@@ -51,9 +51,8 @@ export const PodsTable = ({ pods }: PodsTableProps) => {
       header: ({ column }) => <SortableHeader column={column} title="Name" />,
       cell: ({ row }) => {
         const name = row.original.metadata?.name;
-        const namespace = row.original.metadata?.namespace;
         return (
-          <Link to={`/namespaces/${namespace}/pods/${name}`}>
+          <Link to={`/pods/${name}`}>
             <Button variant="link" className="underline">
               {name}
             </Button>
