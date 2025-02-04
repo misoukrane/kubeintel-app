@@ -1,6 +1,6 @@
 import { useConfigStore } from '@/stores/use-config-store';
 import { Spinner } from '@/components/spinner';
-import { PodsTable } from '@/components/pods-table';
+import { PodsTable } from '@/components/pods/pods-table';
 import { ErrorAlert } from '@/components/error-alert';
 import { V1Pod } from '@kubernetes/client-node';
 import { useListKubeResource } from '@/hooks/use-list-kube-resource';

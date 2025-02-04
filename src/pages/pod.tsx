@@ -1,6 +1,6 @@
 import { useConfigStore } from '@/stores/use-config-store';
 import { Spinner } from '@/components/spinner';
-import { PodView } from '@/components/pod-view';
+import { PodView } from '@/components/pods/pod-view';
 import { ErrorAlert } from '@/components/error-alert';
 import { V1Pod } from '@kubernetes/client-node';
 import { useGetKubeResource } from '@/hooks/use-get-kube-resource';
