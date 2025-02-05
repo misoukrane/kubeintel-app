@@ -7,7 +7,7 @@ export const relaunchApp = async () => await relaunch();
 
 export const copyToClipboard = async (text: string) => {
   // use toast to notify the user
-  const { toast } = useToast()
+  const { toast } = useToast();
   try {
     await writeText(text);
     toast({
@@ -19,7 +19,8 @@ export const copyToClipboard = async (text: string) => {
     toast({
       variant: 'destructive',
       title: 'Error copying to clipboard',
-      description: error instanceof Error ? error.message : JSON.stringify(error),
+      description:
+        error instanceof Error ? error.message : JSON.stringify(error),
     });
   }
 };

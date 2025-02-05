@@ -1,6 +1,6 @@
-import { CopyCheckIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { CopyCheckIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface ScrollAreaCodeProps {
   content: any;
@@ -28,4 +28,4 @@ export const ScrollAreaCode = (props: ScrollAreaCodeProps) => {
       </pre>
     </ScrollArea>
   );
-}
+};

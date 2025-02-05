@@ -25,7 +25,9 @@ export const Pod = () => {
     <div className="space-y-4">
       {loading && <Spinner />}
       {error && <ErrorAlert message={error} />}
-      {!loading && !error && <PodView pod={resource} onCopy={copyToClipboard} />}
+      {!loading && !error && (
+        <PodView pod={resource} onCopy={copyToClipboard} />
+      )}
     </div>
   );
 };

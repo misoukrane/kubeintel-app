@@ -80,18 +80,11 @@ export const PodView = ({ pod, onCopy }: PodViewProps) => {
           </TabsContent>
 
           <TabsContent value="containers" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Container Statuses</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {status?.containerStatuses && status.containerStatuses.length > 0 ? (
-                  <ContainersStatusTable containerStatuses={status.containerStatuses} />
-                ) : (
-                  <p className="text-center text-muted-foreground">No containers found</p>
-                )}
-              </CardContent>
-            </Card>
+            <ContainersStatusTable
+              containerStatuses={status?.containerStatuses}
+              containers={spec?.containers}
+              initContainers={spec?.initContainers}
+            />
           </TabsContent>
 
           <TabsContent value="conditions">

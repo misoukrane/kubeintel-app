@@ -15,7 +15,8 @@ export const useClipboard = () => {
       toast({
         variant: 'destructive',
         title: 'Error copying to clipboard',
-        description: error instanceof Error ? error.message : JSON.stringify(error),
+        description:
+          error instanceof Error ? error.message : JSON.stringify(error),
       });
     }
   };
