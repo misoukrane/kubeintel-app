@@ -5,9 +5,11 @@ import { ErrorAlert } from '@/components/error-alert';
 import { V1Pod } from '@kubernetes/client-node';
 import { useGetKubeResource } from '@/hooks/use-get-kube-resource';
 import { useParams } from 'react-router';
+import { useClipboard } from '@/hooks/use-clipboard';
 
 export const Pod = () => {
-  let { podName } = useParams();
+  const { podName } = useParams();
+  const { copyToClipboard } = useClipboard();
   const { selectedKubeconfig, currentContext, currentNamespace } =
     useConfigStore();
 
@@ -23,7 +25,7 @@ export const Pod = () => {
     <div className="space-y-4">
       {loading && <Spinner />}
       {error && <ErrorAlert message={error} />}
-      {!loading && !error && <PodView pod={resource} />}
+      {!loading && !error && <PodView pod={resource} onCopy={copyToClipboard} />}
     </div>
   );
 };

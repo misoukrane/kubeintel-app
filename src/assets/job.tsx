@@ -30,7 +30,6 @@ export const JobLogo = (props: any) => (
         fontSize: 'medium',
         lineHeight: 'normal',
         fontFamily: 'Sans',
-        InkscapeFontSpecification: 'Sans',
         textIndent: 0,
         textAlign: 'start',
         textDecoration: 'none',
@@ -38,7 +37,6 @@ export const JobLogo = (props: any) => (
         letterSpacing: 'normal',
         wordSpacing: 'normal',
         textTransform: 'none',
-        writingMode: 'lr-tb',
         direction: 'ltr',
         baselineShift: 'baseline',
         display: 'inline',
@@ -52,7 +50,6 @@ export const JobLogo = (props: any) => (
         strokeMiterlimit: 4,
         strokeDasharray: 'none',
         marker: 'none',
-        enableBackground: 'accumulate',
       }}
       transform="matrix(1.01489 0 0 1.01489 15.91 -3.873)"
     />
@@ -88,9 +85,7 @@ export const JobLogo = (props: any) => (
           fontStretch: 'normal',
           fontSize: '2.82222223px',
           fontFamily: 'Arial',
-          InkscapeFontSpecification: '&quot',
           textAlign: 'center',
-          writingMode: 'lr-tb',
           fill: '#fff',
           fillOpacity: 1,
           strokeWidth: '.26458332px',

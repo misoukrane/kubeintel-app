@@ -30,7 +30,6 @@ export const StsLogo = (props: any) => (
         fontSize: 'medium',
         lineHeight: 'normal',
         fontFamily: 'Sans',
-        InkscapeFontSpecification: 'Sans',
         textIndent: 0,
         textAlign: 'start',
         textDecoration: 'none',
@@ -39,7 +38,6 @@ export const StsLogo = (props: any) => (
         wordSpacing: 'normal',
         textTransform: 'none',
         direction: 'ltr',
-        writingMode: 'lr-tb',
         baselineShift: 'baseline',
         textAnchor: 'start',
         display: 'inline',
@@ -53,7 +51,6 @@ export const StsLogo = (props: any) => (
         strokeMiterlimit: 4,
         strokeDasharray: 'none',
         marker: 'none',
-        enableBackground: 'accumulate',
       }}
       transform="matrix(1.01489 0 0 1.01489 15.945 -3.873)"
     />

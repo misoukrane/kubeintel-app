@@ -6,12 +6,16 @@ import { ContainersStatusTable } from '@/components/pods/containers-status-table
 import { StatusConditionsTable } from '@/components/pods/status-conditions-table';
 import { LabelsAnnotations } from '@/components/metadata/labels-annotations';
 import { StatusBadge } from '@/components/status-badge';
+import { VolumesTable } from '@/components/pods/volumes-table';
+import { ScrollAreaCode } from '../scroll-area-code';
+
 
 interface PodViewProps {
   pod: V1Pod | null;
+  onCopy: (text: string) => void;
 }
 
-export const PodView = ({ pod }: PodViewProps) => {
+export const PodView = ({ pod, onCopy }: PodViewProps) => {
   if (!pod) return null;
 
   const { metadata, status, spec } = pod;
@@ -34,6 +38,7 @@ export const PodView = ({ pod }: PodViewProps) => {
             <TabsTrigger value="containers">Containers</TabsTrigger>
             <TabsTrigger value="conditions">Conditions</TabsTrigger>
             <TabsTrigger value="volumes">Volumes</TabsTrigger>
+            <TabsTrigger value="source">source</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
@@ -105,23 +110,28 @@ export const PodView = ({ pod }: PodViewProps) => {
           </TabsContent>
 
           <TabsContent value="volumes">
-            <div className="space-y-4">
-              {spec?.volumes?.map((volume, index) => (
-                <Card key={index}>
-                  <CardHeader>
-                    <CardTitle className="text-lg">{volume.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <pre className="bg-muted p-4 rounded-lg overflow-auto">
-                      {JSON.stringify(volume, null, 2)}
-                    </pre>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Volumes</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {spec?.volumes && spec.volumes.length > 0 ? (
+                  <VolumesTable volumes={spec.volumes} onCopy={onCopy} />
+                ) : (
+                  <p className="text-center text-muted-foreground">No volumes found</p>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+          <TabsContent value="source">
+            <ScrollAreaCode
+              height="h-screen"
+              content={pod}
+              onCopy={onCopy}
+            />
           </TabsContent>
         </Tabs>
       </CardContent>
-    </Card>
+    </Card >
   );
 };
