@@ -4,6 +4,8 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { V1Pod } from '@kubernetes/client-node';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { ContainersStatusTable } from '@/components/pods/containers-status-table';
+import { StatusConditionsTable } from './status-conditions-table';
 
 interface PodViewProps {
   pod: V1Pod | null;
@@ -107,71 +109,33 @@ export const PodView = ({ pod }: PodViewProps) => {
           </TabsContent>
 
           <TabsContent value="containers" className="space-y-4">
-            {status?.containerStatuses?.map((container, index) => (
-              <Card key={index}>
-                <CardHeader>
-                  <CardTitle className="text-lg">{container.name}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <h3 className="font-medium">Image</h3>
-                        <p className="text-sm">{container.image}</p>
-                      </div>
-                      <div>
-                        <h3 className="font-medium">State</h3>
-                        <StatusBadge
-                          status={
-                            Object.keys(container.state || {})[0] || 'Unknown'
-                          }
-                        />
-                      </div>
-                      <div>
-                        <h3 className="font-medium">Restart Count</h3>
-                        <p>{container.restartCount}</p>
-                      </div>
-                      <div>
-                        <h3 className="font-medium">Ready</h3>
-                        <Badge variant={container.ready ? "default" : "destructive"}>
-                          {container.ready ? 'Yes' : 'No'}
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+            <Card>
+              <CardHeader>
+                <CardTitle>Container Statuses</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {status?.containerStatuses && status.containerStatuses.length > 0 ? (
+                  <ContainersStatusTable containerStatuses={status.containerStatuses} />
+                ) : (
+                  <p className="text-center text-muted-foreground">No containers found</p>
+                )}
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="conditions">
-            <ScrollArea className="h-[400px] w-full rounded-md border">
-              <div className="p-4">
-                {status?.conditions?.map((condition, index) => (
-                  <Card key={index} className="mb-4">
-                    <CardHeader>
-                      <CardTitle className="text-lg">{condition.type}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <h3 className="font-medium">Status</h3>
-                          <StatusBadge status={condition.status} />
-                        </div>
-                        <div>
-                          <h3 className="font-medium">Last Transition</h3>
-                          <p>{condition.lastTransitionTime ? new Date(condition.lastTransitionTime).toLocaleString() : 'N/A'}</p>
-                        </div>
-                        <div className="col-span-2">
-                          <h3 className="font-medium">Message</h3>
-                          <p>{condition.message}</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </ScrollArea>
+            <Card>
+              <CardHeader>
+                <CardTitle>Status Conditions</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {status?.conditions && status.conditions.length > 0 ? (
+                  <StatusConditionsTable conditions={status.conditions} />
+                ) : (
+                  <p className="text-center text-muted-foreground">No conditions found</p>
+                )}
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="volumes">
