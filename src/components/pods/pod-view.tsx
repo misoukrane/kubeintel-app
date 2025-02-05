@@ -1,31 +1,15 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { V1Pod } from '@kubernetes/client-node';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ContainersStatusTable } from '@/components/pods/containers-status-table';
-import { StatusConditionsTable } from './status-conditions-table';
+import { StatusConditionsTable } from '@/components/pods/status-conditions-table';
+import { LabelsAnnotations } from '@/components/metadata/labels-annotations';
+import { StatusBadge } from '@/components/status-badge';
 
 interface PodViewProps {
   pod: V1Pod | null;
 }
-
-const StatusBadge = ({ status }: { status: string }) => {
-  const colors: Record<string, string> = {
-    Running: 'bg-green-500',
-    Pending: 'bg-yellow-500',
-    Failed: 'bg-red-500',
-    Succeeded: 'bg-blue-500',
-    Unknown: 'bg-gray-500',
-  };
-
-  return (
-    <Badge className={`${colors[status] || colors.Unknown}`}>
-      {status}
-    </Badge>
-  );
-};
 
 export const PodView = ({ pod }: PodViewProps) => {
   if (!pod) return null;
@@ -53,8 +37,8 @@ export const PodView = ({ pod }: PodViewProps) => {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
-            <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="details">
+            <Accordion type="multiple" defaultValue={["details", "labels"]} className="w-full">
+              <AccordionItem value="details" >
                 <AccordionTrigger>Pod Details</AccordionTrigger>
                 <AccordionContent>
                   <div className="grid grid-cols-2 gap-4">
@@ -81,28 +65,10 @@ export const PodView = ({ pod }: PodViewProps) => {
               <AccordionItem value="labels">
                 <AccordionTrigger>Labels & Annotations</AccordionTrigger>
                 <AccordionContent>
-                  <div className="space-y-4">
-                    <div>
-                      <h3 className="font-medium mb-2">Labels</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {Object.entries(metadata?.labels || {}).map(([key, value]) => (
-                          <Badge key={key} variant="outline">
-                            {key}: {value}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="font-medium mb-2">Annotations</h3>
-                      <ScrollArea className="h-[200px] w-full rounded-md border p-4">
-                        {Object.entries(metadata?.annotations || {}).map(([key, value]) => (
-                          <div key={key} className="pb-2">
-                            <span className="font-medium">{key}:</span> {value}
-                          </div>
-                        ))}
-                      </ScrollArea>
-                    </div>
-                  </div>
+                  <LabelsAnnotations
+                    labels={metadata?.labels}
+                    annotations={metadata?.annotations}
+                  />
                 </AccordionContent>
               </AccordionItem>
             </Accordion>

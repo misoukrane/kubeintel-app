@@ -8,6 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { StatusBadge } from "../status-badge";
 
 interface ContainersStatusTableProps {
   containerStatuses: V1ContainerStatus[];
@@ -29,11 +30,9 @@ export const ContainersStatusTable = ({ containerStatuses }: ContainersStatusTab
         {containerStatuses.map((container) => (
           <TableRow key={container.name}>
             <TableCell className="font-medium">{container.name}</TableCell>
-            <TableCell>{container.image}</TableCell>
+            <TableCell className="text-xs">{container.image}</TableCell>
             <TableCell>
-              <Badge variant="outline">
-                {Object.keys(container.state || {})[0] || 'Unknown'}
-              </Badge>
+              <StatusBadge status={Object.keys(container.state || {})[0] || 'Unknown'} />
             </TableCell>
             <TableCell>{container.restartCount}</TableCell>
             <TableCell>
