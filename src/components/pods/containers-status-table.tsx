@@ -12,10 +12,62 @@ import { StatusBadge } from "../status-badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface ContainersStatusTableProps {
-  initContainers?: V1Container[];
   containers?: V1Container[];
   containerStatuses?: V1ContainerStatus[];
+  ephemeralContainers?: V1Container[];
+  initContainers?: V1Container[];
 }
+
+export const ContainersStatusTable = ({
+  containers,
+  containerStatuses,
+  ephemeralContainers,
+  initContainers,
+}: ContainersStatusTableProps) => {
+  return (
+    <div className="space-y-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>Containers</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ContainerTable
+            containers={containers}
+            statuses={containerStatuses}
+          />
+        </CardContent>
+      </Card>
+
+      {initContainers && initContainers.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Init Containers</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ContainerTable
+              containers={initContainers}
+              statuses={containerStatuses}
+            />
+          </CardContent>
+        </Card>
+      )}
+
+      {ephemeralContainers && ephemeralContainers.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Ephemeral Containers</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ContainerTable
+              containers={ephemeralContainers}
+              statuses={containerStatuses}
+            />
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+};
 
 const ContainerTable = ({ containers, statuses }: {
   containers?: V1Container[],
@@ -64,41 +116,5 @@ const ContainerTable = ({ containers, statuses }: {
         })}
       </TableBody>
     </Table>
-  );
-};
-
-export const ContainersStatusTable = ({
-  initContainers,
-  containers,
-  containerStatuses
-}: ContainersStatusTableProps) => {
-  return (
-    <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Containers</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ContainerTable
-            containers={containers}
-            statuses={containerStatuses}
-          />
-        </CardContent>
-      </Card>
-
-      {initContainers && initContainers.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Init Containers</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ContainerTable
-              containers={initContainers}
-              statuses={containerStatuses}
-            />
-          </CardContent>
-        </Card>
-      )}
-    </div>
   );
 };
