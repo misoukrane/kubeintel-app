@@ -10,12 +10,14 @@ import { VolumesTable } from '@/components/pods/volumes-table';
 import { ScrollAreaCode } from '../scroll-area-code';
 
 
+
 interface PodViewProps {
   pod: V1Pod | null;
   onCopy: (text: string) => void;
+  onOpenShell: (containerName: string, shell: string) => Promise<void>;
 }
 
-export const PodView = ({ pod, onCopy }: PodViewProps) => {
+export const PodView = ({ pod, onCopy, onOpenShell }: PodViewProps) => {
   if (!pod) return null;
 
   const { metadata, status, spec } = pod;
@@ -84,6 +86,7 @@ export const PodView = ({ pod, onCopy }: PodViewProps) => {
               containerStatuses={status?.containerStatuses}
               containers={spec?.containers}
               initContainers={spec?.initContainers}
+              onOpenShell={onOpenShell}
             />
           </TabsContent>
 
