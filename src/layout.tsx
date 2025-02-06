@@ -1,15 +1,17 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
-import { useNavigate, Outlet } from "react-router";
+import { useNavigate, Outlet, useLocation } from "react-router";
 import { useConfigStore } from "@/stores/use-config-store";
 import { useEffect } from "react";
 import { ROUTES } from "@/lib/routes";
 import { quitApp, relaunchApp } from "@/lib/app-actions";
 import { useToast } from "@/hooks/use-toast"
+import { MainNavigation } from "@/components/main-navigation";
 
 
 export default function Layout() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
   const {
     selectedKubeconfig,
@@ -80,7 +82,11 @@ export default function Layout() {
         onRelaunch={relaunchApp}
       />
       <main className="flex-1 overflow-y-auto p-6 lg:p-8">
-        <SidebarTrigger />
+        <div className="flex items-center gap-4 mb-4">
+          <SidebarTrigger />
+          <div data-orientation="vertical" role="none" className="shrink-0 bg-border w-[1px] mr-2 h-4"></div>
+          <MainNavigation location={location.pathname} />
+        </div>
         <Outlet />
       </main>
     </SidebarProvider>
