@@ -15,9 +15,10 @@ interface PodViewProps {
   pod: V1Pod | null;
   onCopy: (text: string) => void;
   onOpenShell: (containerName: string, shell: string) => Promise<void>;
+  onOpenLogs?: (containerName: string) => Promise<void>;
 }
 
-export const PodView = ({ pod, onCopy, onOpenShell }: PodViewProps) => {
+export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs }: PodViewProps) => {
   if (!pod) return null;
 
   const { metadata, status, spec } = pod;
@@ -87,6 +88,7 @@ export const PodView = ({ pod, onCopy, onOpenShell }: PodViewProps) => {
               containers={spec?.containers}
               initContainers={spec?.initContainers}
               onOpenShell={onOpenShell}
+              onOpenLogs={onOpenLogs}
             />
           </TabsContent>
 

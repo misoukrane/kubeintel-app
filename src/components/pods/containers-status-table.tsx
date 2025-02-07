@@ -31,6 +31,7 @@ interface ContainersStatusTableProps {
   ephemeralContainers?: V1Container[];
   initContainers?: V1Container[];
   onOpenShell: (containerName: string, shell: string) => Promise<void>;
+  onOpenLogs?: (containerName: string) => Promise<void>;
 }
 
 export const ContainersStatusTable = ({
@@ -39,6 +40,7 @@ export const ContainersStatusTable = ({
   ephemeralContainers,
   initContainers,
   onOpenShell,
+  onOpenLogs,
 }: ContainersStatusTableProps) => {
 
   return (
@@ -53,6 +55,7 @@ export const ContainersStatusTable = ({
               containers={containers}
               statuses={containerStatuses}
               onOpenShell={onOpenShell}
+              onOpenLogs={onOpenLogs}
             />
           </CardContent>
         </Card>
@@ -66,6 +69,7 @@ export const ContainersStatusTable = ({
               <ContainerTable
                 containers={initContainers}
                 statuses={containerStatuses}
+                onOpenLogs={onOpenLogs}
               />
             </CardContent>
           </Card>
@@ -80,6 +84,7 @@ export const ContainersStatusTable = ({
               <ContainerTable
                 containers={ephemeralContainers}
                 statuses={containerStatuses}
+                onOpenLogs={onOpenLogs}
               />
             </CardContent>
           </Card>
@@ -89,10 +94,11 @@ export const ContainersStatusTable = ({
   );
 };
 
-const ContainerTable = ({ containers, statuses, onOpenShell }: {
+const ContainerTable = ({ containers, statuses, onOpenShell, onOpenLogs }: {
   containers?: V1Container[],
   statuses?: V1ContainerStatus[],
-  onOpenShell?: (containerName: string, shell: string) => Promise<void>;
+  onOpenShell?: (containerName: string, shell: string) => Promise<void>,
+  onOpenLogs?: (containerName: string) => Promise<void>,
 }) => {
   const getStatusForContainer = (name: string) =>
     statuses?.find(s => s.name === name);
@@ -106,7 +112,7 @@ const ContainerTable = ({ containers, statuses, onOpenShell }: {
           <TableHead>State</TableHead>
           <TableHead>Restarts</TableHead>
           <TableHead>Ready</TableHead>
-          {onOpenShell && <TableHead><Menu /></TableHead>}
+          <TableHead><Menu /></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -133,14 +139,13 @@ const ContainerTable = ({ containers, statuses, onOpenShell }: {
                   {status?.ready ? 'Yes' : 'No'}
                 </Badge>
               </TableCell>
-              {onOpenShell && (
-                <TableCell>
-                  <ContainerMenu
-                    containerName={container.name}
-                    onOpenShell={onOpenShell}
-                  />
-                </TableCell>
-              )}
+              <TableCell>
+                <ContainerMenu
+                  containerName={container.name}
+                  onOpenShell={onOpenShell}
+                  onOpenLogs={onOpenLogs}
+                />
+              </TableCell>
             </TableRow>
           );
         })}
@@ -152,10 +157,11 @@ const ContainerTable = ({ containers, statuses, onOpenShell }: {
 
 interface ContainerMenuProps {
   containerName: string;
-  onOpenShell: (containerName: string, shell: string) => Promise<void>;
+  onOpenShell?: (containerName: string, shell: string) => Promise<void>;
+  onOpenLogs?: (containerName: string) => Promise<void>;
 }
 
-const ContainerMenu = ({ containerName, onOpenShell }: ContainerMenuProps) => (
+const ContainerMenu = ({ containerName, onOpenShell, onOpenLogs }: ContainerMenuProps) => (
   <DropdownMenu>
     <DropdownMenuTrigger asChild>
       <Button variant="ghost" size="icon">
@@ -165,24 +171,28 @@ const ContainerMenu = ({ containerName, onOpenShell }: ContainerMenuProps) => (
     <DropdownMenuContent>
       <DropdownMenuLabel>Actions</DropdownMenuLabel>
       <DropdownMenuSeparator />
-      <DropdownMenuSub>
-        <DropdownMenuSubTrigger>
-          <Terminal className="mr-2" /> Shell
-        </DropdownMenuSubTrigger>
-        <DropdownMenuPortal>
-          <DropdownMenuSubContent>
-            <DropdownMenuItem onClick={() => onOpenShell(containerName, '/bin/sh')}>
-              <span>/bin/sh</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onOpenShell(containerName, '/bin/bash')}>
-              <span>/bin/bash</span>
-            </DropdownMenuItem>
-          </DropdownMenuSubContent>
-        </DropdownMenuPortal>
-      </DropdownMenuSub>
-      <DropdownMenuItem>
-        <Logs className="mr-2" /> Logs
-      </DropdownMenuItem>
+      {onOpenShell && (
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>
+            <Terminal className="mr-2" /> Shell
+          </DropdownMenuSubTrigger>
+          <DropdownMenuPortal>
+            <DropdownMenuSubContent>
+              <DropdownMenuItem onClick={() => onOpenShell(containerName, '/bin/sh')}>
+                <span>/bin/sh</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onOpenShell(containerName, '/bin/bash')}>
+                <span>/bin/bash</span>
+              </DropdownMenuItem>
+            </DropdownMenuSubContent>
+          </DropdownMenuPortal>
+        </DropdownMenuSub>
+      )}
+      {onOpenLogs && (
+        <DropdownMenuItem onClick={() => onOpenLogs(containerName)}>
+          <Logs className="mr-2" /> Logs
+        </DropdownMenuItem>
+      )}
     </DropdownMenuContent>
   </DropdownMenu>
 );

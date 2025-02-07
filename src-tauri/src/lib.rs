@@ -24,6 +24,7 @@ pub fn run() {
             statefulsets::list_statefulsets,
             pods::get_pod,
             pods::open_pod_shell,
+            pods::open_pod_logs,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -4,13 +4,13 @@ import { PodView } from '@/components/pods/pod-view';
 import { ErrorAlert } from '@/components/error-alert';
 import { V1Pod } from '@kubernetes/client-node';
 import { useGetKubeResource } from '@/hooks/use-get-kube-resource';
-import { useLocation, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { useClipboard } from '@/hooks/use-clipboard';
 import { useOpenPodShell } from '@/hooks/use-open-pod-shell';
+import { useOpenPodLogs } from '@/hooks/use-open-pod-logs';
 
 export const Pod = () => {
   const { podName } = useParams();
-  const location = useLocation();
   const { copyToClipboard } = useClipboard();
   const { selectedKubeconfig, currentContext, currentNamespace } =
     useConfigStore();
@@ -30,6 +30,13 @@ export const Pod = () => {
     podName: podName,
   });
 
+  const { openLogs } = useOpenPodLogs({
+    kubeconfigPath: selectedKubeconfig,
+    context: currentContext,
+    namespace: currentNamespace,
+    podName: podName,
+  });
+
   return (
     <div className="space-y-4">
       {loading && <Spinner />}
@@ -40,6 +47,7 @@ export const Pod = () => {
             pod={resource}
             onCopy={copyToClipboard}
             onOpenShell={openShell}
+            onOpenLogs={openLogs}
           />
         </>
       )}

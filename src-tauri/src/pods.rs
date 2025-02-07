@@ -35,9 +35,31 @@ pub fn open_pod_shell(
     cmd_shell: String,
 ) -> Result<(), String> {
     let cmd_string = format!(
-        "kubectl --kubeconfig {} --context {} exec -it {} -n {} --container {} -- {}",
+        "--kubeconfig {} --context {} exec -it {} -n {} --container {} -- {}",
         kubeconfig_path, context, pod_name, namespace, container_name, cmd_shell
     );
+    run_kubectl_command(&cmd_string)?;
+    Ok(())
+}
+
+#[tauri::command]
+pub fn open_pod_logs(
+    kubeconfig_path: String,
+    context: String,
+    namespace: String,
+    pod_name: String,
+    container_name: String,
+) -> Result<(), String> {
+    let cmd_string = format!(
+        "--kubeconfig {} --context {} logs {} -n {} --container {}",
+        kubeconfig_path, context, pod_name, namespace, container_name
+    );
+    run_kubectl_command(&cmd_string)?;
+    Ok(())
+}
+
+fn run_kubectl_command(command: &str) -> Result<(), String> {
+    let cmd_string = format!("kubectl {}", command);
     #[cfg(target_os = "windows")]
     {
         Command::new("cmd")
@@ -52,11 +74,15 @@ pub fn open_pod_shell(
             .args([
                 "-e",
                 &format!(
-                    "tell application \"Terminal\" to do script \"{}\"",
+                    r#"
+                tell application "Terminal"
+                do script "{}"
+                activate
+                set bounds of front window to {{100, 100, 800, 600}}
+                end tell
+            "#,
                     cmd_string
                 ),
-                "-e",
-                "tell application \"Terminal\" to activate",
             ])
             .spawn()
             .map_err(|e| e.to_string())?;
@@ -72,6 +98,5 @@ pub fn open_pod_shell(
             .spawn()
             .map_err(|e| e.to_string())?;
     }
-
     Ok(())
 }
