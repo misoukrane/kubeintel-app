@@ -55,9 +55,8 @@ export const DeploymentsTable = ({ deployments }: DeploymentsTableProps) => {
       ),
       cell: ({ row }) => {
         const name = row.original.metadata?.name;
-        const namespace = row.original.metadata?.namespace;
         return (
-          <Link to={`/namespaces/${namespace}/deployments/${name}`}>
+          <Link to={`/deployments/${name}`}>
             <Button variant="link" className="underline">
               {name}
             </Button>

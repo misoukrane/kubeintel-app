@@ -25,6 +25,7 @@ pub fn run() {
             pods::get_pod,
             pods::open_pod_shell,
             pods::open_pod_logs,
+            deployments::get_deployment,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

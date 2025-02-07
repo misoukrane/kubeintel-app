@@ -14,6 +14,7 @@ import { NotFound } from "@/pages/not-found";
 import { DaemonSets } from "./pages/daemonsets";
 import { StatefulSets } from "./pages/statefulsets";
 import { Pod } from "./pages/pod";
+import { Deployment } from "./pages/deployment";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -28,6 +29,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
             <Route path={ROUTES.DAEMONSETS} element={<DaemonSets />} />
             <Route path={ROUTES.STATEFULSETS} element={<StatefulSets />} />
             <Route path={ROUTES.POD} element={<Pod />} />
+            <Route path={ROUTES.DEPLOYMENT} element={<Deployment />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

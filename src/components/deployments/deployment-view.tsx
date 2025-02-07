@@ -1,27 +1,21 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { V1Pod } from '@kubernetes/client-node';
+import { V1Deployment } from '@kubernetes/client-node';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { ContainersStatusTable } from '@/components/pods/containers-status-table';
 import { StatusConditionsTable } from '@/components/pods/status-conditions-table';
 import { LabelsAnnotations } from '@/components/metadata/labels-annotations';
 import { StatusBadge } from '@/components/status-badge';
-import { VolumesTable } from '@/components/pods/volumes-table';
 import { ScrollAreaCode } from '../scroll-area-code';
 
-
-
-interface PodViewProps {
-  pod: V1Pod | null;
+interface DeploymentViewProps {
+  deployment: V1Deployment | null;
   onCopy: (text: string) => void;
-  onOpenShell: (containerName: string, shell: string) => Promise<void>;
-  onOpenLogs?: (containerName: string) => Promise<void>;
 }
 
-export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs }: PodViewProps) => {
-  if (!pod) return null;
+export const DeploymentView = ({ deployment, onCopy }: DeploymentViewProps) => {
+  if (!deployment) return null;
 
-  const { metadata, status, spec } = pod;
+  const { metadata, status, spec } = deployment;
 
   return (
     <Card className="max-w-6xl mx-auto">
@@ -32,39 +26,41 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs }: PodViewProps) 
             Namespace: {metadata?.namespace}
           </div>
         </div>
-        <StatusBadge status={status?.phase || 'Unknown'} />
+        <StatusBadge status={deployment.status?.availableReplicas === spec?.replicas ? 'Available' : 'Progressing'} />
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="overview">
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="containers">Containers</TabsTrigger>
             <TabsTrigger value="conditions">Conditions</TabsTrigger>
-            <TabsTrigger value="volumes">Volumes</TabsTrigger>
-            <TabsTrigger value="source">source</TabsTrigger>
+            <TabsTrigger value="source">Source</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
             <Accordion type="multiple" defaultValue={["details", "labels"]} className="w-full">
-              <AccordionItem value="details" >
-                <AccordionTrigger>Pod Details</AccordionTrigger>
+              <AccordionItem value="details">
+                <AccordionTrigger>Deployment Details</AccordionTrigger>
                 <AccordionContent>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <h3 className="font-medium">Pod IP</h3>
-                      <p>{status?.podIP || 'N/A'}</p>
+                      <h3 className="font-medium">Replicas</h3>
+                      <p>{status?.replicas || 0} total</p>
                     </div>
                     <div>
-                      <h3 className="font-medium">Node</h3>
-                      <p>{spec?.nodeName || 'N/A'}</p>
+                      <h3 className="font-medium">Available</h3>
+                      <p>{status?.availableReplicas || 0} replicas</p>
                     </div>
                     <div>
-                      <h3 className="font-medium">Service Account</h3>
-                      <p>{spec?.serviceAccountName || 'default'}</p>
+                      <h3 className="font-medium">Updated</h3>
+                      <p>{status?.updatedReplicas || 0} replicas</p>
                     </div>
                     <div>
-                      <h3 className="font-medium">QoS Class</h3>
-                      <p>{status?.qosClass || 'N/A'}</p>
+                      <h3 className="font-medium">Strategy</h3>
+                      <p>{spec?.strategy?.type || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <h3 className="font-medium">Selector</h3>
+                      <p>{Object.entries(spec?.selector?.matchLabels || {}).map(([k, v]) => `${k}=${v}`).join(', ') || 'N/A'}</p>
                     </div>
                   </div>
                 </AccordionContent>
@@ -83,16 +79,6 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs }: PodViewProps) 
             </Accordion>
           </TabsContent>
 
-          <TabsContent value="containers" className="space-y-4">
-            <ContainersStatusTable
-              containerStatuses={status?.containerStatuses}
-              containers={spec?.containers}
-              initContainers={spec?.initContainers}
-              onOpenShell={onOpenShell}
-              onOpenLogs={onOpenLogs}
-            />
-          </TabsContent>
-
           <TabsContent value="conditions">
             <Card>
               <CardHeader>
@@ -108,29 +94,15 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs }: PodViewProps) 
             </Card>
           </TabsContent>
 
-          <TabsContent value="volumes">
-            <Card>
-              <CardHeader>
-                <CardTitle>Volumes</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {spec?.volumes && spec.volumes.length > 0 ? (
-                  <VolumesTable volumes={spec.volumes} onCopy={onCopy} />
-                ) : (
-                  <p className="text-center text-muted-foreground">No volumes found</p>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
           <TabsContent value="source">
             <ScrollAreaCode
               height="h-screen"
-              content={pod}
+              content={deployment}
               onCopy={onCopy}
             />
           </TabsContent>
         </Tabs>
       </CardContent>
-    </Card >
+    </Card>
   );
 };
