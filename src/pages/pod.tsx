@@ -15,7 +15,11 @@ export const Pod = () => {
   const { selectedKubeconfig, currentContext, currentNamespace } =
     useConfigStore();
 
-  const { resource, loading, error } = useGetKubeResource<V1Pod>({
+  const {
+    data: resource,
+    isLoading,
+    error,
+  } = useGetKubeResource<V1Pod>({
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
@@ -39,9 +43,9 @@ export const Pod = () => {
 
   return (
     <div className="space-y-4">
-      {loading && <Spinner />}
-      {error && <ErrorAlert message={error} />}
-      {!loading && !error && (
+      {isLoading && <Spinner />}
+      {error && <ErrorAlert error={error} />}
+      {!isLoading && !error && (
         <>
           <PodView
             pod={resource}

@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { ROUTES } from "@/lib/routes";
 import { quitApp, relaunchApp } from "@/lib/app-actions";
 import { useToast } from "@/hooks/use-toast"
-import { MainNavigation } from "@/components/main-navigation";
+import { MainNavigation } from "@/components/upper-navigation";
 
 
 export default function Layout() {

@@ -12,7 +12,7 @@ import { ScrollAreaCode } from '../scroll-area-code';
 
 
 interface PodViewProps {
-  pod: V1Pod | null;
+  pod?: V1Pod;
   onCopy: (text: string) => void;
   onOpenShell: (containerName: string, shell: string) => Promise<void>;
   onOpenLogs?: (containerName: string) => Promise<void>;

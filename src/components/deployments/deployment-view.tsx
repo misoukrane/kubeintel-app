@@ -8,7 +8,7 @@ import { StatusBadge } from '@/components/status-badge';
 import { ScrollAreaCode } from '../scroll-area-code';
 
 interface DeploymentViewProps {
-  deployment: V1Deployment | null;
+  deployment?: V1Deployment;
   onCopy: (text: string) => void;
 }
 

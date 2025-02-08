@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router';
 import { Slash } from 'lucide-react';
 import {
@@ -36,18 +37,20 @@ export const MainNavigation = ({
         </BreadcrumbItem>
 
         {segments.map((segment, index) => (
-          <BreadcrumbItem key={segment.path}>
+          <React.Fragment key={segment.path}>
             <BreadcrumbSeparator>
               <Slash className="m-1" />
             </BreadcrumbSeparator>
-            {index === segments.length - 1 ? (
-              <BreadcrumbPage>{segment.name}</BreadcrumbPage>
-            ) : (
-              <BreadcrumbLink asChild>
-                <Link to={segment.path}>{segment.name}</Link>
-              </BreadcrumbLink>
-            )}
-          </BreadcrumbItem>
+            <BreadcrumbItem>
+              {index === segments.length - 1 ? (
+                <BreadcrumbPage>{segment.name}</BreadcrumbPage>
+              ) : (
+                <BreadcrumbLink asChild>
+                  <Link to={segment.path}>{segment.name}</Link>
+                </BreadcrumbLink>
+              )}
+            </BreadcrumbItem>
+          </React.Fragment>
         ))}
       </BreadcrumbList>
     </Breadcrumb>

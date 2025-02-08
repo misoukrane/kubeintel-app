@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { invoke } from '@tauri-apps/api/core';
 
 interface GetKubeResourceProps {
@@ -9,54 +9,36 @@ interface GetKubeResourceProps {
   name?: string;
 }
 
-interface GetKubeResourceReturn<T> {
-  resource: T | null;
-  loading: boolean;
-  error: string | null;
-}
-
 export const useGetKubeResource = <T extends object>({
   kubeconfigPath,
   context,
   namespace,
   resourceType,
   name,
-}: GetKubeResourceProps): GetKubeResourceReturn<T> => {
-  const [resource, setResource] = useState<T | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchResource = async () => {
-      if (!kubeconfigPath || !context || !namespace) {
-        setLoading(false);
-        return;
+}: GetKubeResourceProps) => {
+  return useQuery({
+    queryKey: [
+      'resource',
+      resourceType,
+      kubeconfigPath,
+      context,
+      namespace,
+      name,
+    ],
+    queryFn: async () => {
+      if (!kubeconfigPath || !context || !namespace || !name) {
+        throw new Error('Missing required parameters');
       }
 
-      if (!name) {
-        setError('Name is required');
-        setLoading(false);
-        return;
-      }
-      try {
-        const resp = await invoke<T>(`get_${resourceType}`, {
-          kubeconfigPath,
-          context,
-          namespace,
-          name,
-        });
-        setResource(resp);
-        setError(null);
-      } catch (err) {
-        console.error(`Error getting ${resourceType}:`, err);
-        setError(err instanceof Error ? err.message : String(err));
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    void fetchResource();
-  }, [kubeconfigPath, context, namespace, resourceType, name]);
-
-  return { resource, loading, error };
+      return invoke<T>(`get_${resourceType}`, {
+        kubeconfigPath,
+        context,
+        namespace,
+        name,
+      });
+    },
+    enabled: Boolean(kubeconfigPath && context && namespace && name),
+    retry: 1, // Limits retries to 2 attempts
+    retryDelay: 500, // Waits 1 second between retries
+  });
 };

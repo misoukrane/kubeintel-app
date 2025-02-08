@@ -13,7 +13,11 @@ export const Deployment = () => {
   const { selectedKubeconfig, currentContext, currentNamespace } =
     useConfigStore();
 
-  const { resource, loading, error } = useGetKubeResource<V1Deployment>({
+  const {
+    data: resource,
+    isLoading,
+    error,
+  } = useGetKubeResource<V1Deployment>({
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
@@ -23,9 +27,9 @@ export const Deployment = () => {
 
   return (
     <div className="space-y-4">
-      {loading && <Spinner />}
-      {error && <ErrorAlert message={error} />}
-      {!loading && !error && (
+      {isLoading && <Spinner />}
+      {error && <ErrorAlert message={error.message} />}
+      {!isLoading && !error && (
         <DeploymentView deployment={resource} onCopy={copyToClipboard} />
       )}
     </div>

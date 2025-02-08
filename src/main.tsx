@@ -15,26 +15,31 @@ import { DaemonSets } from "./pages/daemonsets";
 import { StatefulSets } from "./pages/statefulsets";
 import { Pod } from "./pages/pod";
 import { Deployment } from "./pages/deployment";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+const queryClient = new QueryClient()
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<KubeconfigFilePicker />} />
-          <Route element={<Layout />} >
-            <Route path="/cluster" element={<Cluster />} />
-            <Route path={ROUTES.PODS} element={<Pods />} />
-            <Route path={ROUTES.DEPLOYMENTS} element={<Deployments />} />
-            <Route path={ROUTES.DAEMONSETS} element={<DaemonSets />} />
-            <Route path={ROUTES.STATEFULSETS} element={<StatefulSets />} />
-            <Route path={ROUTES.POD} element={<Pod />} />
-            <Route path={ROUTES.DEPLOYMENT} element={<Deployment />} />
-          </Route>
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-      <Toaster />
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<KubeconfigFilePicker />} />
+            <Route element={<Layout />} >
+              <Route path="/cluster" element={<Cluster />} />
+              <Route path={ROUTES.PODS} element={<Pods />} />
+              <Route path={ROUTES.DEPLOYMENTS} element={<Deployments />} />
+              <Route path={ROUTES.DAEMONSETS} element={<DaemonSets />} />
+              <Route path={ROUTES.STATEFULSETS} element={<StatefulSets />} />
+              <Route path={ROUTES.POD} element={<Pod />} />
+              <Route path={ROUTES.DEPLOYMENT} element={<Deployment />} />
+            </Route>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+        <Toaster />
+      </ThemeProvider>
+    </QueryClientProvider>
   </React.StrictMode>,
 );

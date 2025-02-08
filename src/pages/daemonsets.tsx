@@ -9,7 +9,11 @@ export const DaemonSets = () => {
   const { selectedKubeconfig, currentContext, currentNamespace } =
     useConfigStore();
 
-  const { resources, loading, error } = useListKubeResource<V1DaemonSet>({
+  const {
+    data: daemonsets,
+    isLoading,
+    error,
+  } = useListKubeResource<V1DaemonSet>({
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
@@ -18,9 +22,11 @@ export const DaemonSets = () => {
 
   return (
     <div className="space-y-4">
-      {loading && <Spinner />}
-      {error && <ErrorAlert message={error} />}
-      {!loading && !error && <DaemonSetsTable daemonsets={resources} />}
+      {isLoading && <Spinner />}
+      {error && <ErrorAlert error={error} />}
+      {!isLoading && !error && (
+        <DaemonSetsTable daemonsets={daemonsets ?? []} />
+      )}
     </div>
   );
 };
