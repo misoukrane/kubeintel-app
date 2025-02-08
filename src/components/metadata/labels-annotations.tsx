@@ -2,15 +2,13 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
+import { truncate } from "@/lib/strings";
 
 interface LabelsAnnotationsProps {
   labels?: { [key: string]: string };
   annotations?: { [key: string]: string };
   onCopy: (text: string) => void;
 }
-
-const truncate = (str: string, length: number = 56) =>
-  str.length > length ? `${str.substring(0, length)}...` : str;
 
 const KeyValueBadge = ({
   keyName,
