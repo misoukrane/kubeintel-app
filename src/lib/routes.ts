@@ -8,4 +8,5 @@ export const ROUTES = {
   STATEFULSETS: '/statefulsets',
   POD: '/pods/:podName',
   DEPLOYMENT: '/deployments/:deploymentName',
+  DAEMONSET: '/daemonsets/:daemonSetName',
 } as const;

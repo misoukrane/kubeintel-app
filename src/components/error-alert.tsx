@@ -7,10 +7,10 @@ export function ErrorAlert(props: { title?: string; error: Error }) {
     <Alert variant="destructive">
       <AlertCircle className="h-4 w-4" />
       <AlertTitle>{props.title || 'Error'}</AlertTitle>
-      <AlertDescription>
+      <AlertDescription className="mt-4 whitespace-pre-wrap break-words max-w-[80vw]">
         {props.error instanceof Error
           ? props.error.message
-          : JSON.stringify(props.error)}
+          : JSON.stringify(props.error, null, 2)}
       </AlertDescription>
     </Alert>
   );

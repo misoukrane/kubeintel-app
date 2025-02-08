@@ -55,9 +55,8 @@ export const DaemonSetsTable = ({ daemonsets }: DaemonSetsTableProps) => {
       ),
       cell: ({ row }) => {
         const name = row.original.metadata?.name;
-        const namespace = row.original.metadata?.namespace;
         return (
-          <Link to={`/namespaces/${namespace}/daemonsets/${name}`}>
+          <Link to={`/daemonsets/${name}`}>
             <Button variant="link" className="underline">
               {name}
             </Button>

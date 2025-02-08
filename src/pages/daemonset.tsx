@@ -1,14 +1,14 @@
 import { useConfigStore } from '@/stores/use-config-store';
 import { Spinner } from '@/components/spinner';
-import { DeploymentView } from '@/components/deployments/deployment-view';
+import { DaemonSetView } from '@/components/daemonsets/daemonset-view';
 import { ErrorAlert } from '@/components/error-alert';
-import { V1Deployment } from '@kubernetes/client-node';
+import { V1DaemonSet } from '@kubernetes/client-node';
 import { useGetKubeResource } from '@/hooks/use-get-kube-resource';
 import { useParams } from 'react-router';
 import { useClipboard } from '@/hooks/use-clipboard';
 
-export const Deployment = () => {
-  const { deploymentName } = useParams();
+export const DaemonSet = () => {
+  const { daemonSetName } = useParams();
   const { copyToClipboard } = useClipboard();
   const { selectedKubeconfig, currentContext, currentNamespace } =
     useConfigStore();
@@ -17,12 +17,12 @@ export const Deployment = () => {
     data: resource,
     isLoading,
     error,
-  } = useGetKubeResource<V1Deployment>({
+  } = useGetKubeResource<V1DaemonSet>({
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
-    name: deploymentName,
-    resourceType: 'deployment',
+    name: daemonSetName,
+    resourceType: 'daemonset',
   });
 
   return (
@@ -30,7 +30,7 @@ export const Deployment = () => {
       {isLoading && <Spinner />}
       {error && <ErrorAlert error={error} />}
       {!isLoading && !error && (
-        <DeploymentView deployment={resource} onCopy={copyToClipboard} />
+        <DaemonSetView daemonSet={resource} onCopy={copyToClipboard} />
       )}
     </div>
   );

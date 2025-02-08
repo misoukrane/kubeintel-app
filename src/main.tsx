@@ -16,6 +16,7 @@ import { StatefulSets } from "./pages/statefulsets";
 import { Pod } from "./pages/pod";
 import { Deployment } from "./pages/deployment";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { DaemonSet } from "./pages/daemonset";
 
 const queryClient = new QueryClient()
 
@@ -34,6 +35,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
               <Route path={ROUTES.STATEFULSETS} element={<StatefulSets />} />
               <Route path={ROUTES.POD} element={<Pod />} />
               <Route path={ROUTES.DEPLOYMENT} element={<Deployment />} />
+              <Route path={ROUTES.DAEMONSET} element={<DaemonSet />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
