@@ -16,7 +16,7 @@ export const useOpenPodLogs = ({
 }: UseOpenPodLogsProps) => {
   const { toast } = useToast();
 
-  const openLogs = async (containerName: string) => {
+  const openLogs = async (containerName?: string) => {
     if (!kubeconfigPath || !context || !namespace || !podName) {
       return;
     }

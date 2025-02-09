@@ -16,7 +16,7 @@ interface PodViewProps {
   pod?: V1Pod;
   onCopy: (text: string) => void;
   onOpenShell: (containerName: string, shell: string) => Promise<void>;
-  onOpenLogs?: (containerName: string) => Promise<void>;
+  onOpenLogs?: (containerName?: string) => Promise<void>;
 }
 
 export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs }: PodViewProps) => {

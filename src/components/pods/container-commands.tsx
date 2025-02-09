@@ -28,7 +28,7 @@ const commonShells = ['/bin/sh', '/bin/bash', '/bin/zsh'];
 interface ContainerCommandsProps {
   containerName: string;
   onOpenShell?: (containerName: string, shell: string) => Promise<void>;
-  onOpenLogs?: (containerName: string) => Promise<void>;
+  onOpenLogs?: (containerName?: string) => Promise<void>;
 }
 
 export const ContainerCommands = ({

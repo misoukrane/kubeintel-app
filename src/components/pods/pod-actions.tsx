@@ -21,7 +21,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -34,7 +33,7 @@ interface PodActionsProps {
   isRunning?: boolean;
   onDelete?: (podName: string) => Promise<void>;
   onDebug?: (podName: string) => Promise<void>;
-  onLogs?: (containerName: string) => Promise<void>;
+  onLogs?: (containerName?: string) => Promise<void>;
 }
 
 export const PodActions = ({

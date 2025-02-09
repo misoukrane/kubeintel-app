@@ -19,7 +19,7 @@ interface ContainersStatusTableProps {
   ephemeralContainers?: V1Container[];
   initContainers?: V1Container[];
   onOpenShell?: (containerName: string, shell: string) => Promise<void>;
-  onOpenLogs?: (containerName: string) => Promise<void>;
+  onOpenLogs?: (containerName?: string) => Promise<void>;
 }
 
 export const ContainersStatusTable = ({
@@ -86,7 +86,7 @@ const ContainerTable = ({ containers, statuses, onOpenShell, onOpenLogs }: {
   containers?: V1Container[],
   statuses?: V1ContainerStatus[],
   onOpenShell?: (containerName: string, shell: string) => Promise<void>,
-  onOpenLogs?: (containerName: string) => Promise<void>,
+  onOpenLogs?: (containerName?: string) => Promise<void>,
 }) => {
   const getStatusForContainer = (name: string) =>
     statuses?.find(s => s.name === name);
