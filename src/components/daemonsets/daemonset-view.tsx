@@ -2,10 +2,11 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { V1DaemonSet } from '@kubernetes/client-node';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { StatusConditionsTable } from '@/components/pods/status-conditions-table';
 import { LabelsAnnotations } from '@/components/metadata/labels-annotations';
 import { StatusBadge } from '@/components/status-badge';
-import { ScrollAreaCode } from '../scroll-area-code';
+import { ScrollAreaCode } from '@/components/scroll-area-code';
+import { ContainersStatusTable } from '@/components/pods/containers-status-table';
+import { StatusConditions } from '@/components/status-conditions';
 
 interface DaemonSetViewProps {
   daemonSet?: V1DaemonSet;
@@ -39,6 +40,7 @@ export const DaemonSetView = ({ daemonSet, onCopy }: DaemonSetViewProps) => {
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="conditions">Conditions</TabsTrigger>
+            <TabsTrigger value="container">Containers</TabsTrigger>
             <TabsTrigger value="source">Source</TabsTrigger>
           </TabsList>
 
@@ -96,12 +98,20 @@ export const DaemonSetView = ({ daemonSet, onCopy }: DaemonSetViewProps) => {
               </CardHeader>
               <CardContent>
                 {status?.conditions && status.conditions.length > 0 ? (
-                  <StatusConditionsTable conditions={status.conditions} />
+                  <StatusConditions conditions={status.conditions} />
                 ) : (
                   <p className="text-center text-muted-foreground">No conditions found</p>
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="container">
+            <ContainersStatusTable
+              containers={spec?.template.spec?.containers}
+              initContainers={spec?.template.spec?.initContainers}
+              ephemeralContainers={spec?.template.spec?.ephemeralContainers}
+            />
           </TabsContent>
 
           <TabsContent value="source">

@@ -3,11 +3,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { V1Pod } from '@kubernetes/client-node';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ContainersStatusTable } from '@/components/pods/containers-status-table';
-import { StatusConditionsTable } from '@/components/pods/status-conditions-table';
 import { LabelsAnnotations } from '@/components/metadata/labels-annotations';
 import { StatusBadge } from '@/components/status-badge';
 import { VolumesTable } from '@/components/pods/volumes-table';
-import { ScrollAreaCode } from '../scroll-area-code';
+import { ScrollAreaCode } from '@/components/scroll-area-code';
+import { StatusConditions } from '@/components/status-conditions';
 
 
 
@@ -100,7 +100,7 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs }: PodViewProps) 
               </CardHeader>
               <CardContent>
                 {status?.conditions && status.conditions.length > 0 ? (
-                  <StatusConditionsTable conditions={status.conditions} />
+                  <StatusConditions conditions={status.conditions} />
                 ) : (
                   <p className="text-center text-muted-foreground">No conditions found</p>
                 )}

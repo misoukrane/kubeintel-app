@@ -20,7 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { StatusBadge } from "../status-badge";
+import { StatusBadge } from "@/components/status-badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EllipsisVertical, Logs, Menu, Terminal } from "lucide-react";
 import { Button } from "@/components/ui/button"
@@ -30,7 +30,7 @@ interface ContainersStatusTableProps {
   containerStatuses?: V1ContainerStatus[];
   ephemeralContainers?: V1Container[];
   initContainers?: V1Container[];
-  onOpenShell: (containerName: string, shell: string) => Promise<void>;
+  onOpenShell?: (containerName: string, shell: string) => Promise<void>;
   onOpenLogs?: (containerName: string) => Promise<void>;
 }
 
@@ -109,10 +109,14 @@ const ContainerTable = ({ containers, statuses, onOpenShell, onOpenLogs }: {
         <TableRow>
           <TableHead>Name</TableHead>
           <TableHead>Image</TableHead>
-          <TableHead>State</TableHead>
-          <TableHead>Restarts</TableHead>
-          <TableHead>Ready</TableHead>
-          <TableHead><Menu /></TableHead>
+          {statuses && (
+            <>
+              <TableHead>State</TableHead>
+              <TableHead>Restarts</TableHead>
+              <TableHead>Ready</TableHead>
+              <TableHead><Menu /></TableHead>
+            </>
+          )}
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -124,28 +128,32 @@ const ContainerTable = ({ containers, statuses, onOpenShell, onOpenLogs }: {
                 {container.name}
               </TableCell>
               <TableCell className="text-xs">{container.image}</TableCell>
-              <TableCell>
-                <StatusBadge
-                  status={
-                    status
-                      ? Object.keys(status.state || {})[0] || 'Unknown'
-                      : 'Pending'
-                  }
-                />
-              </TableCell>
-              <TableCell>{status?.restartCount || 0}</TableCell>
-              <TableCell>
-                <Badge variant={status?.ready ? "default" : "destructive"}>
-                  {status?.ready ? 'Yes' : 'No'}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                <ContainerMenu
-                  containerName={container.name}
-                  onOpenShell={onOpenShell}
-                  onOpenLogs={onOpenLogs}
-                />
-              </TableCell>
+              {statuses && (
+                <>
+                  <TableCell>
+                    <StatusBadge
+                      status={
+                        status
+                          ? Object.keys(status.state || {})[0] || 'Unknown'
+                          : 'Pending'
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>{status?.restartCount || 0}</TableCell>
+                  <TableCell>
+                    <Badge variant={status?.ready ? "default" : "destructive"}>
+                      {status?.ready ? 'Yes' : 'No'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <ContainerMenu
+                      containerName={container.name}
+                      onOpenShell={onOpenShell}
+                      onOpenLogs={onOpenLogs}
+                    />
+                  </TableCell>
+                </>
+              )}
             </TableRow>
           );
         })}
