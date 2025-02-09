@@ -1,18 +1,6 @@
 import { V1Container, V1ContainerStatus } from "@kubernetes/client-node";
 import { Badge } from "@/components/ui/badge";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
   Table,
   TableBody,
   TableCell,
@@ -22,8 +10,8 @@ import {
 } from "@/components/ui/table";
 import { StatusBadge } from "@/components/status-badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { EllipsisVertical, Logs, Menu, Terminal } from "lucide-react";
-import { Button } from "@/components/ui/button"
+import { Menu } from "lucide-react";
+import { ContainerCommands } from "@/components/pods/container-commands";
 
 interface ContainersStatusTableProps {
   containers?: V1Container[];
@@ -146,7 +134,7 @@ const ContainerTable = ({ containers, statuses, onOpenShell, onOpenLogs }: {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <ContainerMenu
+                    <ContainerCommands
                       containerName={container.name}
                       onOpenShell={onOpenShell}
                       onOpenLogs={onOpenLogs}
@@ -161,46 +149,3 @@ const ContainerTable = ({ containers, statuses, onOpenShell, onOpenLogs }: {
     </Table>
   );
 };
-
-
-interface ContainerMenuProps {
-  containerName: string;
-  onOpenShell?: (containerName: string, shell: string) => Promise<void>;
-  onOpenLogs?: (containerName: string) => Promise<void>;
-}
-
-const ContainerMenu = ({ containerName, onOpenShell, onOpenLogs }: ContainerMenuProps) => (
-  <DropdownMenu>
-    <DropdownMenuTrigger asChild>
-      <Button variant="ghost" size="icon">
-        <EllipsisVertical />
-      </Button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent>
-      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-      <DropdownMenuSeparator />
-      {onOpenShell && (
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>
-            <Terminal className="mr-2" /> Shell
-          </DropdownMenuSubTrigger>
-          <DropdownMenuPortal>
-            <DropdownMenuSubContent>
-              <DropdownMenuItem onClick={() => onOpenShell(containerName, '/bin/sh')}>
-                <span>/bin/sh</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onOpenShell(containerName, '/bin/bash')}>
-                <span>/bin/bash</span>
-              </DropdownMenuItem>
-            </DropdownMenuSubContent>
-          </DropdownMenuPortal>
-        </DropdownMenuSub>
-      )}
-      {onOpenLogs && (
-        <DropdownMenuItem onClick={() => onOpenLogs(containerName)}>
-          <Logs className="mr-2" /> Logs
-        </DropdownMenuItem>
-      )}
-    </DropdownMenuContent>
-  </DropdownMenu>
-);
