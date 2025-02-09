@@ -8,6 +8,7 @@ import { StatusBadge } from '@/components/status-badge';
 import { VolumesTable } from '@/components/pods/volumes-table';
 import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { StatusConditions } from '@/components/status-conditions';
+import { PodActions } from './pod-actions';
 
 
 
@@ -41,6 +42,7 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs }: PodViewProps) 
             <TabsTrigger value="containers">Containers</TabsTrigger>
             <TabsTrigger value="conditions">Conditions</TabsTrigger>
             <TabsTrigger value="volumes">Volumes</TabsTrigger>
+            <TabsTrigger value="actions">Actions</TabsTrigger>
             <TabsTrigger value="source">source</TabsTrigger>
           </TabsList>
 
@@ -127,6 +129,20 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs }: PodViewProps) 
               height="h-screen"
               content={pod}
               onCopy={onCopy}
+            />
+          </TabsContent>
+
+          <TabsContent value="actions" className="">
+            <PodActions
+              podName="my-pod"
+              isRunning={true}
+              onDelete={async (podName) => {
+                console.log(`Deleting pod ${podName}`);
+              }}
+              onLogs={onOpenLogs}
+              onDebug={async (podName) => {
+                // Handle debugging
+              }}
             />
           </TabsContent>
         </Tabs>

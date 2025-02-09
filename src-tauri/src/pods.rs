@@ -51,9 +51,17 @@ pub fn open_pod_logs(
     container_name: String,
 ) -> Result<(), String> {
     let cmd_string = format!(
-        "--kubeconfig {} --context {} logs {} -n {} --container {}",
-        kubeconfig_path, context, pod_name, namespace, container_name
+        "--kubeconfig {} --context {} logs {} -n {}",
+        kubeconfig_path, context, pod_name, namespace,
     );
+    // if container_name is not empty, add it to the command
+    // otherwise append --all-containers
+    let cmd_string = if container_name.is_empty() {
+        format!("{} --all-containers", cmd_string)
+    } else {
+        format!("{} -c {}", cmd_string, container_name)
+    };
+
     run_kubectl_command(&cmd_string)?;
     Ok(())
 }
