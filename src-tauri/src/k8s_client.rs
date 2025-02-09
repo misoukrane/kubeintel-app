@@ -49,3 +49,19 @@ where
     let resource = api.get(name).await.map_err(|e| e.to_string())?;
     Ok(resource)
 }
+
+pub async fn delete_resource<T>(client: Client, namespace: &str, name: &str) -> Result<(), String>
+where
+    T: Resource<Scope = kube::core::NamespaceResourceScope>
+        + Clone
+        + std::fmt::Debug
+        + k8s_openapi::Metadata<Ty = k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta>
+        + serde::de::DeserializeOwned,
+{
+    let api: Api<T> = Api::namespaced(client, namespace);
+    let _ = api
+        .delete(name, &Default::default())
+        .await
+        .map_err(|e| e.to_string())?;
+    Ok(())
+}

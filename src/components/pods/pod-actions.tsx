@@ -31,7 +31,7 @@ import { Button } from "@/components/ui/button";
 interface PodActionsProps {
   podName: string;
   isRunning?: boolean;
-  onDelete?: (podName: string) => Promise<void>;
+  onDelete: () => Promise<void>;
   onDebug?: (podName: string) => Promise<void>;
   onLogs?: (containerName?: string) => Promise<void>;
 }
@@ -47,7 +47,7 @@ export const PodActions = ({
 
   const handleDelete = async () => {
     if (onDelete) {
-      await onDelete(podName);
+      await onDelete();
     }
     setDeleteDialogOpen(false);
   }
@@ -76,19 +76,17 @@ export const PodActions = ({
           </CommandGroup>
           <CommandSeparator />
           <CommandGroup heading="Dangerous Actions">
-            {onDelete && (
-              <CommandItem
-                onSelect={() => {
-                  setDeleteDialogOpen(true);
-                  onDelete(podName)
-                }}
-                className="text-red-600"
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                <span>Delete Pod</span>
-                <AlertTriangle className="ml-auto h-4 w-4" />
-              </CommandItem>
-            )}
+
+            <CommandItem
+              onSelect={() => {
+                setDeleteDialogOpen(true);
+              }}
+              className="text-red-600"
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              <span>Delete Pod</span>
+              <AlertTriangle className="ml-auto h-4 w-4" />
+            </CommandItem>
           </CommandGroup>
         </CommandList>
       </Command>

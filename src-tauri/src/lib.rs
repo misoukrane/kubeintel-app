@@ -23,6 +23,7 @@ pub fn run() {
             daemonsets::list_daemonsets,
             statefulsets::list_statefulsets,
             pods::get_pod,
+            pods::delete_pod,
             pods::open_pod_shell,
             pods::open_pod_logs,
             deployments::get_deployment,

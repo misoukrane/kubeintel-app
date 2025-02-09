@@ -25,6 +25,18 @@ pub async fn get_pod(
     k8s_client::get_resource::<Pod>(client, &namespace, &name).await
 }
 
+// delete a pod by name in a namespace
+#[tauri::command]
+pub async fn delete_pod(
+    kubeconfig_path: String,
+    context: String,
+    namespace: String,
+    name: String,
+) -> Result<(), String> {
+    let client = k8s_client::create_k8s_client(kubeconfig_path, context).await?;
+    k8s_client::delete_resource::<Pod>(client, &namespace, &name).await
+}
+
 #[tauri::command]
 pub fn open_pod_shell(
     kubeconfig_path: String,

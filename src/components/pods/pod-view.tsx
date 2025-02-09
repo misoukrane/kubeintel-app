@@ -16,10 +16,11 @@ interface PodViewProps {
   pod?: V1Pod;
   onCopy: (text: string) => void;
   onOpenShell: (containerName: string, shell: string) => Promise<void>;
-  onOpenLogs?: (containerName?: string) => Promise<void>;
+  onOpenLogs: (containerName?: string) => Promise<void>;
+  onDelete: (podName: string) => Promise<void>;
 }
 
-export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs }: PodViewProps) => {
+export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete }: PodViewProps) => {
   if (!pod) return null;
 
   const { metadata, status, spec } = pod;
@@ -136,9 +137,7 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs }: PodViewProps) 
             <PodActions
               podName="my-pod"
               isRunning={true}
-              onDelete={async (podName) => {
-                console.log(`Deleting pod ${podName}`);
-              }}
+              onDelete={onDelete}
               onLogs={onOpenLogs}
               onDebug={async (podName) => {
                 // Handle debugging

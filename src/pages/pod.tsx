@@ -8,6 +8,7 @@ import { useParams } from 'react-router';
 import { useClipboard } from '@/hooks/use-clipboard';
 import { useOpenPodShell } from '@/hooks/use-open-pod-shell';
 import { useOpenPodLogs } from '@/hooks/use-open-pod-logs';
+import { useDeleteKubeResource } from '@/hooks/use-delete-kube-resource';
 
 export const Pod = () => {
   const { podName } = useParams();
@@ -41,6 +42,14 @@ export const Pod = () => {
     podName: podName,
   });
 
+  const { mutate: deleteResource } = useDeleteKubeResource({
+    kubeconfigPath: selectedKubeconfig,
+    context: currentContext,
+    namespace: currentNamespace,
+    resourceType: 'pod',
+    name: podName,
+  });
+
   return (
     <div className="space-y-4">
       {isLoading && <Spinner />}
@@ -52,6 +61,7 @@ export const Pod = () => {
             onCopy={copyToClipboard}
             onOpenShell={openShell}
             onOpenLogs={openLogs}
+            onDelete={async () => await deleteResource()}
           />
         </>
       )}
