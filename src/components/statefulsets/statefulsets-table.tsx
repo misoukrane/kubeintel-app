@@ -55,9 +55,8 @@ export const StatefulSetsTable = ({ statefulsets }: StatefulSetsTableProps) => {
       ),
       cell: ({ row }) => {
         const name = row.original.metadata?.name;
-        const namespace = row.original.metadata?.namespace;
         return (
-          <Link to={`/namespaces/${namespace}/statefulsets/${name}`}>
+          <Link to={`/statefulsets/${name}`}>
             <Button variant="link" className="underline">
               {name}
             </Button>
