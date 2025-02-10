@@ -1,3 +1,4 @@
+use k8s_openapi::api::core::v1::Event;
 use k8s_openapi::Resource;
 use kube::api::ListParams;
 use kube::Api;
@@ -64,4 +65,24 @@ where
         .await
         .map_err(|e| e.to_string())?;
     Ok(())
+}
+
+pub async fn list_events<T>(
+    client: Client,
+    namespace: &str,
+    name: &str,
+) -> Result<Vec<Event>, String>
+where
+    T: Resource,
+{
+    let events: Api<Event> = Api::namespaced(client, namespace);
+    let list = events
+        .list(&ListParams::default().fields(&format!(
+            "involvedObject.name={},involvedObject.kind={}",
+            name,
+            T::KIND
+        )))
+        .await
+        .map_err(|e| e.to_string())?;
+    Ok(list.items)
 }

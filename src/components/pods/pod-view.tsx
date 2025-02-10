@@ -19,9 +19,10 @@ interface PodViewProps {
   onOpenLogs: (containerName?: string) => Promise<void>;
   onDebug: (image: string, target?: string) => Promise<void>;
   onDelete: () => Promise<void>;
+  onOpenEvents: () => Promise<void>;
 }
 
-export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebug }: PodViewProps) => {
+export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebug, onOpenEvents }: PodViewProps) => {
   if (!pod) return null;
 
   const { metadata, status, spec } = pod;
@@ -142,6 +143,7 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebu
               onDelete={onDelete}
               onLogs={onOpenLogs}
               onDebug={onDebug}
+              onOpenEvents={onOpenEvents}
             />
           </TabsContent>
         </Tabs>

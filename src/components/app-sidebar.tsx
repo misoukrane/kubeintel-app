@@ -25,7 +25,7 @@ import { ControlPlaneLogo } from '@/assets/control-plane';
 // Menu items.
 const items = [
   {
-    title: 'cluster Info',
+    title: 'Cluster Info',
     url: '/cluster',
     icon: ControlPlaneLogo,
   },

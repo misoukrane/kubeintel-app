@@ -52,8 +52,9 @@ interface PodActionsProps {
   podName: string
   containers?: V1Container[]
   onDelete: () => Promise<void>
-  onDebug?: (image: string, target?: string) => Promise<void>
-  onLogs?: (containerName?: string) => Promise<void>
+  onDebug: (image: string, target?: string) => Promise<void>
+  onLogs: (containerName?: string) => Promise<void>
+  onOpenEvents: () => Promise<void>;
 }
 
 export const PodActions = ({
@@ -62,6 +63,7 @@ export const PodActions = ({
   onDelete,
   onDebug,
   onLogs,
+  onOpenEvents,
 }: PodActionsProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
   const [debugDialogOpen, setDebugDialogOpen] = React.useState(false)
@@ -98,20 +100,21 @@ export const PodActions = ({
           <CommandEmpty>No actions found.</CommandEmpty>
 
           <CommandGroup heading="Common Actions">
-            {onLogs && (
-              <CommandItem
-                onSelect={() => onLogs("")} // Logs for all containers
-              >
-                <FileTerminal className="mr-2 h-4 w-4" />
-                <span>View Logs (all containers)</span>
-              </CommandItem>
-            )}
-            {onDebug && (
-              <CommandItem onSelect={() => setDebugDialogOpen(true)}>
-                <Bug className="mr-2 h-4 w-4" />
-                <span>Debug Pod</span>
-              </CommandItem>
-            )}
+            <CommandItem
+              onSelect={() => onLogs("")} // Logs for all containers
+            >
+              <FileTerminal className="mr-2 h-4 w-4" />
+              <span>View Logs (all containers)</span>
+            </CommandItem>
+            <CommandItem onSelect={() => setDebugDialogOpen(true)}>
+              <Bug className="mr-2 h-4 w-4" />
+              <span>Debug Pod</span>
+            </CommandItem>
+
+            <CommandItem onSelect={onOpenEvents}>
+              <FileTerminal className="mr-2 h-4 w-4" />
+              <span>View Events</span>
+            </CommandItem>
           </CommandGroup>
 
           <CommandSeparator />
