@@ -26,6 +26,7 @@ pub fn run() {
             pods::delete_pod,
             pods::open_pod_shell,
             pods::open_pod_logs,
+            pods::debug_pod,
             deployments::get_deployment,
             daemonsets::get_daemonset,
             statefulsets::get_statefulset,

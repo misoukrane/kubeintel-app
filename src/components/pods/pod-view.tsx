@@ -17,10 +17,11 @@ interface PodViewProps {
   onCopy: (text: string) => void;
   onOpenShell: (containerName: string, shell: string) => Promise<void>;
   onOpenLogs: (containerName?: string) => Promise<void>;
+  onDebug: (image: string, target?: string) => Promise<void>;
   onDelete: () => Promise<void>;
 }
 
-export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete }: PodViewProps) => {
+export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebug }: PodViewProps) => {
   if (!pod) return null;
 
   const { metadata, status, spec } = pod;
@@ -136,12 +137,10 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete }: PodV
           <TabsContent value="actions" className="">
             <PodActions
               podName="my-pod"
-              isRunning={true}
+              containers={spec?.containers || []}
               onDelete={onDelete}
               onLogs={onOpenLogs}
-              onDebug={async () => {
-
-              }}
+              onDebug={onDebug}
             />
           </TabsContent>
         </Tabs>

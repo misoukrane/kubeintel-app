@@ -9,6 +9,7 @@ import { useClipboard } from '@/hooks/use-clipboard';
 import { useOpenPodShell } from '@/hooks/use-open-pod-shell';
 import { useOpenPodLogs } from '@/hooks/use-open-pod-logs';
 import { useDeleteKubeResource } from '@/hooks/use-delete-kube-resource';
+import { useDebugPod } from '@/hooks/use-debug-pod';
 
 export const Pod = () => {
   const { podName } = useParams();
@@ -42,6 +43,13 @@ export const Pod = () => {
     podName: podName,
   });
 
+  const { debugPod } = useDebugPod({
+    kubeconfigPath: selectedKubeconfig,
+    context: currentContext,
+    namespace: currentNamespace,
+    podName: podName,
+  });
+
   const { mutate: deleteResource } = useDeleteKubeResource({
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
@@ -61,6 +69,7 @@ export const Pod = () => {
             onCopy={copyToClipboard}
             onOpenShell={openShell}
             onOpenLogs={openLogs}
+            onDebug={debugPod}
             onDelete={async () => await deleteResource()}
           />
         </>

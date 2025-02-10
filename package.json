@@ -13,6 +13,7 @@
     "format": "prettier --write src/**/*.{ts,tsx}"
   },
   "dependencies": {
+    "@hookform/resolvers": "^4.0.0",
     "@kubernetes/client-node": "^1.0.0",
     "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-avatar": "^1.1.2",
@@ -41,11 +42,13 @@
     "lucide-react": "^0.471.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-hook-form": "^7.54.2",
     "react-router": "^7.1.2",
     "superjson": "^2.2.2",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "tauri-plugin-clipboard-api": "^2.1.11",
+    "zod": "^3.24.1",
     "zustand": "^5.0.3"
   },
   "devDependencies": {
