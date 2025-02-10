@@ -17,7 +17,7 @@ interface PodViewProps {
   onCopy: (text: string) => void;
   onOpenShell: (containerName: string, shell: string) => Promise<void>;
   onOpenLogs: (containerName?: string) => Promise<void>;
-  onDelete: (podName: string) => Promise<void>;
+  onDelete: () => Promise<void>;
 }
 
 export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete }: PodViewProps) => {
@@ -139,8 +139,8 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete }: PodV
               isRunning={true}
               onDelete={onDelete}
               onLogs={onOpenLogs}
-              onDebug={async (podName) => {
-                // Handle debugging
+              onDebug={async () => {
+
               }}
             />
           </TabsContent>
