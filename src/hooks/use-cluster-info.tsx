@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { invoke } from '@tauri-apps/api/core';
 
 interface UseClusterInfoProps {
@@ -6,43 +6,24 @@ interface UseClusterInfoProps {
   context?: string;
 }
 
-interface UseClusterInfoReturn {
-  content: string;
-  loading: boolean;
-  error: string | null;
-}
-
 export const useClusterInfo = ({
   kubeconfigPath,
   context,
-}: UseClusterInfoProps): UseClusterInfoReturn => {
-  const [content, setContent] = useState<string>('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchClusterInfo = async () => {
+}: UseClusterInfoProps) => {
+  return useQuery({
+    queryKey: ['cluster-info', kubeconfigPath, context],
+    queryFn: async () => {
       if (!kubeconfigPath || !context) {
-        setLoading(false);
-        return;
+        throw new Error('Missing required parameters');
       }
 
-      try {
-        const resp = await invoke<string>('cluster_info', {
-          kubeconfigPath,
-          context,
-        });
-        setContent(resp);
-        setError(null);
-      } catch (err) {
-        setError(`Error reading kubeconfig file: ${err}`);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchClusterInfo();
-  }, [kubeconfigPath, context]);
-
-  return { content, loading, error };
+      return invoke<string>('cluster_info', {
+        kubeconfigPath,
+        context,
+      });
+    },
+    enabled: Boolean(kubeconfigPath && context),
+    retry: 1,
+    retryDelay: 500,
+  });
 };

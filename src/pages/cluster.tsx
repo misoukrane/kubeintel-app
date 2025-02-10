@@ -16,7 +16,11 @@ export const Cluster = () => {
   const { selectedKubeconfig, currentContext } = useConfigStore();
   const navigate = useNavigate();
 
-  const { content, loading, error } = useClusterInfo({
+  const {
+    data: content,
+    isLoading,
+    error,
+  } = useClusterInfo({
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
   });
@@ -34,9 +38,9 @@ export const Cluster = () => {
         context={currentContext ?? ''}
       />
 
-      {loading && <Spinner />}
-      {error && <ErrorAlert message={error} />}
-      {!loading && !error && <ClusterContent content={content} />}
+      {isLoading && <Spinner />}
+      {error && <ErrorAlert error={error} />}
+      {!isLoading && !error && content && <ClusterContent content={content} />}
     </div>
   );
 };
