@@ -28,16 +28,19 @@ const commonShells = ['/bin/sh', '/bin/bash', '/bin/zsh'];
 interface ContainerCommandsProps {
   containerName: string;
   onOpenShell?: (containerName: string, shell: string) => Promise<void>;
+  onDebug?: (debugImage: string, target?: string) => Promise<void>;
   onOpenLogs?: (containerName?: string) => Promise<void>;
 }
 
 export const ContainerCommands = ({
   containerName,
   onOpenShell,
-  onOpenLogs
+  onOpenLogs,
+  onDebug,
 }: ContainerCommandsProps) => {
   const [open, setOpen] = React.useState(false);
   const [customShell, setCustomShell] = React.useState("");
+  const [customDebugImage, setCustomDebugImage] = React.useState("");
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -106,6 +109,61 @@ export const ContainerCommands = ({
                 <Logs className="mr-2 h-4 w-4" />
                 View Logs
               </DropdownMenuItem>
+            </>
+          )}
+          {onDebug && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <Terminal className="mr-2 h-4 w-4" />
+                  Debug
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent className="p-0">
+                  <Command>
+                    <CommandInput
+                      placeholder="Enter debug image..."
+                      value={customDebugImage}
+                      onValueChange={setCustomDebugImage}
+                    />
+                    <CommandList>
+                      <CommandEmpty>No image found.</CommandEmpty>
+                      <CommandGroup heading="Common Images">
+                        {[
+                          "docker.io/library/busybox:latest",
+                          "docker.io/library/alpine:latest",
+                          "docker.io/library/debian:latest",
+                          "docker.io/library/ubuntu:latest",
+                        ].map((image) => (
+                          <CommandItem
+                            key={image}
+                            value={image}
+                            onSelect={() => {
+                              onDebug(image, containerName);
+                              setOpen(false);
+                            }}
+                          >
+                            {image}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                      {customDebugImage && (
+                        <CommandGroup heading="Custom Image">
+                          <CommandItem
+                            value={customDebugImage}
+                            onSelect={() => {
+                              onDebug(customDebugImage, containerName);
+                              setOpen(false);
+                            }}
+                          >
+                            Use: {customDebugImage}
+                          </CommandItem>
+                        </CommandGroup>
+                      )}
+                    </CommandList>
+                  </Command>
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
             </>
           )}
         </DropdownMenuGroup>

@@ -20,6 +20,7 @@ interface ContainersStatusTableProps {
   initContainers?: V1Container[];
   onOpenShell?: (containerName: string, shell: string) => Promise<void>;
   onOpenLogs?: (containerName?: string) => Promise<void>;
+  onDebug?: (debugImage: string, target?: string) => Promise<void>;
 }
 
 export const ContainersStatusTable = ({
@@ -29,6 +30,7 @@ export const ContainersStatusTable = ({
   initContainers,
   onOpenShell,
   onOpenLogs,
+  onDebug,
 }: ContainersStatusTableProps) => {
 
   return (
@@ -44,6 +46,7 @@ export const ContainersStatusTable = ({
               statuses={containerStatuses}
               onOpenShell={onOpenShell}
               onOpenLogs={onOpenLogs}
+              onDebug={onDebug}
             />
           </CardContent>
         </Card>
@@ -82,11 +85,12 @@ export const ContainersStatusTable = ({
   );
 };
 
-const ContainerTable = ({ containers, statuses, onOpenShell, onOpenLogs }: {
+const ContainerTable = ({ containers, statuses, onOpenShell, onOpenLogs, onDebug }: {
   containers?: V1Container[],
   statuses?: V1ContainerStatus[],
   onOpenShell?: (containerName: string, shell: string) => Promise<void>,
   onOpenLogs?: (containerName?: string) => Promise<void>,
+  onDebug?: (debugImage: string, target?: string) => Promise<void>;
 }) => {
   const getStatusForContainer = (name: string) =>
     statuses?.find(s => s.name === name);
@@ -138,6 +142,7 @@ const ContainerTable = ({ containers, statuses, onOpenShell, onOpenLogs }: {
                       containerName={container.name}
                       onOpenShell={onOpenShell}
                       onOpenLogs={onOpenLogs}
+                      onDebug={onDebug}
                     />
                   </TableCell>
                 </>

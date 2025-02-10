@@ -94,6 +94,7 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebu
               initContainers={spec?.initContainers}
               onOpenShell={onOpenShell}
               onOpenLogs={onOpenLogs}
+              onDebug={onDebug}
             />
           </TabsContent>
 
