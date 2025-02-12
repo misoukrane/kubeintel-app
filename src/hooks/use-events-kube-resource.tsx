@@ -1,11 +1,12 @@
-import { useCallback } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import { invoke } from '@tauri-apps/api/core';
+import { useToast } from '@/hooks/use-toast';
 
-interface UseEventsKubeResourceProps {
+interface EventsKubeResourceProps {
   kubeconfigPath?: string;
   context?: string;
   namespace?: string;
-  resource?: string;
+  resource: string;
   name?: string;
 }
 
@@ -15,23 +16,36 @@ export const useEventsKubeResource = ({
   namespace,
   resource,
   name,
-}: UseEventsKubeResourceProps) => {
-  const openEvents = useCallback(async () => {
-    if (!kubeconfigPath || !context || !namespace || !resource || !name) {
-      return;
-    }
-    try {
-      await invoke(`open_resource_events_in_terminal`, {
+}: EventsKubeResourceProps) => {
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async () => {
+      if (!kubeconfigPath || !context || !namespace || !name) {
+        throw new Error('Missing required parameters');
+      }
+
+      return invoke('open_resource_events_in_terminal', {
         kubeconfigPath,
         context,
         namespace,
         resource,
         name,
       });
-    } catch (error) {
-      console.error('Failed to open pod events:', error);
-    }
-  }, [kubeconfigPath, context, namespace, name, resource]);
-
-  return { openEvents };
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Events opened',
+        description: `Opening events for ${resource} ${name}`,
+      });
+    },
+    onError: (error) => {
+      toast({
+        variant: 'destructive',
+        title: `Failed to open ${resource} events`,
+        description:
+          error instanceof Error ? error.message : JSON.stringify(error),
+      });
+    },
+  });
 };

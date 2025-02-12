@@ -15,11 +15,11 @@ import { PodActions } from './pod-actions';
 interface PodViewProps {
   pod?: V1Pod;
   onCopy: (text: string) => void;
-  onOpenShell: (containerName: string, shell: string) => Promise<void>;
-  onOpenLogs: (containerName?: string) => Promise<void>;
-  onDebug: (image: string, target?: string) => Promise<void>;
-  onDelete: () => Promise<void>;
-  onOpenEvents: () => Promise<void>;
+  onOpenShell: (containerName: string, shell: string) => void;
+  onOpenLogs: (containerName?: string) => void;
+  onDebug: (image: string, target?: string) => void;
+  onDelete: () => void;
+  onOpenEvents: () => void;
 }
 
 export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebug, onOpenEvents }: PodViewProps) => {

@@ -12,11 +12,11 @@ import { DeploymentActions } from './deployment-actions';
 interface DeploymentViewProps {
   deployment?: V1Deployment;
   onCopy: (text: string) => void;
-  onScale: (currentReplicas: number, replicas: number) => Promise<void>;
-  onDelete: () => Promise<void>;
-  onRestart: () => Promise<void>;
-  onLogs: (containerName?: string) => Promise<void>;
-  onOpenEvents: () => Promise<void>;
+  onScale: (params: { currentReplicas: number; replicas: number }) => void;
+  onDelete: () => void;
+  onRestart: () => void;
+  onLogs: (containerName?: string) => void;
+  onOpenEvents: () => void;
 }
 
 export const DeploymentView = ({ deployment, onCopy, onScale, onDelete, onRestart, onLogs, onOpenEvents }: DeploymentViewProps) => {

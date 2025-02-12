@@ -3,76 +3,33 @@ import { Spinner } from '@/components/spinner';
 import { DeploymentView } from '@/components/deployments/deployment-view';
 import { ErrorAlert } from '@/components/error-alert';
 import { V1Deployment } from '@kubernetes/client-node';
-import { useGetKubeResource } from '@/hooks/use-get-kube-resource';
 import { useNavigate, useParams } from 'react-router';
 import { useClipboard } from '@/hooks/use-clipboard';
-import { useEventsKubeResource } from '@/hooks/use-events-kube-resource';
-import { useDeleteKubeResource } from '@/hooks/use-delete-kube-resource';
-import { useScaleKubeResource } from '@/hooks/use-scale-kube-resource';
-import { useRestartKubeResource } from '@/hooks/use-restart-kube-resource';
-import { useLogsKubeResource } from '@/hooks/use-logs-kube-resource';
-import { ROUTES } from '@/lib/routes';
+import { useKubeResource } from '@/hooks/use-kube-resource';
 
 export const Deployment = () => {
   const { deploymentName } = useParams();
   const navigate = useNavigate();
-  const { copyToClipboard } = useClipboard();
   const { selectedKubeconfig, currentContext, currentNamespace } =
     useConfigStore();
+  const { copyToClipboard } = useClipboard();
 
   const {
-    data: resource,
+    resource: deployment,
     isLoading,
     error,
-  } = useGetKubeResource<V1Deployment>({
-    kubeconfigPath: selectedKubeconfig,
-    context: currentContext,
-    namespace: currentNamespace,
-    name: deploymentName,
-    resourceType: 'deployment',
-  });
-
-  const { openEvents } = useEventsKubeResource({
-    kubeconfigPath: selectedKubeconfig,
-    context: currentContext,
-    namespace: currentNamespace,
-    resource: 'deployment',
-    name: deploymentName,
-  });
-
-  const { mutate: deleteResource } = useDeleteKubeResource({
-    kubeconfigPath: selectedKubeconfig,
-    context: currentContext,
-    namespace: currentNamespace,
-    resource: 'deployment',
-    name: deploymentName,
-    onSuccess: () => {
-      navigate(ROUTES.DEPLOYMENTS);
-    },
-  });
-
-  const { mutate: scaleResource } = useScaleKubeResource({
+    deleteResource,
+    openLogs,
+    openEvents,
+    restartResource,
+    scaleResource,
+  } = useKubeResource<V1Deployment>({
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
     resourceType: 'deployment',
     name: deploymentName,
-  });
-
-  const { mutate: restartResource } = useRestartKubeResource({
-    kubeconfigPath: selectedKubeconfig,
-    context: currentContext,
-    namespace: currentNamespace,
-    resourceType: 'deployment',
-    name: deploymentName,
-  });
-
-  const { mutate: openLogs } = useLogsKubeResource({
-    kubeconfigPath: selectedKubeconfig,
-    context: currentContext,
-    namespace: currentNamespace,
-    resource: 'deployment',
-    name: deploymentName,
+    onDeleteSuccess: () => navigate('/deployments'),
   });
 
   return (
@@ -81,20 +38,14 @@ export const Deployment = () => {
       {error && <ErrorAlert error={error} />}
       {!isLoading && !error && (
         <DeploymentView
-          deployment={resource}
+          deployment={deployment}
           onCopy={copyToClipboard}
-          onScale={async (currentReplicas: number, replicas: number) => {
-            await scaleResource({ currentReplicas, replicas });
+          onScale={(params) => {
+            scaleResource(params);
           }}
-          onDelete={async () => {
-            await deleteResource();
-          }}
-          onRestart={async () => {
-            await restartResource();
-          }}
-          onLogs={async (containerName?: string) => {
-            await openLogs(containerName);
-          }}
+          onDelete={deleteResource}
+          onRestart={restartResource}
+          onLogs={(containerName?: string) => openLogs(containerName)}
           onOpenEvents={openEvents}
         />
       )}

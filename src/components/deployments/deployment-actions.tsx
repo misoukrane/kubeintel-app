@@ -49,11 +49,11 @@ type ScaleFormValues = {
 interface DeploymentActionsProps {
   deploymentName?: string;
   currentReplicas: number;
-  onScale?: (currentReplicas: number, replicas: number) => Promise<void>;
-  onDelete: () => Promise<void>;
-  onRestart: () => Promise<void>;
-  onLogs: (containerName?: string) => Promise<void>;
-  onOpenEvents: () => Promise<void>;
+  onScale?: (params: { currentReplicas: number; replicas: number }) => void;
+  onDelete: () => void;
+  onRestart: () => void;
+  onLogs: (containerName?: string) => void;
+  onOpenEvents: () => void;
 }
 
 export const DeploymentActions = ({
@@ -86,7 +86,7 @@ export const DeploymentActions = ({
     if (!onScale) {
       return
     }
-    await onScale(currentReplicas, parseInt(values.replicas, 10));
+    await onScale({ currentReplicas, replicas: parseInt(values.replicas, 10) });
     setScaleDialogOpen(false);
   }
 
