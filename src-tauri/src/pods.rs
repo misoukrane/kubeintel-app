@@ -63,34 +63,6 @@ pub async fn debug_pod(
     Ok(())
 }
 
-// get pod events
-#[tauri::command]
-pub async fn list_pod_events(
-    kubeconfig_path: String,
-    context: String,
-    namespace: String,
-    pod_name: String,
-) -> Result<Vec<k8s_openapi::api::core::v1::Event>, String> {
-    let client = k8s_client::create_k8s_client(kubeconfig_path, context).await?;
-    k8s_client::list_events::<Pod>(client, &namespace, &pod_name).await
-}
-
-// get pod events
-#[tauri::command]
-pub async fn open_pod_events(
-    kubeconfig_path: String,
-    context: String,
-    namespace: String,
-    name: String,
-) -> Result<(), String> {
-    let cmd_string = format!(
-        "--kubeconfig {} --context {} get events -n {} --field-selector involvedObject.name={},involvedObject.kind={}",
-        kubeconfig_path, context, namespace, name , "Pod"
-    );
-    run_kubectl_command(&cmd_string)?;
-    Ok(())
-}
-
 #[tauri::command]
 pub fn open_pod_shell(
     kubeconfig_path: String,
@@ -104,30 +76,6 @@ pub fn open_pod_shell(
         "--kubeconfig {} --context {} exec -it {} -n {} --container {} -- {}",
         kubeconfig_path, context, pod_name, namespace, container_name, cmd_shell
     );
-    run_kubectl_command(&cmd_string)?;
-    Ok(())
-}
-
-#[tauri::command]
-pub fn open_pod_logs(
-    kubeconfig_path: String,
-    context: String,
-    namespace: String,
-    pod_name: String,
-    container_name: Option<String>,
-) -> Result<(), String> {
-    let cmd_string = format!(
-        "--kubeconfig {} --context {} logs {} -n {}",
-        kubeconfig_path, context, pod_name, namespace,
-    );
-    // if container_name is Some, add it to the command
-    // otherwise append --all-containers
-    let cmd_string = match container_name {
-        None => format!("{} --all-containers", cmd_string),
-        Some(ref c) if c.is_empty() => format!("{} --all-containers", cmd_string),
-        Some(c) => format!("{} -c {}", cmd_string, c),
-    };
-
     run_kubectl_command(&cmd_string)?;
     Ok(())
 }

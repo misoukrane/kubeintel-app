@@ -34,7 +34,7 @@ export const Deployment = () => {
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
-    resourceType: 'deployment',
+    resource: 'deployment',
     name: deploymentName,
   });
 
@@ -66,7 +66,7 @@ export const Deployment = () => {
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
-    resourceType: 'deployment',
+    resource: 'deployment',
     name: deploymentName,
   });
 

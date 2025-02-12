@@ -7,10 +7,10 @@ import { useGetKubeResource } from '@/hooks/use-get-kube-resource';
 import { useParams } from 'react-router';
 import { useClipboard } from '@/hooks/use-clipboard';
 import { useOpenPodShell } from '@/hooks/use-open-pod-shell';
-import { useOpenPodLogs } from '@/hooks/use-open-pod-logs';
 import { useDeleteKubeResource } from '@/hooks/use-delete-kube-resource';
 import { useDebugPod } from '@/hooks/use-debug-pod';
 import { useOpenEventsResource } from '@/hooks/use-open-events-resource';
+import { useLogsKubeResource } from '@/hooks/use-logs-kube-resource';
 
 export const Pod = () => {
   const { podName } = useParams();
@@ -37,11 +37,12 @@ export const Pod = () => {
     podName: podName,
   });
 
-  const { openLogs } = useOpenPodLogs({
+  const { mutate: openLogs } = useLogsKubeResource({
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
-    podName: podName,
+    resource: 'pod',
+    name: podName,
   });
 
   const { debugPod } = useDebugPod({
@@ -55,7 +56,7 @@ export const Pod = () => {
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
-    resourceType: 'pod',
+    resource: 'pod',
     name: podName,
   });
 
@@ -77,7 +78,9 @@ export const Pod = () => {
             pod={resource}
             onCopy={copyToClipboard}
             onOpenShell={openShell}
-            onOpenLogs={openLogs}
+            onOpenLogs={async (containerName?: string) => {
+              await openLogs(containerName);
+            }}
             onDebug={debugPod}
             onDelete={async () => await deleteResource()}
             onOpenEvents={openEvents}

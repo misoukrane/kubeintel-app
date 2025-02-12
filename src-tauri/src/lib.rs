@@ -5,6 +5,7 @@ mod k8s_config;
 mod kubectl;
 mod namespaces;
 mod pods;
+mod resources;
 mod statefulsets;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -26,18 +27,15 @@ pub fn run() {
             pods::get_pod,
             pods::delete_pod,
             pods::open_pod_shell,
-            pods::open_pod_logs,
-            pods::open_pod_events,
             pods::debug_pod,
-            pods::list_pod_events,
             deployments::get_deployment,
             daemonsets::get_daemonset,
             statefulsets::get_statefulset,
             deployments::delete_deployment,
             deployments::scale_deployment,
             deployments::restart_deployment,
-            deployments::open_deployment_logs,
-            deployments::open_deployment_events,
+            resources::open_resource_events_in_terminal,
+            resources::open_resource_logs_in_terminal,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
