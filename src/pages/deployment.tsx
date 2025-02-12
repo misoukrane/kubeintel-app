@@ -6,7 +6,7 @@ import { V1Deployment } from '@kubernetes/client-node';
 import { useGetKubeResource } from '@/hooks/use-get-kube-resource';
 import { useNavigate, useParams } from 'react-router';
 import { useClipboard } from '@/hooks/use-clipboard';
-import { useOpenEventsResource } from '@/hooks/use-open-events-resource';
+import { useEventsKubeResource } from '@/hooks/use-events-kube-resource';
 import { useDeleteKubeResource } from '@/hooks/use-delete-kube-resource';
 import { useScaleKubeResource } from '@/hooks/use-scale-kube-resource';
 import { useRestartKubeResource } from '@/hooks/use-restart-kube-resource';
@@ -32,7 +32,7 @@ export const Deployment = () => {
     resourceType: 'deployment',
   });
 
-  const { openEvents } = useOpenEventsResource({
+  const { openEvents } = useEventsKubeResource({
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,

@@ -9,7 +9,7 @@ import { useClipboard } from '@/hooks/use-clipboard';
 import { useOpenPodShell } from '@/hooks/use-open-pod-shell';
 import { useDeleteKubeResource } from '@/hooks/use-delete-kube-resource';
 import { useDebugPod } from '@/hooks/use-debug-pod';
-import { useOpenEventsResource } from '@/hooks/use-open-events-resource';
+import { useEventsKubeResource } from '@/hooks/use-events-kube-resource';
 import { useLogsKubeResource } from '@/hooks/use-logs-kube-resource';
 import { ROUTES } from '@/lib/routes';
 
@@ -54,7 +54,7 @@ export const Pod = () => {
     podName: podName,
   });
 
-  const { openEvents } = useOpenEventsResource({
+  const { openEvents } = useEventsKubeResource({
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,

@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 
-interface UseOpenEventsResourceProps {
+interface UseEventsKubeResourceProps {
   kubeconfigPath?: string;
   context?: string;
   namespace?: string;
@@ -9,13 +9,13 @@ interface UseOpenEventsResourceProps {
   name?: string;
 }
 
-export const useOpenEventsResource = ({
+export const useEventsKubeResource = ({
   kubeconfigPath,
   context,
   namespace,
   resource,
   name,
-}: UseOpenEventsResourceProps) => {
+}: UseEventsKubeResourceProps) => {
   const openEvents = useCallback(async () => {
     if (!kubeconfigPath || !context || !namespace || !resource || !name) {
       return;
