@@ -3,7 +3,7 @@ import { Spinner } from '@/components/spinner';
 import { StatefulSetView } from '@/components/statefulsets/statefulset-view';
 import { ErrorAlert } from '@/components/error-alert';
 import { V1StatefulSet } from '@kubernetes/client-node';
-import { useGetKubeResource } from '@/hooks/use-get-kube-resource';
+import { useGetKubeResource } from '@/hooks/kube-resource/use-get-kube-resource';
 import { useParams } from 'react-router';
 import { useClipboard } from '@/hooks/use-clipboard';
 

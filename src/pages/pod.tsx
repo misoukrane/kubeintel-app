@@ -7,7 +7,7 @@ import { useNavigate, useParams } from 'react-router';
 import { useClipboard } from '@/hooks/use-clipboard';
 import { useOpenPodShell } from '@/hooks/use-open-pod-shell';
 import { useDebugPod } from '@/hooks/use-debug-pod';
-import { useKubeResource } from '@/hooks/use-kube-resource';
+import { useKubeResource } from '@/hooks/kube-resource/use-kube-resource';
 import { ROUTES } from '@/lib/routes';
 
 export const Pod = () => {

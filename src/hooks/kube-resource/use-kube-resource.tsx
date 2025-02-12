@@ -1,9 +1,9 @@
-import { useGetKubeResource } from './use-get-kube-resource';
-import { useDeleteKubeResource } from './use-delete-kube-resource';
-import { useLogsKubeResource } from './use-logs-kube-resource';
-import { useEventsKubeResource } from './use-events-kube-resource';
-import { useRestartKubeResource } from './use-restart-kube-resource';
-import { useScaleKubeResource } from './use-scale-kube-resource';
+import { useGetKubeResource } from '@/hooks/kube-resource/use-get-kube-resource';
+import { useDeleteKubeResource } from '@/hooks/kube-resource/use-delete-kube-resource';
+import { useLogsKubeResource } from '@/hooks/kube-resource/use-logs-kube-resource';
+import { useEventsKubeResource } from '@/hooks/kube-resource/use-events-kube-resource';
+import { useRestartKubeResource } from '@/hooks/kube-resource/use-restart-kube-resource';
+import { useScaleKubeResource } from '@/hooks/kube-resource/use-scale-kube-resource';
 
 interface UseKubeResourceProps {
   kubeconfigPath?: string;

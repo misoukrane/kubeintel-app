@@ -3,7 +3,7 @@ import { Spinner } from '@/components/spinner';
 import { DeploymentsTable } from '@/components/deployments/deployments-table';
 import { ErrorAlert } from '@/components/error-alert';
 import { V1Deployment } from '@kubernetes/client-node';
-import { useListKubeResource } from '@/hooks/use-list-kube-resource';
+import { useListKubeResource } from '@/hooks/kube-resource/use-list-kube-resource';
 
 export const Deployments = () => {
   const { selectedKubeconfig, currentContext, currentNamespace } =

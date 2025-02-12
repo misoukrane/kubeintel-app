@@ -5,7 +5,7 @@ import { ErrorAlert } from '@/components/error-alert';
 import { V1Deployment } from '@kubernetes/client-node';
 import { useNavigate, useParams } from 'react-router';
 import { useClipboard } from '@/hooks/use-clipboard';
-import { useKubeResource } from '@/hooks/use-kube-resource';
+import { useKubeResource } from '@/hooks/kube-resource/use-kube-resource';
 
 export const Deployment = () => {
   const { deploymentName } = useParams();

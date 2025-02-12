@@ -3,7 +3,7 @@ import { Spinner } from '@/components/spinner';
 import { DaemonSetsTable } from '@/components/daemonsets/daemonsets-table';
 import { ErrorAlert } from '@/components/error-alert';
 import { V1DaemonSet } from '@kubernetes/client-node';
-import { useListKubeResource } from '@/hooks/use-list-kube-resource';
+import { useListKubeResource } from '@/hooks/kube-resource/use-list-kube-resource';
 
 export const DaemonSets = () => {
   const { selectedKubeconfig, currentContext, currentNamespace } =
