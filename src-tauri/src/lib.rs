@@ -2,6 +2,7 @@ mod daemonsets;
 mod deployments;
 mod k8s_client;
 mod k8s_config;
+mod kubectl;
 mod namespaces;
 mod pods;
 mod statefulsets;
@@ -32,6 +33,10 @@ pub fn run() {
             deployments::get_deployment,
             daemonsets::get_daemonset,
             statefulsets::get_statefulset,
+            deployments::delete_deployment,
+            deployments::scale_deployment,
+            deployments::restart_deployment,
+            deployments::open_deployment_logs,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

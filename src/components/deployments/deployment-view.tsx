@@ -7,13 +7,19 @@ import { StatusBadge } from '@/components/status-badge';
 import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { StatusConditions } from '@/components/status-conditions';
 import { ContainersStatusTable } from '@/components/pods/containers-status-table';
+import { DeploymentActions } from './deployment-actions';
 
 interface DeploymentViewProps {
   deployment?: V1Deployment;
   onCopy: (text: string) => void;
+  onScale: (currentReplicas: number, replicas: number) => Promise<void>;
+  onDelete: () => Promise<void>;
+  onRestart: () => Promise<void>;
+  onLogs: (containerName?: string) => Promise<void>;
+  onOpenEvents: () => Promise<void>;
 }
 
-export const DeploymentView = ({ deployment, onCopy }: DeploymentViewProps) => {
+export const DeploymentView = ({ deployment, onCopy, onScale, onDelete, onRestart, onLogs, onOpenEvents }: DeploymentViewProps) => {
   if (!deployment) return null;
 
   const { metadata, status, spec } = deployment;
@@ -36,6 +42,7 @@ export const DeploymentView = ({ deployment, onCopy }: DeploymentViewProps) => {
             <TabsTrigger value="conditions">Conditions</TabsTrigger>
             <TabsTrigger value="container">Containers</TabsTrigger>
             <TabsTrigger value="source">Source</TabsTrigger>
+            <TabsTrigger value="actions">Actions</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
@@ -109,6 +116,18 @@ export const DeploymentView = ({ deployment, onCopy }: DeploymentViewProps) => {
               height="h-screen"
               content={deployment}
               onCopy={onCopy}
+            />
+          </TabsContent>
+
+          <TabsContent value="actions">
+            <DeploymentActions
+              deploymentName={deployment.metadata?.name}
+              currentReplicas={deployment.status?.replicas || 0}
+              onScale={onScale}
+              onDelete={onDelete}
+              onRestart={onRestart}
+              onLogs={onLogs}
+              onOpenEvents={onOpenEvents}
             />
           </TabsContent>
         </Tabs>
