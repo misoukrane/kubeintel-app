@@ -25,18 +25,6 @@ pub async fn get_deployment(
     k8s_client::get_resource::<Deployment>(client, &namespace, &name).await
 }
 
-// delete a deployment by name in a namespace
-#[tauri::command]
-pub async fn delete_deployment(
-    kubeconfig_path: String,
-    context: String,
-    namespace: String,
-    name: String,
-) -> Result<(), String> {
-    let client = k8s_client::create_k8s_client(kubeconfig_path, context).await?;
-    k8s_client::delete_resource::<Deployment>(client, &namespace, &name).await
-}
-
 // scale a deployment by name in a namespace
 #[tauri::command]
 pub async fn scale_deployment(

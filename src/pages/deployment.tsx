@@ -4,16 +4,18 @@ import { DeploymentView } from '@/components/deployments/deployment-view';
 import { ErrorAlert } from '@/components/error-alert';
 import { V1Deployment } from '@kubernetes/client-node';
 import { useGetKubeResource } from '@/hooks/use-get-kube-resource';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useClipboard } from '@/hooks/use-clipboard';
 import { useOpenEventsResource } from '@/hooks/use-open-events-resource';
 import { useDeleteKubeResource } from '@/hooks/use-delete-kube-resource';
 import { useScaleKubeResource } from '@/hooks/use-scale-kube-resource';
 import { useRestartKubeResource } from '@/hooks/use-restart-kube-resource';
 import { useLogsKubeResource } from '@/hooks/use-logs-kube-resource';
+import { ROUTES } from '@/lib/routes';
 
 export const Deployment = () => {
   const { deploymentName } = useParams();
+  const navigate = useNavigate();
   const { copyToClipboard } = useClipboard();
   const { selectedKubeconfig, currentContext, currentNamespace } =
     useConfigStore();
@@ -42,8 +44,11 @@ export const Deployment = () => {
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
-    resourceType: 'deployment',
+    resource: 'deployment',
     name: deploymentName,
+    onSuccess: () => {
+      navigate(ROUTES.DEPLOYMENTS);
+    },
   });
 
   const { mutate: scaleResource } = useScaleKubeResource({

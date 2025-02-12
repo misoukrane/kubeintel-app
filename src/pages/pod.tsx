@@ -4,16 +4,18 @@ import { PodView } from '@/components/pods/pod-view';
 import { ErrorAlert } from '@/components/error-alert';
 import { V1Pod } from '@kubernetes/client-node';
 import { useGetKubeResource } from '@/hooks/use-get-kube-resource';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useClipboard } from '@/hooks/use-clipboard';
 import { useOpenPodShell } from '@/hooks/use-open-pod-shell';
 import { useDeleteKubeResource } from '@/hooks/use-delete-kube-resource';
 import { useDebugPod } from '@/hooks/use-debug-pod';
 import { useOpenEventsResource } from '@/hooks/use-open-events-resource';
 import { useLogsKubeResource } from '@/hooks/use-logs-kube-resource';
+import { ROUTES } from '@/lib/routes';
 
 export const Pod = () => {
   const { podName } = useParams();
+  const navigate = useNavigate();
   const { copyToClipboard } = useClipboard();
   const { selectedKubeconfig, currentContext, currentNamespace } =
     useConfigStore();
@@ -64,8 +66,11 @@ export const Pod = () => {
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
-    resourceType: 'pod',
+    resource: 'pod',
     name: podName,
+    onSuccess: () => {
+      navigate(ROUTES.PODS);
+    },
   });
 
   return (

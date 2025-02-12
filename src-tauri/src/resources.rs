@@ -1,4 +1,29 @@
+use crate::k8s_client;
 use crate::kubectl::run_kubectl_command;
+use k8s_openapi::api::apps::v1::{DaemonSet, Deployment, StatefulSet};
+use k8s_openapi::api::core::v1::Pod;
+
+// delete a resource by name in a namespace
+#[tauri::command]
+pub async fn delete_resource(
+    kubeconfig_path: String,
+    context: String,
+    namespace: String,
+    resource: String,
+    name: String,
+) -> Result<(), String> {
+    let client = k8s_client::create_k8s_client(kubeconfig_path, context).await?;
+
+    match resource.as_str() {
+        "pod" => k8s_client::delete_resource::<Pod>(client, &namespace, &name).await,
+        "deployment" => k8s_client::delete_resource::<Deployment>(client, &namespace, &name).await,
+        "statefulset" => {
+            k8s_client::delete_resource::<StatefulSet>(client, &namespace, &name).await
+        }
+        "daemonset" => k8s_client::delete_resource::<DaemonSet>(client, &namespace, &name).await,
+        _ => Err(format!("Unsupported resource type: {}", resource)),
+    }
+}
 
 // get resource events in terminal
 #[tauri::command]
