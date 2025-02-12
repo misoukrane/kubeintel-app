@@ -8,7 +8,6 @@ import {
   Trash2,
   FileTerminal,
   AlertTriangle,
-  ArrowUpDown,
 } from "lucide-react"
 import {
   Command,
@@ -50,7 +49,7 @@ type ScaleFormValues = {
 interface DeploymentActionsProps {
   deploymentName?: string;
   currentReplicas: number;
-  onScale: (currentReplicas: number, replicas: number) => Promise<void>;
+  onScale?: (currentReplicas: number, replicas: number) => Promise<void>;
   onDelete: () => Promise<void>;
   onRestart: () => Promise<void>;
   onLogs: (containerName?: string) => Promise<void>;
@@ -84,6 +83,9 @@ export const DeploymentActions = ({
 
   // Update handleScale to parse the number
   const handleScale = async (values: ScaleFormValues) => {
+    if (!onScale) {
+      return
+    }
     await onScale(currentReplicas, parseInt(values.replicas, 10));
     setScaleDialogOpen(false);
   }
@@ -96,19 +98,19 @@ export const DeploymentActions = ({
           <CommandEmpty>No actions found.</CommandEmpty>
 
           <CommandGroup heading="Common Actions">
-            <CommandItem onSelect={() => setScaleDialogOpen(true)}>
+            {onScale && (<CommandItem onSelect={() => setScaleDialogOpen(true)}>
               <Scale className="mr-2 h-4 w-4" />
               <span>Scale Deployment</span>
-            </CommandItem>
+            </CommandItem>)}
             <CommandItem onSelect={onRestart}>
               <RefreshCw className="mr-2 h-4 w-4" />
               <span>Rolling Restart</span>
             </CommandItem>
-            <CommandItem onSelect={onLogs}>
+            <CommandItem onSelect={() => { onLogs() }}>
               <FileTerminal className="mr-2 h-4 w-4" />
               <span>View Logs</span>
             </CommandItem>
-            <CommandItem onSelect={onOpenEvents}>
+            <CommandItem onSelect={() => onOpenEvents()}>
               <FileTerminal className="mr-2 h-4 w-4" />
               <span>View Events</span>
             </CommandItem>
@@ -150,56 +152,58 @@ export const DeploymentActions = ({
       </Dialog>
 
       {/* Scale Dialog */}
-      <Dialog open={scaleDialogOpen} onOpenChange={(open) => { setScaleDialogOpen(open); if (!open) form.reset(); }} >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Scale Deployment</DialogTitle>
-            <DialogDescription>
-              Adjust the number of replicas for deployment {deploymentName}
-            </DialogDescription>
-          </DialogHeader>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleScale)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="replicas"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Number of Replicas</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter number of replicas..."
-                        type="number"
-                        min="0"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Current replicas: {currentReplicas}
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <DialogFooter>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setScaleDialogOpen(false)
-                    form.reset()
-                  }}
-                  type="button"
-                >
-                  Cancel
-                </Button>
-                <Button type="submit">
-                  Scale Deployment
-                </Button>
-              </DialogFooter>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
+      {onScale && (
+        <Dialog open={scaleDialogOpen} onOpenChange={(open) => { setScaleDialogOpen(open); if (!open) form.reset(); }} >
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Scale Deployment</DialogTitle>
+              <DialogDescription>
+                Adjust the number of replicas for deployment {deploymentName}
+              </DialogDescription>
+            </DialogHeader>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(handleScale)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="replicas"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col items-center">
+                      <FormLabel>Number of Replicas</FormLabel>
+                      <FormControl className="w-24">
+                        <Input
+                          placeholder="Enter number of replicas..."
+                          type="number"
+                          min="0"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Current replicas: {currentReplicas}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <DialogFooter>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setScaleDialogOpen(false)
+                      form.reset()
+                    }}
+                    type="button"
+                  >
+                    Cancel
+                  </Button>
+                  <Button type="submit">
+                    Scale Deployment
+                  </Button>
+                </DialogFooter>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   )
 }

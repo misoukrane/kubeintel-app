@@ -37,6 +37,7 @@ pub fn run() {
             deployments::scale_deployment,
             deployments::restart_deployment,
             deployments::open_deployment_logs,
+            deployments::open_deployment_events,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

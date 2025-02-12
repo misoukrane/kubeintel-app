@@ -92,3 +92,19 @@ pub async fn open_deployment_logs(
     run_kubectl_command(&cmd_string)?;
     Ok(())
 }
+
+// get deployment events
+#[tauri::command]
+pub async fn open_deployment_events(
+    kubeconfig_path: String,
+    context: String,
+    namespace: String,
+    name: String,
+) -> Result<(), String> {
+    let cmd_string = format!(
+        "--kubeconfig {} --context {} get events -n {} --field-selector involvedObject.name={},involvedObject.kind={}",
+        kubeconfig_path, context, namespace, name , "Deployment"
+    );
+    run_kubectl_command(&cmd_string)?;
+    Ok(())
+}
