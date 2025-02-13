@@ -28,7 +28,7 @@ import {
   PaginationState,
 } from '@tanstack/react-table';
 import { Input } from '@/components/ui/input';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { SortableHeader } from '@/components/table/sortable-header';
 import { DataTablePagination } from '@/components/table/data-table-pagination';
@@ -44,7 +44,16 @@ interface PodsTableProps {
 }
 
 export const PodsTable = ({ pods, initialFilters }: PodsTableProps) => {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  // Create initial filters array
+  const initialColumnFilters: ColumnFiltersState = [
+    ...(initialFilters.name ? [{ id: 'name', value: initialFilters.name }] : []),
+    ...(initialFilters.status ? [{ id: 'phase', value: initialFilters.status }] : []),
+    ...(initialFilters.node ? [{ id: 'nodeName', value: initialFilters.node }] : []),
+    ...(initialFilters.labelSelector ? [{ id: 'labels', value: initialFilters.labelSelector }] : []),
+  ];
+
+  // Initialize state with the filters
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(initialColumnFilters);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -53,41 +62,6 @@ export const PodsTable = ({ pods, initialFilters }: PodsTableProps) => {
   const [_, setColumnVisibility] = useState<{
     [key: string]: boolean;
   }>({ labels: false });
-
-  // Initialize filters from URL params
-  useEffect(() => {
-    const filters: ColumnFiltersState = [];
-
-    if (initialFilters.name) {
-      filters.push({
-        id: 'metadata.name',
-        value: initialFilters.name,
-      });
-    }
-
-    if (initialFilters.status) {
-      filters.push({
-        id: 'status.phase',
-        value: initialFilters.status,
-      });
-    }
-
-    if (initialFilters.node) {
-      filters.push({
-        id: 'spec.nodeName',
-        value: initialFilters.node,
-      });
-    }
-
-    if (initialFilters.labelSelector) {
-      filters.push({
-        id: 'labels', // Use the same id as defined in the column
-        value: initialFilters.labelSelector,
-      });
-    }
-
-    setColumnFilters(filters);
-  }, [initialFilters]);
 
   const columns: ColumnDef<V1Pod>[] = [
     {
