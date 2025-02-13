@@ -67,6 +67,7 @@ where
     Ok(())
 }
 
+#[allow(dead_code)]
 pub async fn list_events<T>(
     client: Client,
     namespace: &str,

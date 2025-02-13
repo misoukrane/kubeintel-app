@@ -2,6 +2,16 @@ use crate::k8s_client;
 use crate::kubectl::run_kubectl_command;
 use k8s_openapi::api::apps::v1::{DaemonSet, Deployment, StatefulSet};
 use k8s_openapi::api::core::v1::Pod;
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(tag = "kind")]
+pub enum KubeResource {
+    Pod(Pod),
+    Deployment(Deployment),
+    StatefulSet(StatefulSet),
+    DaemonSet(DaemonSet),
+}
 
 // delete a resource by name in a namespace
 #[tauri::command]
@@ -9,19 +19,19 @@ pub async fn delete_resource(
     kubeconfig_path: String,
     context: String,
     namespace: String,
-    resource: String,
+    resource_type: String,
     name: String,
 ) -> Result<(), String> {
     let client = k8s_client::create_k8s_client(kubeconfig_path, context).await?;
 
-    match resource.as_str() {
+    match resource_type.as_str() {
         "pod" => k8s_client::delete_resource::<Pod>(client, &namespace, &name).await,
         "deployment" => k8s_client::delete_resource::<Deployment>(client, &namespace, &name).await,
         "statefulset" => {
             k8s_client::delete_resource::<StatefulSet>(client, &namespace, &name).await
         }
         "daemonset" => k8s_client::delete_resource::<DaemonSet>(client, &namespace, &name).await,
-        _ => Err(format!("Unsupported resource type: {}", resource)),
+        _ => Err(format!("Unsupported resource type: {}", resource_type)),
     }
 }
 
@@ -31,11 +41,17 @@ pub async fn open_resource_events_in_terminal(
     kubeconfig_path: String,
     context: String,
     namespace: String,
-    resource: String,
+    resource_type: String,
     name: String,
 ) -> Result<(), String> {
     // capitalize the first letter of the resource
-    let resource = resource.chars().next().unwrap().to_uppercase().to_string() + &resource[1..];
+    let resource = resource_type
+        .chars()
+        .next()
+        .unwrap()
+        .to_uppercase()
+        .to_string()
+        + &resource_type[1..];
     let cmd_string = format!(
         "--kubeconfig {} --context {} get events -n {} --field-selector involvedObject.name={},involvedObject.kind={}",
         kubeconfig_path, context, namespace, name, resource
@@ -49,7 +65,7 @@ pub async fn open_resource_logs_in_terminal(
     kubeconfig_path: String,
     context: String,
     namespace: String,
-    resource: String,
+    resource_type: String,
     name: String,
     container_name: Option<String>,
 ) -> Result<(), String> {
@@ -60,7 +76,7 @@ pub async fn open_resource_logs_in_terminal(
     );
 
     // Add resource-specific flags
-    match resource.as_str() {
+    match resource_type.as_str() {
         "deployment" => {
             cmd_string = format!("{} -f deployment/{} --all-pods", cmd_string, name);
         }
@@ -73,7 +89,7 @@ pub async fn open_resource_logs_in_terminal(
         "pod" => {
             cmd_string = format!("{} {}", cmd_string, name);
         }
-        _ => return Err(format!("Unsupported resource type: {}", resource)),
+        _ => return Err(format!("Unsupported resource type: {}", resource_type)),
     }
 
     // Add container specification if provided
@@ -86,4 +102,37 @@ pub async fn open_resource_logs_in_terminal(
     // Execute the command
     run_kubectl_command(&cmd_string)?;
     Ok(())
+}
+
+#[tauri::command]
+pub async fn get_resource(
+    kubeconfig_path: String,
+    context: String,
+    namespace: String,
+    resource_type: String,
+    name: String,
+) -> Result<KubeResource, String> {
+    let client = k8s_client::create_k8s_client(kubeconfig_path, context).await?;
+
+    match resource_type.as_str() {
+        "pod" => {
+            let resource = k8s_client::get_resource::<Pod>(client, &namespace, &name).await?;
+            Ok(KubeResource::Pod(resource))
+        }
+        "deployment" => {
+            let resource =
+                k8s_client::get_resource::<Deployment>(client, &namespace, &name).await?;
+            Ok(KubeResource::Deployment(resource))
+        }
+        "statefulset" => {
+            let resource =
+                k8s_client::get_resource::<StatefulSet>(client, &namespace, &name).await?;
+            Ok(KubeResource::StatefulSet(resource))
+        }
+        "daemonset" => {
+            let resource = k8s_client::get_resource::<DaemonSet>(client, &namespace, &name).await?;
+            Ok(KubeResource::DaemonSet(resource))
+        }
+        _ => Err(format!("Unsupported resource type: {}", resource_type)),
+    }
 }

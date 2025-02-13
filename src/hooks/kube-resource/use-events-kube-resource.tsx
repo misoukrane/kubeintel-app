@@ -6,7 +6,7 @@ interface EventsKubeResourceProps {
   kubeconfigPath?: string;
   context?: string;
   namespace?: string;
-  resource: string;
+  resourceType: string;
   name?: string;
 }
 
@@ -14,7 +14,7 @@ export const useEventsKubeResource = ({
   kubeconfigPath,
   context,
   namespace,
-  resource,
+  resourceType,
   name,
 }: EventsKubeResourceProps) => {
   const { toast } = useToast();
@@ -29,20 +29,20 @@ export const useEventsKubeResource = ({
         kubeconfigPath,
         context,
         namespace,
-        resource,
+        resourceType,
         name,
       });
     },
     onSuccess: () => {
       toast({
         title: 'Events opened',
-        description: `Opening events for ${resource} ${name}`,
+        description: `Opening events for ${resourceType} ${name}`,
       });
     },
     onError: (error) => {
       toast({
         variant: 'destructive',
-        title: `Failed to open ${resource} events`,
+        title: `Failed to open ${resourceType} events`,
         description:
           error instanceof Error ? error.message : JSON.stringify(error),
       });

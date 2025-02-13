@@ -6,7 +6,7 @@ interface DeleteKubeResourceProps {
   kubeconfigPath?: string;
   context?: string;
   namespace?: string;
-  resource: string;
+  resourceType: string;
   name?: string;
   onSuccess?: () => void;
 }
@@ -15,7 +15,7 @@ export const useDeleteKubeResource = ({
   kubeconfigPath,
   context,
   namespace,
-  resource,
+  resourceType,
   name,
   onSuccess,
 }: DeleteKubeResourceProps) => {
@@ -32,19 +32,19 @@ export const useDeleteKubeResource = ({
         kubeconfigPath,
         context,
         namespace,
-        resource,
+        resourceType,
         name,
       });
     },
     onSuccess: () => {
       // Invalidate queries to refetch the list
       queryClient.invalidateQueries({
-        queryKey: ['resources', resource, kubeconfigPath, context, namespace],
+        queryKey: ['resources', resourceType, kubeconfigPath, context, namespace],
       });
 
       toast({
         title: 'Success',
-        description: `${resource} ${name} was deleted successfully`,
+        description: `${resourceType} ${name} was deleted successfully`,
       });
 
       // Call onSuccess callback if provided
@@ -53,7 +53,7 @@ export const useDeleteKubeResource = ({
     onError: (error) => {
       toast({
         variant: 'destructive',
-        title: `Failed to delete ${resource}`,
+        title: `Failed to delete ${resourceType}`,
         description:
           error instanceof Error ? error.message : JSON.stringify(error),
       });

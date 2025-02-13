@@ -6,7 +6,7 @@ interface LogsKubeResourceProps {
   kubeconfigPath?: string;
   context?: string;
   namespace?: string;
-  resource: string;
+  resourceType: string;
   name?: string;
 }
 
@@ -14,7 +14,7 @@ export const useLogsKubeResource = ({
   kubeconfigPath,
   context,
   namespace,
-  resource,
+  resourceType,
   name,
 }: LogsKubeResourceProps) => {
   const { toast } = useToast();
@@ -29,7 +29,7 @@ export const useLogsKubeResource = ({
         kubeconfigPath,
         context,
         namespace,
-        resource,
+        resourceType,
         name,
         containerName,
       });
@@ -37,13 +37,13 @@ export const useLogsKubeResource = ({
     onSuccess: (_, containerName) => {
       toast({
         title: 'Logs opened',
-        description: `Opening logs for ${resource} ${name}${containerName ? ` (container: ${containerName})` : ''}`,
+        description: `Opening logs for ${resourceType} ${name}${containerName ? ` (container: ${containerName})` : ''}`,
       });
     },
     onError: (error) => {
       toast({
         variant: 'destructive',
-        title: `Failed to open ${resource} logs`,
+        title: `Failed to open ${resourceType} logs`,
         description:
           error instanceof Error ? error.message : JSON.stringify(error),
       });

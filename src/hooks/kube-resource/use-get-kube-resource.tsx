@@ -30,15 +30,18 @@ export const useGetKubeResource = <T extends object>({
         throw new Error('Missing required parameters');
       }
 
-      return invoke<T>(`get_${resourceType}`, {
+      const result = await invoke<T>('get_resource', {
         kubeconfigPath,
         context,
         namespace,
+        resourceType,
         name,
       });
+
+      return result;
     },
     enabled: Boolean(kubeconfigPath && context && namespace && name),
-    retry: 1, // Limits retries to 2 attempts
-    retryDelay: 500, // Waits 1 second between retries
+    retry: 1,
+    retryDelay: 500,
   });
 };

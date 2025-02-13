@@ -38,7 +38,7 @@ export const useKubeResource = <T extends object>({
     kubeconfigPath,
     context,
     namespace,
-    resource: resourceType,
+    resourceType,
     name,
     onSuccess: onDeleteSuccess,
   });
@@ -47,7 +47,7 @@ export const useKubeResource = <T extends object>({
     kubeconfigPath,
     context,
     namespace,
-    resource: resourceType,
+    resourceType,
     name,
   });
 
@@ -55,7 +55,7 @@ export const useKubeResource = <T extends object>({
     kubeconfigPath,
     context,
     namespace,
-    resource: resourceType,
+    resourceType,
     name,
   });
 
