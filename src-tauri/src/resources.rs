@@ -199,3 +199,20 @@ pub async fn scale_resource(
     run_kubectl_command(&cmd_string)?;
     Ok(())
 }
+
+// restart resource by name in a namespace
+#[tauri::command]
+pub async fn restart_resource(
+    kubeconfig_path: String,
+    context: String,
+    namespace: String,
+    resource_type: String,
+    name: String,
+) -> Result<(), String> {
+    let cmd_string = format!(
+        "--kubeconfig {} --context {} rollout restart {} {} -n {}",
+        kubeconfig_path, context, resource_type, name, namespace
+    );
+    run_kubectl_command(&cmd_string)?;
+    Ok(())
+}

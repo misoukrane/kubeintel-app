@@ -26,10 +26,11 @@ export const useRestartKubeResource = ({
         throw new Error('Missing required parameters');
       }
 
-      return invoke(`restart_${resourceType}`, {
+      return invoke(`restart_resource`, {
         kubeconfigPath,
         context,
         namespace,
+        resourceType,
         name,
       });
     },

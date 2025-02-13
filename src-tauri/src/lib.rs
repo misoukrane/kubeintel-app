@@ -25,6 +25,7 @@ pub fn run() {
             resources::list_resource,
             resources::delete_resource,
             resources::scale_resource,
+            resources::restart_resource,
             resources::open_resource_events_in_terminal,
             resources::open_resource_logs_in_terminal,
         ])
