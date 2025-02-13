@@ -17,7 +17,7 @@ export const StatefulSets = () => {
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
-    resourceType: 'statefulsets',
+    resourceType: 'statefulset',
   });
 
   return (

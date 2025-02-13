@@ -104,6 +104,7 @@ pub async fn open_resource_logs_in_terminal(
     Ok(())
 }
 
+// get a resource by name in a namespace
 #[tauri::command]
 pub async fn get_resource(
     kubeconfig_path: String,
@@ -132,6 +133,43 @@ pub async fn get_resource(
         "daemonset" => {
             let resource = k8s_client::get_resource::<DaemonSet>(client, &namespace, &name).await?;
             Ok(KubeResource::DaemonSet(resource))
+        }
+        _ => Err(format!("Unsupported resource type: {}", resource_type)),
+    }
+}
+
+// list a resource by name in a namespace
+#[tauri::command]
+pub async fn list_resource(
+    kubeconfig_path: String,
+    context: String,
+    namespace: String,
+    resource_type: String,
+) -> Result<Vec<KubeResource>, String> {
+    let client = k8s_client::create_k8s_client(kubeconfig_path, context).await?;
+
+    match resource_type.as_str() {
+        "pod" => {
+            let resources = k8s_client::list_resources::<Pod>(client, &namespace).await?;
+            Ok(resources.into_iter().map(KubeResource::Pod).collect())
+        }
+        "deployment" => {
+            let resources = k8s_client::list_resources::<Deployment>(client, &namespace).await?;
+            Ok(resources
+                .into_iter()
+                .map(KubeResource::Deployment)
+                .collect())
+        }
+        "statefulset" => {
+            let resources = k8s_client::list_resources::<StatefulSet>(client, &namespace).await?;
+            Ok(resources
+                .into_iter()
+                .map(KubeResource::StatefulSet)
+                .collect())
+        }
+        "daemonset" => {
+            let resources = k8s_client::list_resources::<DaemonSet>(client, &namespace).await?;
+            Ok(resources.into_iter().map(KubeResource::DaemonSet).collect())
         }
         _ => Err(format!("Unsupported resource type: {}", resource_type)),
     }

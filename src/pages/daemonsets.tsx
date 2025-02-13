@@ -17,7 +17,7 @@ export const DaemonSets = () => {
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
-    resourceType: 'daemonsets',
+    resourceType: 'daemonset',
   });
 
   return (

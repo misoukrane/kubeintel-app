@@ -17,7 +17,7 @@ export const Pods = () => {
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
-    resourceType: 'pods',
+    resourceType: 'pod',
   });
 
   return (

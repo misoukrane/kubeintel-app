@@ -17,7 +17,7 @@ export const Deployments = () => {
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
-    resourceType: 'deployments',
+    resourceType: 'deployment',
   });
 
   return (

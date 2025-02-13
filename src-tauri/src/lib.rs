@@ -1,4 +1,3 @@
-mod daemonsets;
 mod deployments;
 mod k8s_client;
 mod k8s_config;
@@ -6,7 +5,6 @@ mod kubectl;
 mod namespaces;
 mod pods;
 mod resources;
-mod statefulsets;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -20,15 +18,12 @@ pub fn run() {
             k8s_config::read_kubeconfig,
             k8s_config::cluster_info,
             namespaces::list_namespaces,
-            pods::list_pods,
-            deployments::list_deployments,
-            daemonsets::list_daemonsets,
-            statefulsets::list_statefulsets,
             pods::open_pod_shell,
             pods::debug_pod,
             deployments::scale_deployment,
             deployments::restart_deployment,
             resources::get_resource,
+            resources::list_resource,
             resources::delete_resource,
             resources::open_resource_events_in_terminal,
             resources::open_resource_logs_in_terminal,

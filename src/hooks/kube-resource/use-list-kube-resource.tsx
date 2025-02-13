@@ -21,10 +21,11 @@ export const useListKubeResource = <T extends object>({
         throw new Error('Missing required parameters');
       }
 
-      return invoke<T[]>(`list_${resourceType}`, {
+      return invoke<T[]>(`list_resource`, {
         kubeconfigPath,
         context,
         namespace,
+        resourceType,
       });
     },
     enabled: Boolean(kubeconfigPath && context && namespace),
