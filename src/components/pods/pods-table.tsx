@@ -28,25 +28,70 @@ import {
   PaginationState,
 } from '@tanstack/react-table';
 import { Input } from '@/components/ui/input';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { SortableHeader } from '@/components/table/sortable-header';
 import { DataTablePagination } from '@/components/table/data-table-pagination';
 
 interface PodsTableProps {
   pods: Array<V1Pod>;
+  initialFilters: {
+    name: string;
+    status: string;
+    node: string;
+    labelSelector: string;
+  };
 }
 
-export const PodsTable = ({ pods }: PodsTableProps) => {
+export const PodsTable = ({ pods, initialFilters }: PodsTableProps) => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
+  const [_, setColumnVisibility] = useState<{
+    [key: string]: boolean;
+  }>({ labels: false });
+
+  // Initialize filters from URL params
+  useEffect(() => {
+    const filters: ColumnFiltersState = [];
+
+    if (initialFilters.name) {
+      filters.push({
+        id: 'metadata.name',
+        value: initialFilters.name,
+      });
+    }
+
+    if (initialFilters.status) {
+      filters.push({
+        id: 'status.phase',
+        value: initialFilters.status,
+      });
+    }
+
+    if (initialFilters.node) {
+      filters.push({
+        id: 'spec.nodeName',
+        value: initialFilters.node,
+      });
+    }
+
+    if (initialFilters.labelSelector) {
+      filters.push({
+        id: 'labels', // Use the same id as defined in the column
+        value: initialFilters.labelSelector,
+      });
+    }
+
+    setColumnFilters(filters);
+  }, [initialFilters]);
 
   const columns: ColumnDef<V1Pod>[] = [
     {
+      id: 'name', // Add explicit id
       accessorKey: 'metadata.name',
       header: ({ column }) => <SortableHeader column={column} title="Name" />,
       cell: ({ row }) => {
@@ -68,6 +113,7 @@ export const PodsTable = ({ pods }: PodsTableProps) => {
       cell: ({ row }) => row.original.metadata?.namespace,
     },
     {
+      id: 'phase', // Add explicit id
       accessorKey: 'status.phase',
       header: ({ column }) => <SortableHeader column={column} title="Status" />,
       cell: ({ row }) => row.original.status?.phase,
@@ -95,6 +141,7 @@ export const PodsTable = ({ pods }: PodsTableProps) => {
       },
     },
     {
+      id: 'nodeName', // Add explicit id
       accessorKey: 'spec.nodeName',
       header: ({ column }) => <SortableHeader column={column} title="Node" />,
       cell: ({ row }) => {
@@ -117,6 +164,51 @@ export const PodsTable = ({ pods }: PodsTableProps) => {
       ),
       cell: ({ row }) => row.original.status?.podIP,
     },
+    {
+      id: 'labels', // Add explicit id
+      accessorKey: 'metadata.labels',
+      header: ({ column }) => <SortableHeader column={column} title="Labels" />,
+      enableHiding: true, // Enable column hiding
+      cell: ({ row }) => {
+        const labels = row.original.metadata?.labels || {};
+        return (
+          <div className="flex flex-wrap gap-1">
+            {Object.entries(labels).map(([key, value]) => (
+              <span
+                key={key}
+                className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold"
+              >
+                {key}={value}
+              </span>
+            ))}
+          </div>
+        );
+      },
+      filterFn: (row, _, filterValue) => {
+        const labels = row.original.metadata?.labels || {};
+
+        // Handle empty or invalid filter value
+        if (!filterValue) return true;
+
+        const labelSelectors = (filterValue as string)
+          .split(',')
+          .filter(Boolean); // Remove empty strings
+
+        // If no valid selectors, show all pods
+        if (labelSelectors.length === 0) return true;
+
+        return labelSelectors.every(selector => {
+          // Skip invalid selectors
+          if (!selector.includes('=')) return true;
+
+          const [key, value] = selector.split('=').map(s => s.trim());
+          // Skip if key or value is empty
+          if (!key || !value) return true;
+
+          return labels[key] === value;
+        });
+      },
+    },
   ];
 
   const table = useReactTable({
@@ -133,7 +225,10 @@ export const PodsTable = ({ pods }: PodsTableProps) => {
       columnFilters,
       sorting,
       pagination,
+      columnVisibility: { labels: false }, // Hide labels column by default
     },
+    // Add this to enable column visibility state
+    onColumnVisibilityChange: setColumnVisibility,
   });
 
   return (
@@ -143,11 +238,11 @@ export const PodsTable = ({ pods }: PodsTableProps) => {
           <AccordionItem value="item-1">
             <AccordionTrigger>Filters</AccordionTrigger>
             <AccordionContent className="p-4">
-              <div className="grid grid-cols-3 gap-4 mt-4">
+              <div className="grid grid-cols-4 gap-4 mt-4">
                 {table
                   .getAllColumns()
                   .filter((column) =>
-                    ['metadata_name', 'status_phase', 'spec_nodeName'].includes(
+                    ['name', 'phase', 'nodeName', 'labels'].includes( // Update id here
                       column.id
                     )
                   )
@@ -155,12 +250,15 @@ export const PodsTable = ({ pods }: PodsTableProps) => {
                     return (
                       <div key={column.id}>
                         <Input
-                          placeholder={`Filter ${column.id.split('_').pop()}...`}
+                          placeholder={`Filter ${column.id === 'labels' // Update id here
+                            ? 'labels (key=value,...)'
+                            : column.id.split('.').pop()
+                            }...`}
                           value={(column.getFilterValue() as string) ?? ''}
                           onChange={(e) =>
                             column.setFilterValue(e.target.value)
                           }
-                          className="max-w-xs "
+                          className="max-w-xs"
                         />
                       </div>
                     );

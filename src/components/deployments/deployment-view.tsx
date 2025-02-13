@@ -8,6 +8,8 @@ import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { StatusConditions } from '@/components/status-conditions';
 import { ContainersStatusTable } from '@/components/pods/containers-status-table';
 import { DeploymentActions } from './deployment-actions';
+import { Link } from 'react-router';
+import { createLabelSelector } from '@/lib/strings';
 
 interface DeploymentViewProps {
   deployment?: V1Deployment;
@@ -23,6 +25,9 @@ export const DeploymentView = ({ deployment, onCopy, onScale, onDelete, onRestar
   if (!deployment) return null;
 
   const { metadata, status, spec } = deployment;
+
+  // Create the label selector string from the deployment's selector
+  const labelSelector = createLabelSelector(spec?.selector?.matchLabels);
 
   return (
     <Card className="max-w-6xl mx-auto">
@@ -53,7 +58,9 @@ export const DeploymentView = ({ deployment, onCopy, onScale, onDelete, onRestar
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <h3 className="font-medium">Replicas</h3>
-                      <p>{status?.replicas || 0} total</p>
+                      <p>
+                        {status?.replicas || 0} total
+                      </p>
                     </div>
                     <div>
                       <h3 className="font-medium">Available</h3>
@@ -70,6 +77,18 @@ export const DeploymentView = ({ deployment, onCopy, onScale, onDelete, onRestar
                     <div>
                       <h3 className="font-medium">Selector</h3>
                       <p>{Object.entries(spec?.selector?.matchLabels || {}).map(([k, v]) => `${k}=${v}`).join(', ') || 'N/A'}</p>
+                    </div>
+                    <div>
+                      {labelSelector && (
+                        <>
+                          <h3 className="font-medium">Pods</h3>
+                          <p>
+                            <Link
+                              className='text-blue-600 hover:underline dark:text-blue-500'
+                              to={`/pods?labelSelector=${encodeURIComponent(labelSelector)}`}
+                            >View Pods →</Link>
+                          </p>
+                        </>)}
                     </div>
                   </div>
                 </AccordionContent>
