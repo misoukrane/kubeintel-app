@@ -174,3 +174,28 @@ pub async fn list_resource(
         _ => Err(format!("Unsupported resource type: {}", resource_type)),
     }
 }
+
+// scale a resource by name in a namespace
+// this will only be allowed for resources that support scaling
+#[tauri::command]
+pub async fn scale_resource(
+    kubeconfig_path: String,
+    context: String,
+    namespace: String,
+    resource_type: String,
+    name: String,
+    current_replicas: i32,
+    replicas: i32,
+) -> Result<(), String> {
+    // resources that can be scaled
+    let resources = ["deployment", "replicaset", "statefulset"];
+    if !resources.contains(&resource_type.as_str()) {
+        return Err(format!("Resource type {} cannot be scaled", resource_type));
+    }
+    let cmd_string = format!(
+        "--kubeconfig {} --context {} scale {} {} -n {} --current-replicas={} --replicas={}",
+        kubeconfig_path, context, resource_type, name, namespace, current_replicas, replicas,
+    );
+    run_kubectl_command(&cmd_string)?;
+    Ok(())
+}

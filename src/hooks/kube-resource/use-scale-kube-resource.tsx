@@ -32,10 +32,11 @@ export const useScaleKubeResource = ({
         throw new Error('Missing required parameters');
       }
 
-      return invoke(`scale_${resourceType}`, {
+      return invoke(`scale_resource`, {
         kubeconfigPath,
         context,
         namespace,
+        resourceType,
         name,
         currentReplicas,
         replicas,

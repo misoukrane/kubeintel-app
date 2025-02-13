@@ -20,11 +20,11 @@ pub fn run() {
             namespaces::list_namespaces,
             pods::open_pod_shell,
             pods::debug_pod,
-            deployments::scale_deployment,
             deployments::restart_deployment,
             resources::get_resource,
             resources::list_resource,
             resources::delete_resource,
+            resources::scale_resource,
             resources::open_resource_events_in_terminal,
             resources::open_resource_logs_in_terminal,
         ])
