@@ -28,10 +28,11 @@ import {
   PaginationState,
 } from '@tanstack/react-table';
 import { Input } from '@/components/ui/input';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { SortableHeader } from '@/components/table/sortable-header';
 import { DataTablePagination } from '@/components/table/data-table-pagination';
+import { MultiSelect } from '@/components/ui/multi-select';
 
 interface PodsTableProps {
   pods: Array<V1Pod>;
@@ -62,6 +63,28 @@ export const PodsTable = ({ pods, initialFilters }: PodsTableProps) => {
   const [_, setColumnVisibility] = useState<{
     [key: string]: boolean;
   }>({ labels: false });
+
+  // Create unique label options from all pods
+  const labelOptions = useMemo(() => {
+    const labelSet = new Set<string>();
+    pods.forEach(pod => {
+      const labels = pod.metadata?.labels || {};
+      Object.entries(labels).forEach(([key, value]) => {
+        labelSet.add(`${key}=${value}`);
+      });
+    });
+    return Array.from(labelSet).map(label => ({
+      label,
+      value: label,
+    }));
+  }, [pods]);
+
+  // Convert label selector string to array and back
+  const labelSelectorToArray = (selector: string) =>
+    selector.split(',').filter(Boolean);
+
+  const arrayToLabelSelector = (array: string[]) =>
+    array.join(',');
 
   const columns: ColumnDef<V1Pod>[] = [
     {
@@ -216,18 +239,13 @@ export const PodsTable = ({ pods, initialFilters }: PodsTableProps) => {
                 {table
                   .getAllColumns()
                   .filter((column) =>
-                    ['name', 'phase', 'nodeName', 'labels'].includes( // Update id here
-                      column.id
-                    )
+                    ['name', 'phase', 'nodeName'].includes(column.id)
                   )
                   .map((column) => {
                     return (
                       <div key={column.id}>
                         <Input
-                          placeholder={`Filter ${column.id === 'labels' // Update id here
-                            ? 'labels (key=value,...)'
-                            : column.id.split('.').pop()
-                            }...`}
+                          placeholder={`Filter ${column.id.split('.').pop()}...`}
                           value={(column.getFilterValue() as string) ?? ''}
                           onChange={(e) =>
                             column.setFilterValue(e.target.value)
@@ -237,6 +255,20 @@ export const PodsTable = ({ pods, initialFilters }: PodsTableProps) => {
                       </div>
                     );
                   })}
+                <div>
+                  <MultiSelect
+                    options={labelOptions}
+                    placeholder="Filter by labels..."
+                    defaultValue={labelSelectorToArray(initialFilters.labelSelector)}
+                    onValueChange={(values) => {
+                      const labelColumn = table.getColumn('labels');
+                      if (labelColumn) {
+                        labelColumn.setFilterValue(arrayToLabelSelector(values));
+                      }
+                    }}
+                    className="max-w-xs"
+                  />
+                </div>
               </div>
             </AccordionContent>
           </AccordionItem>
