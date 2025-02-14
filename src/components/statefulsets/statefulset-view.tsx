@@ -7,6 +7,8 @@ import { StatusBadge } from '@/components/status-badge';
 import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { StatusConditions } from '@/components/status-conditions';
 import { ContainersStatusTable } from '@/components/pods/containers-status-table';
+import { Link } from 'react-router';
+import { createLabelSelector } from '@/lib/strings';
 
 interface StatefulSetViewProps {
   statefulSet?: V1StatefulSet;
@@ -17,6 +19,9 @@ export const StatefulSetView = ({ statefulSet, onCopy }: StatefulSetViewProps) =
   if (!statefulSet) return null;
 
   const { metadata, status, spec } = statefulSet;
+
+  // Create the label selector string from the statefulset's selector
+  const labelSelector = createLabelSelector(spec?.selector?.matchLabels);
 
   return (
     <Card className="max-w-6xl mx-auto">
@@ -67,6 +72,27 @@ export const StatefulSetView = ({ statefulSet, onCopy }: StatefulSetViewProps) =
                     <div>
                       <h3 className="font-medium">Pod Management</h3>
                       <p>{spec?.podManagementPolicy || 'OrderedReady'}</p>
+                    </div>
+                    <div>
+                      <h3 className="font-medium">Selector</h3>
+                      <p>
+                        {Object.entries(spec?.selector?.matchLabels || {})
+                          .map(([k, v]) => `${k}=${v}`)
+                          .join(', ') || 'N/A'}
+                      </p>
+                    </div>
+                    <div>
+                      {labelSelector && (
+                        <>
+                          <h3 className="font-medium">Pods</h3>
+                          <p>
+                            <Link
+                              className='text-blue-600 hover:underline dark:text-blue-500'
+                              to={`/pods?labelSelector=${encodeURIComponent(labelSelector)}`}
+                            >View Pods →</Link>
+                          </p>
+                        </>
+                      )}
                     </div>
                   </div>
                 </AccordionContent>

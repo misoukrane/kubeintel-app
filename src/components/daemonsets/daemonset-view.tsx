@@ -7,6 +7,8 @@ import { StatusBadge } from '@/components/status-badge';
 import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { ContainersStatusTable } from '@/components/pods/containers-status-table';
 import { StatusConditions } from '@/components/status-conditions';
+import { Link } from 'react-router';
+import { createLabelSelector } from '@/lib/strings';
 
 interface DaemonSetViewProps {
   daemonSet?: V1DaemonSet;
@@ -17,6 +19,9 @@ export const DaemonSetView = ({ daemonSet, onCopy }: DaemonSetViewProps) => {
   if (!daemonSet) return null;
 
   const { metadata, status, spec } = daemonSet;
+
+  // Create the label selector string from the daemonset's selector
+  const labelSelector = createLabelSelector(spec?.selector?.matchLabels);
 
   return (
     <Card className="max-w-6xl mx-auto">
@@ -73,6 +78,19 @@ export const DaemonSetView = ({ daemonSet, onCopy }: DaemonSetViewProps) => {
                           .map(([k, v]) => `${k}=${v}`)
                           .join(', ') || 'N/A'}
                       </p>
+                    </div>
+                    <div>
+                      {labelSelector && (
+                        <>
+                          <h3 className="font-medium">Pods</h3>
+                          <p>
+                            <Link
+                              className='text-blue-600 hover:underline dark:text-blue-500'
+                              to={`/pods?labelSelector=${encodeURIComponent(labelSelector)}`}
+                            >View Pods →</Link>
+                          </p>
+                        </>
+                      )}
                     </div>
                   </div>
                 </AccordionContent>
