@@ -9,6 +9,7 @@ import { useOpenPodShell } from '@/hooks/use-open-pod-shell';
 import { useDebugPod } from '@/hooks/use-debug-pod';
 import { useKubeResource } from '@/hooks/kube-resource/use-kube-resource';
 import { ROUTES } from '@/lib/routes';
+import { ResourceTypes } from '@/lib/strings';
 
 export const Pod = () => {
   const { podName } = useParams();
@@ -28,7 +29,7 @@ export const Pod = () => {
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
-    resourceType: 'pod',
+    resourceType: ResourceTypes.POD,
     name: podName,
     onDeleteSuccess: () => navigate(ROUTES.PODS),
   });

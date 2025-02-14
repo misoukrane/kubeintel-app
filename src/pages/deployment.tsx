@@ -6,6 +6,7 @@ import { V1Deployment } from '@kubernetes/client-node';
 import { useNavigate, useParams } from 'react-router';
 import { useClipboard } from '@/hooks/use-clipboard';
 import { useKubeResource } from '@/hooks/kube-resource/use-kube-resource';
+import { ResourceTypes } from '@/lib/strings';
 
 export const Deployment = () => {
   const { deploymentName } = useParams();
@@ -27,7 +28,7 @@ export const Deployment = () => {
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
-    resourceType: 'deployment',
+    resourceType: ResourceTypes.Deployment,
     name: deploymentName,
     onDeleteSuccess: () => navigate('/deployments'),
   });

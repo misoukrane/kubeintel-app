@@ -1,14 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { invoke } from '@tauri-apps/api/core';
 import { useToast } from '@/hooks/use-toast';
-
-interface LogsKubeResourceProps {
-  kubeconfigPath?: string;
-  context?: string;
-  namespace?: string;
-  resourceType: string;
-  name?: string;
-}
+import { BaseKubeResourceProps } from './types';
 
 export const useLogsKubeResource = ({
   kubeconfigPath,
@@ -16,7 +9,7 @@ export const useLogsKubeResource = ({
   namespace,
   resourceType,
   name,
-}: LogsKubeResourceProps) => {
+}: BaseKubeResourceProps) => {
   const { toast } = useToast();
 
   return useMutation({

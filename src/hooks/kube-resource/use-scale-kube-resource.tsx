@@ -1,14 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { invoke } from '@tauri-apps/api/core';
 import { useToast } from '@/hooks/use-toast';
-
-interface ScaleKubeResourceProps {
-  kubeconfigPath?: string;
-  context?: string;
-  namespace?: string;
-  resourceType: string;
-  name?: string;
-}
+import { ScaleKubeResourceProps } from './types';
 
 export const useScaleKubeResource = ({
   kubeconfigPath,

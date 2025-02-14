@@ -1,15 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { invoke } from '@tauri-apps/api/core';
 import { useToast } from '@/hooks/use-toast';
-
-interface DeleteKubeResourceProps {
-  kubeconfigPath?: string;
-  context?: string;
-  namespace?: string;
-  resourceType: string;
-  name?: string;
-  onSuccess?: () => void;
-}
+import { DeleteKubeResourceProps } from './types';
 
 export const useDeleteKubeResource = ({
   kubeconfigPath,

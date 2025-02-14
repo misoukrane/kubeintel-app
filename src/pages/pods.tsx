@@ -5,6 +5,7 @@ import { PodsTable } from '@/components/pods/pods-table';
 import { ErrorAlert } from '@/components/error-alert';
 import { V1Pod } from '@kubernetes/client-node';
 import { useListKubeResource } from '@/hooks/kube-resource/use-list-kube-resource';
+import { ResourceTypes } from '@/lib/strings';
 
 export const Pods = () => {
   const [searchParams] = useSearchParams();
@@ -19,7 +20,7 @@ export const Pods = () => {
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
-    resourceType: 'pod',
+    resourceType: ResourceTypes.POD,
   });
 
   // Get filters from URL parameters

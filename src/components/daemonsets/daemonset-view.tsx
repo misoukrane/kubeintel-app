@@ -9,13 +9,25 @@ import { ContainersStatusTable } from '@/components/pods/containers-status-table
 import { StatusConditions } from '@/components/status-conditions';
 import { Link } from 'react-router';
 import { createLabelSelector } from '@/lib/strings';
+import { ResourceActions } from '@/components/resources/resource-actions';
 
 interface DaemonSetViewProps {
   daemonSet?: V1DaemonSet;
   onCopy: (text: string) => void;
+  onDelete: () => void;
+  onRestart: () => void;
+  onLogs: (containerName?: string) => void;
+  onOpenEvents: () => void;
 }
 
-export const DaemonSetView = ({ daemonSet, onCopy }: DaemonSetViewProps) => {
+export const DaemonSetView = ({
+  daemonSet,
+  onCopy,
+  onDelete,
+  onRestart,
+  onLogs,
+  onOpenEvents,
+}: DaemonSetViewProps) => {
   if (!daemonSet) return null;
 
   const { metadata, status, spec } = daemonSet;
@@ -47,6 +59,7 @@ export const DaemonSetView = ({ daemonSet, onCopy }: DaemonSetViewProps) => {
             <TabsTrigger value="conditions">Conditions</TabsTrigger>
             <TabsTrigger value="container">Containers</TabsTrigger>
             <TabsTrigger value="source">Source</TabsTrigger>
+            <TabsTrigger value="actions">Actions</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
@@ -137,6 +150,19 @@ export const DaemonSetView = ({ daemonSet, onCopy }: DaemonSetViewProps) => {
               height="h-screen"
               content={daemonSet}
               onCopy={onCopy}
+            />
+          </TabsContent>
+
+          <TabsContent value="actions">
+            <ResourceActions
+              kind="DaemonSet"
+              resourceName={metadata?.name}
+              currentReplicas={status?.desiredNumberScheduled ?? 0}
+              canScale={false}
+              onDelete={onDelete}
+              onRestart={onRestart}
+              onLogs={onLogs}
+              onOpenEvents={onOpenEvents}
             />
           </TabsContent>
         </Tabs>

@@ -7,7 +7,7 @@ import { StatusBadge } from '@/components/status-badge';
 import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { StatusConditions } from '@/components/status-conditions';
 import { ContainersStatusTable } from '@/components/pods/containers-status-table';
-import { DeploymentActions } from './deployment-actions';
+import { ResourceActions } from '@/components/resources/resource-actions';
 import { Link } from 'react-router';
 import { createLabelSelector } from '@/lib/strings';
 
@@ -139,9 +139,10 @@ export const DeploymentView = ({ deployment, onCopy, onScale, onDelete, onRestar
           </TabsContent>
 
           <TabsContent value="actions">
-            <DeploymentActions
-              deploymentName={deployment.metadata?.name}
-              currentReplicas={deployment.status?.replicas || 0}
+            <ResourceActions
+              kind="Deployment"
+              resourceName={metadata?.name}
+              currentReplicas={spec?.replicas ?? 0}
               onScale={onScale}
               onDelete={onDelete}
               onRestart={onRestart}

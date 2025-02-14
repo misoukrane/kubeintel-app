@@ -4,6 +4,7 @@ import { StatefulSetsTable } from '@/components/statefulsets/statefulsets-table'
 import { ErrorAlert } from '@/components/error-alert';
 import { V1StatefulSet } from '@kubernetes/client-node';
 import { useListKubeResource } from '@/hooks/kube-resource/use-list-kube-resource';
+import { ResourceTypes } from '@/lib/strings';
 
 export const StatefulSets = () => {
   const { selectedKubeconfig, currentContext, currentNamespace } =
@@ -17,7 +18,7 @@ export const StatefulSets = () => {
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
-    resourceType: 'statefulset',
+    resourceType: ResourceTypes.StatefulSet,
   });
 
   return (

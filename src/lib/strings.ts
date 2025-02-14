@@ -8,3 +8,15 @@ export const createLabelSelector = (matchLabels?: Record<string, string>) => {
         .join(',')
     : '';
 };
+
+export const ResourceTypes = {
+  POD: 'Pod',
+  Deployment: 'Deployment',
+  DaemonSet: 'DaemonSet',
+  StatefulSet: 'StatefulSet',
+  Job: 'Job',
+  CronJob: 'CronJob',
+  Service: 'Service',
+  NODE: 'Node',
+  ConfigMap: 'ConfigMap',
+} as const;

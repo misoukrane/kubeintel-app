@@ -4,6 +4,7 @@ import { DeploymentsTable } from '@/components/deployments/deployments-table';
 import { ErrorAlert } from '@/components/error-alert';
 import { V1Deployment } from '@kubernetes/client-node';
 import { useListKubeResource } from '@/hooks/kube-resource/use-list-kube-resource';
+import { ResourceTypes } from '@/lib/strings';
 
 export const Deployments = () => {
   const { selectedKubeconfig, currentContext, currentNamespace } =
@@ -17,7 +18,7 @@ export const Deployments = () => {
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
-    resourceType: 'deployment',
+    resourceType: ResourceTypes.Deployment,
   });
 
   return (

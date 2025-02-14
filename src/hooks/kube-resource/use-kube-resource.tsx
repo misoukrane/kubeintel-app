@@ -4,13 +4,9 @@ import { useLogsKubeResource } from '@/hooks/kube-resource/use-logs-kube-resourc
 import { useEventsKubeResource } from '@/hooks/kube-resource/use-events-kube-resource';
 import { useRestartKubeResource } from '@/hooks/kube-resource/use-restart-kube-resource';
 import { useScaleKubeResource } from '@/hooks/kube-resource/use-scale-kube-resource';
+import { BaseKubeResourceProps } from './types';
 
-interface UseKubeResourceProps {
-  kubeconfigPath?: string;
-  context?: string;
-  namespace?: string;
-  resourceType: string;
-  name?: string;
+interface UseKubeResourceProps extends BaseKubeResourceProps {
   onDeleteSuccess?: () => void;
 }
 

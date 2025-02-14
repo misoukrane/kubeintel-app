@@ -1,12 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { invoke } from '@tauri-apps/api/core';
-
-interface ListKubeResourceProps {
-  kubeconfigPath?: string;
-  context?: string;
-  namespace?: string;
-  resourceType: string;
-}
+import { ListKubeResourceProps } from './types';
 
 export const useListKubeResource = <T extends object>({
   kubeconfigPath,
@@ -29,7 +23,7 @@ export const useListKubeResource = <T extends object>({
       });
     },
     enabled: Boolean(kubeconfigPath && context && namespace),
-    retry: 1, // Limits retries to 2 attempts
-    retryDelay: 500, // Waits 1 second between retries
+    retry: 1,
+    retryDelay: 500,
   });
 };

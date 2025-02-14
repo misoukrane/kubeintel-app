@@ -1,14 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { invoke } from '@tauri-apps/api/core';
 import { useToast } from '@/hooks/use-toast';
-
-interface RestartKubeResourceProps {
-  kubeconfigPath?: string;
-  context?: string;
-  namespace?: string;
-  resourceType: string;
-  name?: string;
-}
+import { BaseKubeResourceProps } from './types';
 
 export const useRestartKubeResource = ({
   kubeconfigPath,
@@ -16,7 +9,7 @@ export const useRestartKubeResource = ({
   namespace,
   resourceType,
   name,
-}: RestartKubeResourceProps) => {
+}: BaseKubeResourceProps) => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 

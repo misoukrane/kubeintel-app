@@ -1,13 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { invoke } from '@tauri-apps/api/core';
-
-interface GetKubeResourceProps {
-  kubeconfigPath?: string;
-  context?: string;
-  namespace?: string;
-  resourceType: string;
-  name?: string;
-}
+import { BaseKubeResourceProps } from './types';
 
 export const useGetKubeResource = <T extends object>({
   kubeconfigPath,
@@ -15,7 +8,7 @@ export const useGetKubeResource = <T extends object>({
   namespace,
   resourceType,
   name,
-}: GetKubeResourceProps) => {
+}: BaseKubeResourceProps) => {
   return useQuery({
     queryKey: [
       'resource',

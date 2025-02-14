@@ -3,26 +3,34 @@ import { Spinner } from '@/components/spinner';
 import { DaemonSetView } from '@/components/daemonsets/daemonset-view';
 import { ErrorAlert } from '@/components/error-alert';
 import { V1DaemonSet } from '@kubernetes/client-node';
-import { useGetKubeResource } from '@/hooks/kube-resource/use-get-kube-resource';
 import { useParams } from 'react-router';
 import { useClipboard } from '@/hooks/use-clipboard';
+import { useNavigate } from 'react-router';
+import { useKubeResource } from '@/hooks/kube-resource/use-kube-resource';
+import { ResourceTypes } from '@/lib/strings';
 
 export const DaemonSet = () => {
   const { daemonSetName } = useParams();
+  const navigate = useNavigate();
   const { copyToClipboard } = useClipboard();
   const { selectedKubeconfig, currentContext, currentNamespace } =
     useConfigStore();
 
   const {
-    data: resource,
+    resource,
     isLoading,
     error,
-  } = useGetKubeResource<V1DaemonSet>({
+    deleteResource,
+    openLogs,
+    openEvents,
+    restartResource,
+  } = useKubeResource<V1DaemonSet>({
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
+    resourceType: ResourceTypes.DaemonSet,
     name: daemonSetName,
-    resourceType: 'daemonset',
+    onDeleteSuccess: () => navigate('/daemonsets'),
   });
 
   return (
@@ -30,7 +38,14 @@ export const DaemonSet = () => {
       {isLoading && <Spinner />}
       {error && <ErrorAlert error={error} />}
       {!isLoading && !error && (
-        <DaemonSetView daemonSet={resource} onCopy={copyToClipboard} />
+        <DaemonSetView
+          daemonSet={resource}
+          onCopy={copyToClipboard}
+          onDelete={deleteResource}
+          onRestart={restartResource}
+          onLogs={(containerName?: string) => openLogs(containerName)}
+          onOpenEvents={openEvents}
+        />
       )}
     </div>
   );

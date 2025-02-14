@@ -30,7 +30,8 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-// Update the schema to handle string input
+type ResourceKind = 'Deployment' | 'StatefulSet' | 'DaemonSet';
+
 const scaleFormSchema = z.object({
   replicas: z.string()
     .transform((val) => parseInt(val, 10))
@@ -41,14 +42,15 @@ const scaleFormSchema = z.object({
     ),
 });
 
-// Update the type to match the form input
 type ScaleFormValues = {
   replicas: string;
 };
 
-interface DeploymentActionsProps {
-  deploymentName?: string;
+interface ResourceActionsProps {
+  kind: ResourceKind;
+  resourceName?: string;
   currentReplicas: number;
+  canScale?: boolean;
   onScale?: (params: { currentReplicas: number; replicas: number }) => void;
   onDelete: () => void;
   onRestart: () => void;
@@ -56,19 +58,20 @@ interface DeploymentActionsProps {
   onOpenEvents: () => void;
 }
 
-export const DeploymentActions = ({
-  deploymentName,
+export const ResourceActions = ({
+  kind,
+  resourceName,
   currentReplicas,
+  canScale = true,
   onScale,
   onDelete,
   onRestart,
   onLogs,
   onOpenEvents,
-}: DeploymentActionsProps) => {
+}: ResourceActionsProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
   const [scaleDialogOpen, setScaleDialogOpen] = React.useState(false)
 
-  // Update the form default values to use string
   const form = useForm<ScaleFormValues>({
     resolver: zodResolver(scaleFormSchema),
     defaultValues: {
@@ -81,11 +84,8 @@ export const DeploymentActions = ({
     setDeleteDialogOpen(false)
   }
 
-  // Update handleScale to parse the number
   const handleScale = async (values: ScaleFormValues) => {
-    if (!onScale) {
-      return
-    }
+    if (!onScale) return;
     await onScale({ currentReplicas, replicas: parseInt(values.replicas, 10) });
     setScaleDialogOpen(false);
   }
@@ -98,10 +98,12 @@ export const DeploymentActions = ({
           <CommandEmpty>No actions found.</CommandEmpty>
 
           <CommandGroup heading="Common Actions">
-            {onScale && (<CommandItem onSelect={() => setScaleDialogOpen(true)}>
-              <Scale className="mr-2 h-4 w-4" />
-              <span>Scale Deployment</span>
-            </CommandItem>)}
+            {canScale && onScale && (
+              <CommandItem onSelect={() => setScaleDialogOpen(true)}>
+                <Scale className="mr-2 h-4 w-4" />
+                <span>Scale {kind}</span>
+              </CommandItem>
+            )}
             <CommandItem onSelect={onRestart}>
               <RefreshCw className="mr-2 h-4 w-4" />
               <span>Rolling Restart</span>
@@ -124,7 +126,7 @@ export const DeploymentActions = ({
               className="text-red-600"
             >
               <Trash2 className="mr-2 h-4 w-4" />
-              <span>Delete Deployment</span>
+              <span>Delete {kind}</span>
               <AlertTriangle className="ml-auto h-4 w-4" />
             </CommandItem>
           </CommandGroup>
@@ -135,9 +137,9 @@ export const DeploymentActions = ({
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete Deployment?</DialogTitle>
+            <DialogTitle>Delete {kind}?</DialogTitle>
             <DialogDescription>
-              This action cannot be undone. This will permanently delete the deployment {deploymentName} and all its pods.
+              This action cannot be undone. This will permanently delete the {kind.toLowerCase()} {resourceName} and all its pods.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -145,20 +147,26 @@ export const DeploymentActions = ({
               Cancel
             </Button>
             <Button variant="destructive" onClick={handleDelete}>
-              Delete Deployment
+              Delete {kind}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
       {/* Scale Dialog */}
-      {onScale && (
-        <Dialog open={scaleDialogOpen} onOpenChange={(open) => { setScaleDialogOpen(open); if (!open) form.reset(); }} >
+      {canScale && onScale && (
+        <Dialog
+          open={scaleDialogOpen}
+          onOpenChange={(open) => {
+            setScaleDialogOpen(open);
+            if (!open) form.reset();
+          }}
+        >
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Scale Deployment</DialogTitle>
+              <DialogTitle>Scale {kind}</DialogTitle>
               <DialogDescription>
-                Adjust the number of replicas for deployment {deploymentName}
+                Adjust the number of replicas for {kind.toLowerCase()} {resourceName}
               </DialogDescription>
             </DialogHeader>
             <Form {...form}>
@@ -196,7 +204,7 @@ export const DeploymentActions = ({
                     Cancel
                   </Button>
                   <Button type="submit">
-                    Scale Deployment
+                    Scale {kind}
                   </Button>
                 </DialogFooter>
               </form>

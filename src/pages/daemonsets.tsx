@@ -4,6 +4,7 @@ import { DaemonSetsTable } from '@/components/daemonsets/daemonsets-table';
 import { ErrorAlert } from '@/components/error-alert';
 import { V1DaemonSet } from '@kubernetes/client-node';
 import { useListKubeResource } from '@/hooks/kube-resource/use-list-kube-resource';
+import { ResourceTypes } from '@/lib/strings';
 
 export const DaemonSets = () => {
   const { selectedKubeconfig, currentContext, currentNamespace } =
@@ -17,7 +18,7 @@ export const DaemonSets = () => {
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
-    resourceType: 'daemonset',
+    resourceType: ResourceTypes.DaemonSet,
   });
 
   return (

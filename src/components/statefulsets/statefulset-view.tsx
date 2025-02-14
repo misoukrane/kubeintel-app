@@ -9,13 +9,27 @@ import { StatusConditions } from '@/components/status-conditions';
 import { ContainersStatusTable } from '@/components/pods/containers-status-table';
 import { Link } from 'react-router';
 import { createLabelSelector } from '@/lib/strings';
+import { ResourceActions } from '@/components/resources/resource-actions';
 
 interface StatefulSetViewProps {
   statefulSet?: V1StatefulSet;
   onCopy: (text: string) => void;
+  onScale?: (params: { currentReplicas: number; replicas: number }) => void;
+  onDelete: () => void;
+  onRestart: () => void;
+  onLogs: (containerName?: string) => void;
+  onOpenEvents: () => void;
 }
 
-export const StatefulSetView = ({ statefulSet, onCopy }: StatefulSetViewProps) => {
+export const StatefulSetView = ({
+  statefulSet,
+  onCopy,
+  onScale,
+  onDelete,
+  onRestart,
+  onLogs,
+  onOpenEvents,
+}: StatefulSetViewProps) => {
   if (!statefulSet) return null;
 
   const { metadata, status, spec } = statefulSet;
@@ -41,6 +55,7 @@ export const StatefulSetView = ({ statefulSet, onCopy }: StatefulSetViewProps) =
             <TabsTrigger value="conditions">Conditions</TabsTrigger>
             <TabsTrigger value="container">Containers</TabsTrigger>
             <TabsTrigger value="source">Source</TabsTrigger>
+            <TabsTrigger value="actions">Actions</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
@@ -146,6 +161,19 @@ export const StatefulSetView = ({ statefulSet, onCopy }: StatefulSetViewProps) =
               height="h-screen"
               content={statefulSet}
               onCopy={onCopy}
+            />
+          </TabsContent>
+
+          <TabsContent value="actions">
+            <ResourceActions
+              kind="StatefulSet"
+              resourceName={metadata?.name}
+              currentReplicas={spec?.replicas ?? 0}
+              onScale={onScale}
+              onDelete={onDelete}
+              onRestart={onRestart}
+              onLogs={onLogs}
+              onOpenEvents={onOpenEvents}
             />
           </TabsContent>
         </Tabs>
