@@ -1,4 +1,3 @@
-mod deployments;
 mod k8s_client;
 mod k8s_config;
 mod kubectl;
@@ -20,7 +19,6 @@ pub fn run() {
             namespaces::list_namespaces,
             pods::open_pod_shell,
             pods::debug_pod,
-            deployments::restart_deployment,
             resources::get_resource,
             resources::list_resource,
             resources::delete_resource,
