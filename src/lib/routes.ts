@@ -10,4 +10,6 @@ export const ROUTES = {
   DEPLOYMENT: '/deployments/:deploymentName',
   DAEMONSET: '/daemonsets/:daemonSetName',
   STATEFULSET: '/statefulsets/:statefulSetName',
+  NODES: '/nodes',
+  NODE: '/nodes/:nodeName',
 } as const;

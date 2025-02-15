@@ -11,7 +11,7 @@ export const useListKubeResource = <T extends object>({
   return useQuery({
     queryKey: ['resources', resourceType, kubeconfigPath, context, namespace],
     queryFn: async () => {
-      if (!kubeconfigPath || !context || !namespace) {
+      if (!kubeconfigPath || !context) {
         throw new Error('Missing required parameters');
       }
 
@@ -22,7 +22,7 @@ export const useListKubeResource = <T extends object>({
         resourceType,
       });
     },
-    enabled: Boolean(kubeconfigPath && context && namespace),
+    enabled: Boolean(kubeconfigPath && context),
     retry: 1,
     retryDelay: 500,
   });

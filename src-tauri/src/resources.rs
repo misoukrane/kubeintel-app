@@ -1,7 +1,7 @@
 use crate::k8s_client;
 use crate::kubectl::run_kubectl_command;
 use k8s_openapi::api::apps::v1::{DaemonSet, Deployment, StatefulSet};
-use k8s_openapi::api::core::v1::Pod;
+use k8s_openapi::api::core::v1::{Node, Pod};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -11,6 +11,7 @@ pub enum KubeResource {
     Deployment(Deployment),
     StatefulSet(StatefulSet),
     DaemonSet(DaemonSet),
+    Node(Node),
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -170,6 +171,11 @@ pub async fn get_resource(
             let resource = k8s_client::get_resource::<DaemonSet>(client, &namespace, &name).await?;
             Ok(KubeResource::DaemonSet(resource))
         }
+        ResourceType::Node => {
+            // For nodes, we use get_cluster_resource since they are cluster-scoped
+            let resource = k8s_client::get_cluster_resource::<Node>(client, &name).await?;
+            Ok(KubeResource::Node(resource))
+        }
         _ => Err(format!("Unsupported resource type: {:?}", resource_type)),
     }
 }
@@ -206,6 +212,11 @@ pub async fn list_resource(
         ResourceType::DaemonSet => {
             let resources = k8s_client::list_resources::<DaemonSet>(client, &namespace).await?;
             Ok(resources.into_iter().map(KubeResource::DaemonSet).collect())
+        }
+        ResourceType::Node => {
+            // For nodes, we ignore the namespace parameter since they are cluster-scoped
+            let resources = k8s_client::list_cluster_resources::<Node>(client).await?;
+            Ok(resources.into_iter().map(KubeResource::Node).collect())
         }
         _ => Err(format!("Unsupported resource type: {:?}", resource_type)),
     }

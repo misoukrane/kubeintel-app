@@ -18,6 +18,7 @@ import { Deployment } from "./pages/deployment";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { DaemonSet } from "./pages/daemonset";
 import { StatefulSet } from "./pages/statefulset";
+import { Nodes } from "./pages/nodes";
 
 const queryClient = new QueryClient()
 
@@ -38,6 +39,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
               <Route path={ROUTES.DEPLOYMENT} element={<Deployment />} />
               <Route path={ROUTES.DAEMONSET} element={<DaemonSet />} />
               <Route path={ROUTES.STATEFULSET} element={<StatefulSet />} />
+              <Route path={ROUTES.NODES} element={<Nodes />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

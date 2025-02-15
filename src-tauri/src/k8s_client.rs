@@ -1,6 +1,7 @@
 use k8s_openapi::api::core::v1::Event;
 use k8s_openapi::Resource;
 use kube::api::ListParams;
+use kube::core::ClusterResourceScope;
 use kube::Api;
 use kube::{config::KubeConfigOptions, config::Kubeconfig, Client, Config};
 use std::path::Path;
@@ -38,6 +39,22 @@ where
     Ok(list.items)
 }
 
+pub async fn list_cluster_resources<K>(client: Client) -> Result<Vec<K>, String>
+where
+    K: Resource<Scope = ClusterResourceScope>
+        + Clone
+        + serde::de::DeserializeOwned
+        + std::fmt::Debug
+        + k8s_openapi::Metadata<Ty = k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta>,
+{
+    let api: Api<K> = Api::all(client);
+    let list = api
+        .list(&ListParams::default())
+        .await
+        .map_err(|e| e.to_string())?;
+    Ok(list.items)
+}
+
 pub async fn get_resource<T>(client: Client, namespace: &str, name: &str) -> Result<T, String>
 where
     T: Resource<Scope = kube::core::NamespaceResourceScope>
@@ -47,6 +64,19 @@ where
         + serde::de::DeserializeOwned,
 {
     let api = Api::namespaced(client, namespace);
+    let resource = api.get(name).await.map_err(|e| e.to_string())?;
+    Ok(resource)
+}
+
+pub async fn get_cluster_resource<K>(client: Client, name: &str) -> Result<K, String>
+where
+    K: Resource<Scope = ClusterResourceScope>
+        + Clone
+        + serde::de::DeserializeOwned
+        + std::fmt::Debug
+        + k8s_openapi::Metadata<Ty = k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta>,
+{
+    let api: Api<K> = Api::all(client);
     let resource = api.get(name).await.map_err(|e| e.to_string())?;
     Ok(resource)
 }

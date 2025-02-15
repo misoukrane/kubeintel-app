@@ -21,6 +21,7 @@ import { DeployLogo } from '@/assets/deploy';
 import { DsLogo } from '@/assets/ds';
 import { StsLogo } from '@/assets/sts';
 import { ControlPlaneLogo } from '@/assets/control-plane';
+import { NodeLogo } from '@/assets/node';
 
 // Menu items.
 const items = [
@@ -48,6 +49,11 @@ const items = [
     title: 'StatefulSets',
     url: '/statefulsets',
     icon: StsLogo,
+  },
+  {
+    title: 'Nodes',
+    url: '/nodes',
+    icon: NodeLogo,
   },
 ];
 
