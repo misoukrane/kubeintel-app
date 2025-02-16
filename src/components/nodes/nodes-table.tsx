@@ -72,6 +72,20 @@ export const NodesTable = ({ nodes, initialFilters }: NodesTableProps) => {
     }));
   }, [nodes]);
 
+  const statusOptions = useMemo(() => {
+    const statusSet = new Set<string>();
+    nodes.forEach(node => {
+      const conditions = node.status?.conditions || [];
+      conditions.forEach(condition => {
+        statusSet.add(`${condition.type}=${condition.status}`);
+      });
+    });
+    return Array.from(statusSet).map(status => ({
+      label: status,
+      value: status,
+    }));
+  }, [nodes]);
+
   const labelSelectorToArray = (selector: string) =>
     selector.split(',').filter(Boolean);
 
@@ -103,6 +117,23 @@ export const NodesTable = ({ nodes, initialFilters }: NodesTableProps) => {
         const readyCondition = conditions.find(c => c.type === 'Ready');
         return readyCondition?.status === 'True' ? 'Ready' : 'Not Ready';
       },
+      filterFn: (row, _, filterValue) => {
+        const conditions = row.original.status?.conditions || [];
+        if (!filterValue) return true;
+
+        const statusSelectors = (filterValue as string)
+          .split(',')
+          .filter(Boolean);
+
+        if (statusSelectors.length === 0) return true;
+
+        return statusSelectors.every(selector => {
+          const [type, status] = selector.split('=');
+          return conditions.some(
+            condition => condition.type === type && condition.status === status
+          );
+        });
+      }
     },
     {
       id: 'roles',
@@ -198,7 +229,7 @@ export const NodesTable = ({ nodes, initialFilters }: NodesTableProps) => {
           <AccordionItem value="item-1">
             <AccordionTrigger>Filters</AccordionTrigger>
             <AccordionContent className="p-4">
-              <div className="grid grid-cols-2 gap-4 mt-4">
+              <div className="grid grid-cols-3 gap-4 mt-4">
                 <div>
                   <Input
                     placeholder="Filter name..."
@@ -206,6 +237,20 @@ export const NodesTable = ({ nodes, initialFilters }: NodesTableProps) => {
                     onChange={(e) =>
                       table.getColumn('name')?.setFilterValue(e.target.value)
                     }
+                    className="max-w-xs"
+                  />
+                </div>
+                <div>
+                  <MultiSelect
+                    options={statusOptions}
+                    placeholder="Filter by status..."
+                    defaultValue={[]}
+                    onValueChange={(values) => {
+                      const statusColumn = table.getColumn('status');
+                      if (statusColumn) {
+                        statusColumn.setFilterValue(values.join(','));
+                      }
+                    }}
                     className="max-w-xs"
                   />
                 </div>
