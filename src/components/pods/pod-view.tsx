@@ -10,7 +10,6 @@ import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { StatusConditions } from '@/components/status-conditions';
 import { PodActions } from './pod-actions';
 import { Link } from 'react-router';
-import { Button } from '../ui/button';
 
 
 

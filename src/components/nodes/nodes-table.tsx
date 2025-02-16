@@ -33,7 +33,7 @@ import { Button } from '@/components/ui/button';
 import { SortableHeader } from '@/components/table/sortable-header';
 import { DataTablePagination } from '@/components/table/data-table-pagination';
 import { MultiSelect } from '@/components/ui/multi-select';
-import { StatusBadge } from '../status-badge';
+import { StatusBadge } from '@/components/status-badge';
 import {
   Select,
   SelectContent,

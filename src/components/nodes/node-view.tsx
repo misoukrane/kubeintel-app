@@ -6,7 +6,6 @@ import { LabelsAnnotations } from '@/components/metadata/labels-annotations';
 import { StatusBadge } from '@/components/status-badge';
 import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { StatusConditions } from '@/components/status-conditions';
-import { ResourceActions } from '@/components/resources/resource-actions';
 
 interface NodeViewProps {
   node?: V1Node;
@@ -21,11 +20,6 @@ interface NodeViewProps {
 export const NodeView = ({
   node,
   onCopy,
-  onDelete,
-  onCordon,
-  onUncordon,
-  onDrain,
-  onOpenEvents,
 }: NodeViewProps) => {
   if (!node) return null;
 
