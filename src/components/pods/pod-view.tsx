@@ -9,6 +9,8 @@ import { VolumesTable } from '@/components/pods/volumes-table';
 import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { StatusConditions } from '@/components/status-conditions';
 import { PodActions } from './pod-actions';
+import { Link } from 'react-router';
+import { Button } from '../ui/button';
 
 
 
@@ -61,7 +63,15 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebu
                     </div>
                     <div>
                       <h3 className="font-medium">Node</h3>
-                      <p>{spec?.nodeName || 'N/A'}</p>
+                      <p>
+                        {spec?.nodeName ? (
+                          <Link
+                            className='text-blue-600 hover:underline dark:text-blue-500'
+                            to={`/nodes/${spec.nodeName}`}>{spec.nodeName} </Link>
+                        ) : (
+                          'N/A'
+                        )}
+                      </p>
                     </div>
                     <div>
                       <h3 className="font-medium">Service Account</h3>

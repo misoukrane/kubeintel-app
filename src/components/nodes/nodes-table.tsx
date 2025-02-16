@@ -222,7 +222,7 @@ export const NodesTable = ({ nodes, initialFilters }: NodesTableProps) => {
       header: ({ column }) => <SortableHeader column={column} title="Scheduling" />,
       cell: ({ row }) => {
         const value = row.getValue('scheduling') as string;
-        return <StatusBadge status={value.toLowerCase()} />;
+        return <StatusBadge status={value} />;
       },
       filterFn: (row, _, filterValue) => {
         if (!filterValue) return true;
