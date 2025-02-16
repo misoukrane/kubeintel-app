@@ -33,6 +33,14 @@ import { Button } from '@/components/ui/button';
 import { SortableHeader } from '@/components/table/sortable-header';
 import { DataTablePagination } from '@/components/table/data-table-pagination';
 import { MultiSelect } from '@/components/ui/multi-select';
+import { StatusBadge } from '../status-badge';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 interface NodesTableProps {
   nodes: Array<V1Node>;
@@ -115,7 +123,8 @@ export const NodesTable = ({ nodes, initialFilters }: NodesTableProps) => {
       cell: ({ row }) => {
         const conditions = row.original.status?.conditions || [];
         const readyCondition = conditions.find(c => c.type === 'Ready');
-        return readyCondition?.status === 'True' ? 'Ready' : 'Not Ready';
+        const status = readyCondition?.status === 'True' ? 'Ready' : 'NotReady';
+        return <StatusBadge status={status} />;
       },
       filterFn: (row, _, filterValue) => {
         const conditions = row.original.status?.conditions || [];
@@ -201,6 +210,25 @@ export const NodesTable = ({ nodes, initialFilters }: NodesTableProps) => {
         });
       },
     },
+    {
+      id: 'scheduling',
+      accessorFn: (row) => {
+        const unschedulable = row.spec?.unschedulable;
+        const taints = row.spec?.taints || [];
+        if (unschedulable) return 'Disabled';
+        if (taints.length > 0) return 'Tainted';
+        return 'Enabled';
+      },
+      header: ({ column }) => <SortableHeader column={column} title="Scheduling" />,
+      cell: ({ row }) => {
+        const value = row.getValue('scheduling') as string;
+        return <StatusBadge status={value.toLowerCase()} />;
+      },
+      filterFn: (row, _, filterValue) => {
+        if (!filterValue) return true;
+        return row.getValue('scheduling') === filterValue;
+      },
+    },
   ];
 
   const table = useReactTable({
@@ -229,7 +257,7 @@ export const NodesTable = ({ nodes, initialFilters }: NodesTableProps) => {
           <AccordionItem value="item-1">
             <AccordionTrigger>Filters</AccordionTrigger>
             <AccordionContent className="p-4">
-              <div className="grid grid-cols-3 gap-4 mt-4">
+              <div className="grid grid-cols-4 gap-4 mt-4">
                 <div>
                   <Input
                     placeholder="Filter name..."
@@ -239,6 +267,25 @@ export const NodesTable = ({ nodes, initialFilters }: NodesTableProps) => {
                     }
                     className="max-w-xs"
                   />
+                </div>
+                <div>
+                  <Select
+                    onValueChange={(value) => {
+                      const column = table.getColumn('scheduling');
+                      if (column) {
+                        column.setFilterValue(value || undefined);
+                      }
+                    }}
+                  >
+                    <SelectTrigger className="max-w-xs">
+                      <SelectValue placeholder="Filter scheduling..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Enabled">Enabled</SelectItem>
+                      <SelectItem value="Disabled">Disabled</SelectItem>
+                      <SelectItem value="Tainted">Tainted</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
                   <MultiSelect
