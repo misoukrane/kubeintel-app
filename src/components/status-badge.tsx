@@ -13,6 +13,7 @@ export const StatusBadge = ({ status }: { status: string }) => {
     notready: 'bg-red-200 dark:bg-red-700 dark:text-red-100',
     succeeded: 'bg-blue-200 dark:bg-blue-700 dark:text-blue-100',
     enabled: 'bg-blue-500 dark:bg-blue-700 dark:text-blue-100',
+    disabled: 'bg-red-200 dark:bg-red-700 dark:text-red-100',
     unknown: 'bg-gray-200 text-black-100 dark:bg-gray-700 dark:text-gray-100',
     available: 'bg-green-400 dark:bg-green-700 dark:text-green-100',
     progressing:

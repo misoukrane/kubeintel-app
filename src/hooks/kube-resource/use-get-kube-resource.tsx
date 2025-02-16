@@ -19,7 +19,7 @@ export const useGetKubeResource = <T extends object>({
       name,
     ],
     queryFn: async () => {
-      if (!kubeconfigPath || !context || !namespace || !name) {
+      if (!kubeconfigPath || !context || !name) {
         throw new Error('Missing required parameters');
       }
 
@@ -33,7 +33,7 @@ export const useGetKubeResource = <T extends object>({
 
       return result;
     },
-    enabled: Boolean(kubeconfigPath && context && namespace && name),
+    enabled: Boolean(kubeconfigPath && context && name),
     retry: 1,
     retryDelay: 500,
   });
