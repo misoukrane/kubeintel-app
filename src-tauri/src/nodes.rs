@@ -15,3 +15,64 @@ pub async fn list_pods_on_node(
     let pod_list = pods.list(&lp).await.map_err(|e| e.to_string())?;
     Ok(pod_list.items)
 }
+
+// debug a node by name
+#[tauri::command]
+pub async fn debug_node(
+    kubeconfig_path: String,
+    context: String,
+    node_name: String,
+    image: String,
+) -> Result<(), String> {
+    let cmd_string = format!(
+        "--kubeconfig {} --context {} debug node/{} -it --image {}",
+        kubeconfig_path, context, node_name, image,
+    );
+    crate::kubectl::run_kubectl_command(&cmd_string)?;
+    Ok(())
+}
+
+// cordon a node by name
+#[tauri::command]
+pub async fn cordon_node(
+    kubeconfig_path: String,
+    context: String,
+    node_name: String,
+) -> Result<(), String> {
+    let cmd_string = format!(
+        "--kubeconfig {} --context {} cordon {}",
+        kubeconfig_path, context, node_name,
+    );
+    crate::kubectl::run_kubectl_command(&cmd_string)?;
+    Ok(())
+}
+
+// drain a node by name
+#[tauri::command]
+pub async fn drain_node(
+    kubeconfig_path: String,
+    context: String,
+    node_name: String,
+) -> Result<(), String> {
+    let cmd_string = format!(
+        "--kubeconfig {} --context {} drain {} --ignore-daemonsets",
+        kubeconfig_path, context, node_name,
+    );
+    crate::kubectl::run_kubectl_command(&cmd_string)?;
+    Ok(())
+}
+
+// uncordon a node by name
+#[tauri::command]
+pub async fn uncordon_node(
+    kubeconfig_path: String,
+    context: String,
+    node_name: String,
+) -> Result<(), String> {
+    let cmd_string = format!(
+        "--kubeconfig {} --context {} uncordon {}",
+        kubeconfig_path, context, node_name,
+    );
+    crate::kubectl::run_kubectl_command(&cmd_string)?;
+    Ok(())
+}

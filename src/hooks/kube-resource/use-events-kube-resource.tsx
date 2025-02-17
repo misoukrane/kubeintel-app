@@ -14,7 +14,7 @@ export const useEventsKubeResource = ({
 
   return useMutation({
     mutationFn: async () => {
-      if (!kubeconfigPath || !context || !namespace || !name) {
+      if (!kubeconfigPath || !context || !name) {
         throw new Error('Missing required parameters');
       }
 

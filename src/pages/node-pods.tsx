@@ -3,7 +3,7 @@ import { useConfigStore } from '@/stores/use-config-store';
 import { Spinner } from '@/components/spinner';
 import { PodsTable } from '@/components/pods/pods-table';
 import { ErrorAlert } from '@/components/error-alert';
-import { useListNodePods } from '@/hooks/kube-resource/use-list-node-pods';
+import { useListNodePods } from '@/hooks/nodes/use-list-node-pods';
 
 export const NodePods = () => {
   const { nodeName } = useParams();

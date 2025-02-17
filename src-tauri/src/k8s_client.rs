@@ -97,6 +97,22 @@ where
     Ok(())
 }
 
+pub async fn delete_cluster_resource<K>(client: Client, name: &str) -> Result<(), String>
+where
+    K: Resource<Scope = ClusterResourceScope>
+        + Clone
+        + serde::de::DeserializeOwned
+        + std::fmt::Debug
+        + k8s_openapi::Metadata<Ty = k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta>,
+{
+    let api: Api<K> = Api::all(client);
+    let _ = api
+        .delete(name, &Default::default())
+        .await
+        .map_err(|e| e.to_string())?;
+    Ok(())
+}
+
 #[allow(dead_code)]
 pub async fn list_events<T>(
     client: Client,

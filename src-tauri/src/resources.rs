@@ -2,6 +2,7 @@ use crate::k8s_client;
 use crate::kubectl::run_kubectl_command;
 use k8s_openapi::api::apps::v1::{DaemonSet, Deployment, StatefulSet};
 use k8s_openapi::api::core::v1::{Node, Pod};
+use k8s_openapi::chrono::format;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -80,6 +81,7 @@ pub async fn delete_resource(
         ResourceType::DaemonSet => {
             k8s_client::delete_resource::<DaemonSet>(client, &namespace, &name).await
         }
+        ResourceType::Node => k8s_client::delete_cluster_resource::<Node>(client, &name).await,
         _ => Err(format!("Unsupported resource type: {:?}", resource_type)),
     }
 }
@@ -92,8 +94,15 @@ pub async fn open_resource_events_in_terminal(
     resource_type: ResourceType,
     name: String,
 ) -> Result<(), String> {
+    // if namespace is empty, use all namespaces
+    let namespace = if namespace.is_empty() {
+        "--all-namespaces".to_string()
+    } else {
+        format!("-n {}", namespace)
+    };
+
     let cmd_string = format!(
-        "--kubeconfig {} --context {} get events -n {} --field-selector involvedObject.name={},involvedObject.kind={}",
+        "--kubeconfig {} --context {} get events {} --field-selector involvedObject.name={},involvedObject.kind={}",
         kubeconfig_path, context, namespace, name, resource_type.kind()
     );
     run_kubectl_command(&cmd_string)?;

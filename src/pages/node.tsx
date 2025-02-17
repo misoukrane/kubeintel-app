@@ -6,6 +6,7 @@ import { V1Node } from '@kubernetes/client-node';
 import { useNavigate, useParams } from 'react-router';
 import { useClipboard } from '@/hooks/use-clipboard';
 import { useKubeResource } from '@/hooks/kube-resource/use-kube-resource';
+import { useNodeActions } from '@/hooks/nodes/use-node-actions';
 import { ROUTES } from '@/lib/routes';
 import { ResourceTypes } from '@/lib/strings';
 
@@ -30,6 +31,12 @@ export const Node = () => {
     onDeleteSuccess: () => navigate(ROUTES.NODES),
   });
 
+  const { actions } = useNodeActions({
+    kubeconfigPath: selectedKubeconfig,
+    context: currentContext,
+    nodeName,
+  });
+
   return (
     <div className="space-y-4">
       {isLoading && <Spinner />}
@@ -40,6 +47,10 @@ export const Node = () => {
           onCopy={copyToClipboard}
           onDelete={deleteResource}
           onOpenEvents={openEvents}
+          onCordon={actions.cordonNode}
+          onUncordon={actions.uncordonNode}
+          onDrain={actions.drainNode}
+          onDebug={actions.debugNode}
         />
       )}
     </div>

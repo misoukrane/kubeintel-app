@@ -7,20 +7,28 @@ import { StatusBadge } from '@/components/status-badge';
 import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { StatusConditions } from '@/components/status-conditions';
 import { Link } from 'react-router';
+import { NodesActions } from './nodes-actions';
 
 interface NodeViewProps {
   node?: V1Node;
   onCopy: (text: string) => void;
-  onDelete?: () => void;
-  onCordon?: () => void;
-  onUncordon?: () => void;
-  onDrain?: () => void;
-  onOpenEvents?: () => void;
+  onCordon: () => void;
+  onUncordon: () => void;
+  onDrain: () => void;
+  onDebug: (image: string) => void;
+  onDelete: () => void;
+  onOpenEvents: () => void;
 }
 
 export const NodeView = ({
   node,
   onCopy,
+  onCordon,
+  onUncordon,
+  onDrain,
+  onDebug,
+  onDelete,
+  onOpenEvents,
 }: NodeViewProps) => {
   if (!node) return null;
 
@@ -90,7 +98,7 @@ export const NodeView = ({
                     </div>
                     <div>
                       <h3 className="font-medium">Schedulable</h3>
-                      <p><StatusBadge status={isSchedulable ? 'Enabled' : 'Disabled'} /></p>
+                      <StatusBadge status={isSchedulable ? 'Enabled' : 'Disabled'} />
                     </div>
                     <div>
                       <h3 className="font-medium">Pods</h3>
@@ -189,7 +197,15 @@ export const NodeView = ({
           </TabsContent>
 
           <TabsContent value="actions">
-            actions
+            <NodesActions
+              nodeName={metadata?.name || ''}
+              onCordon={onCordon}
+              onUncordon={onUncordon}
+              onDrain={onDrain}
+              onDebug={onDebug}
+              onDelete={onDelete}
+              onOpenEvents={onOpenEvents}
+            />
           </TabsContent>
 
           <TabsContent value="source">
