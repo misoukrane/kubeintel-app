@@ -2,6 +2,7 @@ mod k8s_client;
 mod k8s_config;
 mod kubectl;
 mod namespaces;
+mod nodes;
 mod pods;
 mod resources;
 
@@ -17,6 +18,7 @@ pub fn run() {
             k8s_config::read_kubeconfig,
             k8s_config::cluster_info,
             namespaces::list_namespaces,
+            nodes::list_pods_on_node,
             pods::open_pod_shell,
             pods::debug_pod,
             resources::get_resource,

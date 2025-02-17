@@ -20,6 +20,7 @@ import { DaemonSet } from "./pages/daemonset";
 import { StatefulSet } from "./pages/statefulset";
 import { Nodes } from "./pages/nodes";
 import { Node } from "./pages/node";
+import { NodePods } from "./pages/node-pods";
 
 const queryClient = new QueryClient()
 
@@ -42,6 +43,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
               <Route path={ROUTES.STATEFULSET} element={<StatefulSet />} />
               <Route path={ROUTES.NODES} element={<Nodes />} />
               <Route path={ROUTES.NODE} element={<Node />} />
+              <Route path={ROUTES.NODE_PODS} element={<NodePods />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

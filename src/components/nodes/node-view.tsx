@@ -6,6 +6,7 @@ import { LabelsAnnotations } from '@/components/metadata/labels-annotations';
 import { StatusBadge } from '@/components/status-badge';
 import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { StatusConditions } from '@/components/status-conditions';
+import { Link } from 'react-router';
 
 interface NodeViewProps {
   node?: V1Node;
@@ -90,6 +91,16 @@ export const NodeView = ({
                     <div>
                       <h3 className="font-medium">Schedulable</h3>
                       <p><StatusBadge status={isSchedulable ? 'Enabled' : 'Disabled'} /></p>
+                    </div>
+                    <div>
+                      <h3 className="font-medium">Pods</h3>
+                      <p>
+                        <Link
+                          className='text-blue-600 hover:underline dark:text-blue-500'
+                          to={`/nodes/${metadata?.name}/pods`}>
+                          View Pods →
+                        </Link>
+                      </p>
                     </div>
                   </div>
                 </AccordionContent>

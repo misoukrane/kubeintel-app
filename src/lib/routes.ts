@@ -12,4 +12,5 @@ export const ROUTES = {
   STATEFULSET: '/statefulsets/:statefulSetName',
   NODES: '/nodes',
   NODE: '/nodes/:nodeName',
+  NODE_PODS: '/nodes/:nodeName/pods',
 } as const;

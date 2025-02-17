@@ -33,6 +33,13 @@ import { Button } from '@/components/ui/button';
 import { SortableHeader } from '@/components/table/sortable-header';
 import { DataTablePagination } from '@/components/table/data-table-pagination';
 import { MultiSelect } from '@/components/ui/multi-select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface PodsTableProps {
   pods: Array<V1Pod>;
@@ -42,9 +49,14 @@ interface PodsTableProps {
     node: string;
     labelSelector: string;
   };
+  columnVisibility?: {
+    labels?: boolean;
+    namespace?: boolean;
+  };
+  navigateToPod: (namespace: string, name: string) => void;
 }
 
-export const PodsTable = ({ pods, initialFilters }: PodsTableProps) => {
+export const PodsTable = ({ pods, initialFilters, columnVisibility, navigateToPod }: PodsTableProps) => {
   // Create initial filters array
   const initialColumnFilters: ColumnFiltersState = [
     ...(initialFilters.name ? [{ id: 'name', value: initialFilters.name }] : []),
@@ -60,9 +72,9 @@ export const PodsTable = ({ pods, initialFilters }: PodsTableProps) => {
     pageIndex: 0,
     pageSize: 10,
   });
-  const [_, setColumnVisibility] = useState<{
+  const [colVisibility, setColVisibility] = useState<{
     [key: string]: boolean;
-  }>({ labels: false });
+  }>(columnVisibility || {});
 
   // Create unique label options from all pods
   const labelOptions = useMemo(() => {
@@ -86,6 +98,17 @@ export const PodsTable = ({ pods, initialFilters }: PodsTableProps) => {
   const arrayToLabelSelector = (array: string[]) =>
     array.join(',');
 
+  // Get unique namespaces
+  const namespaces = useMemo(() => {
+    const namespaceSet = new Set<string>();
+    pods.forEach(pod => {
+      if (pod.metadata?.namespace) {
+        namespaceSet.add(pod.metadata.namespace);
+      }
+    });
+    return Array.from(namespaceSet);
+  }, [pods]);
+
   const columns: ColumnDef<V1Pod>[] = [
     {
       id: 'name', // Add explicit id
@@ -94,20 +117,20 @@ export const PodsTable = ({ pods, initialFilters }: PodsTableProps) => {
       cell: ({ row }) => {
         const name = row.original.metadata?.name;
         return (
-          <Link to={`/pods/${name}`}>
-            <Button variant="link" className="underline">
-              {name}
-            </Button>
-          </Link>
+          <Button variant="link" className="underline" onClick={() => navigateToPod(row.original.metadata?.namespace || '', name || '')}>
+            {name}
+          </Button>
         );
       },
     },
     {
+      id: 'namespace',
       accessorKey: 'metadata.namespace',
       header: ({ column }) => (
         <SortableHeader column={column} title="Namespace" />
       ),
       cell: ({ row }) => row.original.metadata?.namespace,
+      enableHiding: true,
     },
     {
       id: 'phase', // Add explicit id
@@ -222,10 +245,10 @@ export const PodsTable = ({ pods, initialFilters }: PodsTableProps) => {
       columnFilters,
       sorting,
       pagination,
-      columnVisibility: { labels: false }, // Hide labels column by default
+      columnVisibility: colVisibility,
     },
     // Add this to enable column visibility state
-    onColumnVisibilityChange: setColumnVisibility,
+    onColumnVisibilityChange: setColVisibility,
   });
 
   return (
@@ -255,6 +278,29 @@ export const PodsTable = ({ pods, initialFilters }: PodsTableProps) => {
                       </div>
                     );
                   })}
+                {namespaces.length > 1 && (
+                  <div>
+                    <Select
+                      onValueChange={(value) => {
+                        const namespaceColumn = table.getColumn('namespace');
+                        if (namespaceColumn) {
+                          namespaceColumn.setFilterValue(value || undefined);
+                        }
+                      }}
+                    >
+                      <SelectTrigger className="max-w-xs">
+                        <SelectValue placeholder="Filter namespace..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {namespaces.map((namespace) => (
+                          <SelectItem key={namespace} value={namespace}>
+                            {namespace}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
                 <div>
                   <MultiSelect
                     options={labelOptions}

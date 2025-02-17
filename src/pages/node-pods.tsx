@@ -1,13 +1,12 @@
-import { useNavigate, useSearchParams } from 'react-router';
+import { useNavigate, useParams, useSearchParams } from 'react-router';
 import { useConfigStore } from '@/stores/use-config-store';
 import { Spinner } from '@/components/spinner';
 import { PodsTable } from '@/components/pods/pods-table';
 import { ErrorAlert } from '@/components/error-alert';
-import { V1Pod } from '@kubernetes/client-node';
-import { useListKubeResource } from '@/hooks/kube-resource/use-list-kube-resource';
-import { ResourceTypes } from '@/lib/strings';
+import { useListNodePods } from '@/hooks/kube-resource/use-list-node-pods';
 
-export const Pods = () => {
+export const NodePods = () => {
+  const { nodeName } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const {
@@ -18,26 +17,26 @@ export const Pods = () => {
   } = useConfigStore();
 
   const {
-    data: resources,
+    data: pods,
     isLoading,
     error,
-  } = useListKubeResource<V1Pod>({
+  } = useListNodePods({
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
-    namespace: currentNamespace,
-    resourceType: ResourceTypes.POD,
+    nodeName,
   });
 
   // Get filters from URL parameters
   const initialFilters = {
     name: searchParams.get('name') || '',
     status: searchParams.get('status') || '',
-    node: searchParams.get('node') || '',
+    node: nodeName || '',
     labelSelector: searchParams.get('labelSelector') || '',
   };
 
   return (
     <div className="space-y-4">
+      <h1 className="text-2xl font-bold">Pods on node: {nodeName}</h1>
       {isLoading && <Spinner />}
       {error && <ErrorAlert error={error} />}
       {!isLoading && !error && (
@@ -48,9 +47,9 @@ export const Pods = () => {
             }
             navigate(`/pods/${name}`);
           }}
-          pods={resources ?? []}
+          pods={pods ?? []}
           initialFilters={initialFilters}
-          columnVisibility={{ labels: false, namespace: false }}
+          columnVisibility={{ labels: false }}
         />
       )}
     </div>
