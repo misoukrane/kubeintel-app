@@ -38,7 +38,7 @@ export function ContextSwitcher({
   onKubeconfigChange,
 }: ContextSwitcherProps) {
   const [open, setOpen] = React.useState(false);
-  const { isMobile } = useSidebar();
+  const { isMobile, open: isExpanded } = useSidebar();
 
   return (
     <SidebarMenu>
@@ -49,18 +49,30 @@ export function ContextSwitcher({
               variant="outline"
               role="combobox"
               aria-expanded={open}
-              className="w-full justify-between data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="pl-2 w-full justify-between data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <span className="truncate font-semibold">
-                {currentContext || 'Select a context'}
-              </span>
+              {isExpanded && (
+                <span className="truncate font-semibold">
+                  {currentContext || 'Select a context'}
+                </span>
+              )}
               <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
           <PopoverContent
-            className="w-[--radix-popover-trigger-width] p-0"
-            align="start"
+            className={cn(
+              'p-0',
+              isExpanded
+                ? 'w-[--radix-popover-trigger-width]'
+                : 'w-[200px] -ml-2'
+            )}
+            align={isExpanded ? 'start' : 'center'}
             side={isMobile ? 'bottom' : 'right'}
+            onOpenAutoFocus={(e) => {
+              if (isMobile) {
+                e.preventDefault();
+              }
+            }}
           >
             <Command>
               <CommandInput placeholder="Search context..." />
@@ -71,7 +83,7 @@ export function ContextSwitcher({
                     <CommandItem
                       key={context}
                       value={context}
-                      onSelect={() => {
+                      onSelect={(e) => {
                         onContextChange(context);
                         setOpen(false);
                       }}

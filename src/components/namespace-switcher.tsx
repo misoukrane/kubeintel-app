@@ -18,7 +18,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { SidebarMenu, SidebarMenuItem } from '@/components/ui/sidebar';
+import {
+  SidebarMenu,
+  SidebarMenuItem,
+  useSidebar,
+} from '@/components/ui/sidebar';
 
 interface NamespaceSwitcherProps {
   namespaces: string[];
@@ -34,6 +38,7 @@ export function NamespaceSwitcher({
   onReloadNamespaces,
 }: NamespaceSwitcherProps) {
   const [open, setOpen] = React.useState(false);
+  const { isMobile, open: isExpanded } = useSidebar();
 
   return (
     <SidebarMenu>
@@ -44,16 +49,30 @@ export function NamespaceSwitcher({
               variant="outline"
               role="combobox"
               aria-expanded={open}
-              className="w-full justify-between data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="pl-2 w-full justify-between data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              {currentNamespace || 'Select namespace...'}
+              {isExpanded && (
+                <span className="truncate font-semibold">
+                  {currentNamespace || 'Select namespace...'}
+                </span>
+              )}
               <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
           <PopoverContent
-            className="w-[--radix-popover-trigger-width] p-0"
-            align="start"
-            side="right"
+            className={cn(
+              'p-0',
+              isExpanded
+                ? 'w-[--radix-popover-trigger-width]'
+                : 'w-[200px] -ml-2'
+            )}
+            align={isExpanded ? 'start' : 'center'}
+            side={isMobile ? 'bottom' : 'right'}
+            onOpenAutoFocus={(e) => {
+              if (isMobile) {
+                e.preventDefault();
+              }
+            }}
           >
             <Command>
               <CommandInput placeholder="Search namespace..." />
@@ -67,6 +86,9 @@ export function NamespaceSwitcher({
                       onSelect={() => {
                         onNamespaceChange(namespace);
                         setOpen(false);
+                      }}
+                      onClick={(e) => {
+                        console.log('clicked....');
                       }}
                     >
                       {namespace}
