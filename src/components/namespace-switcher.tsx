@@ -83,12 +83,9 @@ export function NamespaceSwitcher({
                     <CommandItem
                       key={namespace}
                       value={namespace}
-                      onSelect={() => {
-                        onNamespaceChange(namespace);
+                      onSelect={(ns) => {
+                        onNamespaceChange(ns);
                         setOpen(false);
-                      }}
-                      onClick={(e) => {
-                        console.log('clicked....');
                       }}
                     >
                       {namespace}

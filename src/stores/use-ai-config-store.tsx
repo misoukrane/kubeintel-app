@@ -86,7 +86,7 @@ export const useAIConfigStore = create<AIConfigState>()(
                     ? 0
                     : undefined
                   : state.selectedConfig !== undefined &&
-                    state.selectedConfig > index
+                      state.selectedConfig > index
                     ? state.selectedConfig - 1
                     : state.selectedConfig,
               error: null,

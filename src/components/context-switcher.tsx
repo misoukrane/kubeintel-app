@@ -83,8 +83,8 @@ export function ContextSwitcher({
                     <CommandItem
                       key={context}
                       value={context}
-                      onSelect={(e) => {
-                        onContextChange(context);
+                      onSelect={(ctx) => {
+                        onContextChange(ctx);
                         setOpen(false);
                       }}
                     >
