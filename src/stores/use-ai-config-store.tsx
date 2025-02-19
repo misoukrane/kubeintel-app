@@ -86,7 +86,7 @@ export const useAIConfigStore = create<AIConfigState>()(
                     ? 0
                     : undefined
                   : state.selectedConfig !== undefined &&
-                      state.selectedConfig > index
+                    state.selectedConfig > index
                     ? state.selectedConfig - 1
                     : state.selectedConfig,
               error: null,
@@ -145,11 +145,27 @@ export const getProviderModels = (
 ): string[] => {
   switch (provider) {
     case 'openai':
-      return ['gpt-4-turbo-preview', 'gpt-4', 'gpt-3.5-turbo'];
+      return [
+        'gpt-4o',
+        'gpt-4o-mini',
+        'o1',
+        'o1-mini',
+        '03-mini',
+        'o1-preview',
+      ];
     case 'google':
-      return ['gemini-pro'];
+      return [
+        'gemini-2.0-flash',
+        'gemini-2.0-pro-exp-02-05',
+        'gemini-2.0-flash-lite-preview-02-05',
+        'gemini-2.0-flash-thinking-exp-01-21',
+      ];
     case 'anthropic':
-      return ['claude-3-opus', 'claude-3-sonnet', 'claude-2.1'];
+      return [
+        'claude-3-5-sonnet-latest',
+        'claude-3-5-haiku-latest',
+        'claude-3-opus-latest',
+      ];
     default:
       return [];
   }
