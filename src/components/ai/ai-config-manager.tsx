@@ -3,15 +3,7 @@ import { AIConfig } from '@/stores/use-ai-config-store';
 import { AIConfigForm } from "./ai-config-form";
 import { AIConfigList } from "./ai-config-list";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
+import { Plus, ArrowLeft } from "lucide-react";
 
 interface AIConfigManagerProps {
   aiConfigs: AIConfig[];
@@ -30,12 +22,12 @@ export function AIConfigManager({
   setSelectedConfig,
   getAPIKey,
 }: AIConfigManagerProps) {
-  const [open, setOpen] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
 
   const handleSubmit = async (values: { provider: "openai" | "google" | "anthropic"; url: string; model: string; apiKey: string }) => {
     try {
       await addAIConfig({ ...values, secretKey: values.apiKey });
-      setOpen(false); // Close dialog on success
+      setIsAdding(false); // Return to list view on success
     } catch (error) {
       console.error('Failed to add AI config:', error);
     }
@@ -45,26 +37,33 @@ export function AIConfigManager({
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold tracking-tight">AI Configurations</h2>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Configuration
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Add AI Configuration</DialogTitle>
-              <DialogDescription>
-                Add a new AI provider configuration. The API key will be stored securely.
-              </DialogDescription>
-            </DialogHeader>
-            <AIConfigForm onSubmit={handleSubmit} />
-          </DialogContent>
-        </Dialog>
+        {!isAdding && (
+          <Button onClick={() => setIsAdding(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Configuration
+          </Button>
+        )}
       </div>
 
-      {aiConfigs.length > 0 ? (
+      {isAdding ? (
+        <div className="space-y-6">
+          <div className="flex items-center">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsAdding(false)}
+              className="mr-2"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to List
+            </Button>
+          </div>
+          <h3 className="text-lg font-medium text-center">Add New Configuration</h3>
+          <div className="border rounded-lg p-6 max-w-2xl mx-auto">
+            <AIConfigForm onSubmit={handleSubmit} onCancel={() => { setIsAdding(false) }} />
+          </div>
+        </div>
+      ) : aiConfigs.length > 0 ? (
         <AIConfigList
           configs={aiConfigs}
           selectedConfig={selectedConfig}
@@ -78,5 +77,5 @@ export function AIConfigManager({
         </div>
       )}
     </div>
-  )
+  );
 }
