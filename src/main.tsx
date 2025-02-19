@@ -33,7 +33,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           <Routes>
             <Route path="/" element={<KubeconfigFilePicker />} />
             <Route element={<Layout />} >
-              <Route path="/cluster" element={<Cluster />} />
+              <Route path={ROUTES.CLUSTER} element={<Cluster />} />
               <Route path={ROUTES.AI_CONFIG} element={<AIConfigPage />} />
               <Route path={ROUTES.PODS} element={<Pods />} />
               <Route path={ROUTES.DEPLOYMENTS} element={<Deployments />} />
