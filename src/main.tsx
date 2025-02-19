@@ -21,6 +21,7 @@ import { StatefulSet } from "./pages/statefulset";
 import { Nodes } from "./pages/nodes";
 import { Node } from "./pages/node";
 import { NodePods } from "./pages/node-pods";
+import { AIConfigPage } from "./pages/ai-config";
 
 const queryClient = new QueryClient()
 
@@ -33,6 +34,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
             <Route path="/" element={<KubeconfigFilePicker />} />
             <Route element={<Layout />} >
               <Route path="/cluster" element={<Cluster />} />
+              <Route path={ROUTES.AI_CONFIG} element={<AIConfigPage />} />
               <Route path={ROUTES.PODS} element={<Pods />} />
               <Route path={ROUTES.DEPLOYMENTS} element={<Deployments />} />
               <Route path={ROUTES.DAEMONSETS} element={<DaemonSets />} />

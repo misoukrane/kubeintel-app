@@ -1,3 +1,4 @@
+mod credentials;
 mod k8s_client;
 mod k8s_config;
 mod kubectl;
@@ -15,6 +16,9 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
+            credentials::set_secret,
+            credentials::get_secret,
+            credentials::remove_secret,
             k8s_config::read_kubeconfig,
             k8s_config::cluster_info,
             namespaces::list_namespaces,
