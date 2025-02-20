@@ -10,6 +10,8 @@ import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { StatusConditions } from '@/components/status-conditions';
 import { PodActions } from './pod-actions';
 import { Link } from 'react-router';
+import { Sparkles } from 'lucide-react';
+import { PodInvestigator } from './pod-investigator';
 
 
 
@@ -29,7 +31,7 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebu
   const { metadata, status, spec } = pod;
 
   return (
-    <Card className="max-w-6xl mx-auto">
+    <Card className="max-w-7xl mx-auto">
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
           <CardTitle className="text-2xl">{metadata?.name}</CardTitle>
@@ -48,6 +50,7 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebu
             <TabsTrigger value="volumes">Volumes</TabsTrigger>
             <TabsTrigger value="actions">Actions</TabsTrigger>
             <TabsTrigger value="source">source</TabsTrigger>
+            <TabsTrigger value="investigator"><Sparkles /></TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
@@ -154,6 +157,10 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebu
               onDebug={onDebug}
               onOpenEvents={onOpenEvents}
             />
+          </TabsContent>
+
+          <TabsContent value="investigator">
+            <PodInvestigator pod={pod} />
           </TabsContent>
         </Tabs>
       </CardContent>

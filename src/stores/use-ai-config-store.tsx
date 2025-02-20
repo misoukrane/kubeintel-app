@@ -150,7 +150,7 @@ export const getProviderModels = (
         'gpt-4o-mini',
         'o1',
         'o1-mini',
-        '03-mini',
+        'o3-mini',
         'o1-preview',
       ];
     case 'google':
