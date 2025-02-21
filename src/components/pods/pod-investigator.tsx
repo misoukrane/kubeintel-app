@@ -22,11 +22,10 @@ export function PodInvestigator({ pod, onAddNewAIConfig }: PodInvestigatorProps)
   const { messages, input, handleSubmit, handleInputChange, status: chatStatus, stop, error } = useKubeChatbot();
   const { aiConfigs, setSelectedConfig, selectedConfig } = useAIConfigStore();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Replace the existing useEffect with this one
   useEffect(() => {
-    const target = scrollAreaRef.current;
-    console.log(target);
+    const target = messagesEndRef.current;
     if (target) {
       const observer = new MutationObserver(() => {
         target.scroll({
@@ -38,12 +37,12 @@ export function PodInvestigator({ pod, onAddNewAIConfig }: PodInvestigatorProps)
       observer.observe(target, {
         childList: true,
         subtree: true,
-        characterData: true, // Added to detect text content changes
+        characterData: true,
       });
 
       return () => observer.disconnect();
     }
-  }, []); // Empty dependency array since we only want to set up the observer once
+  }, []);
 
   return (
     <div className="bg-neutral-50 dark:bg-muted p-4 rounded-md">
@@ -74,7 +73,7 @@ export function PodInvestigator({ pod, onAddNewAIConfig }: PodInvestigatorProps)
         </div>
       </div>
       <ScrollArea
-        viewportRef={scrollAreaRef}
+        viewportRef={messagesEndRef}
         className="h-[600px] w-full mt-4 border rounded-md bg-white dark:bg-black"
       >
         <div

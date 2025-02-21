@@ -1,10 +1,11 @@
 import { cn } from "@/lib/utils";
-import { Check, ChevronsUpDown, CircleStop, Plus, SendIcon } from "lucide-react";
-import { AIConfig, useAIConfigStore } from "@/stores/use-ai-config-store";
+import { Check, ChevronsUpDown, Plus } from "lucide-react";
+import { AIConfig } from "@/stores/use-ai-config-store";
 import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command";
 import { Button } from "../ui/button";
+import { truncate } from "@/lib/strings";
 interface AIConfigComboboxProps {
   aiConfigs: AIConfig[];
   selectedConfig: number | undefined;
@@ -29,10 +30,10 @@ export function AIConfigCombobox({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-[200px] justify-between truncate"
+            className="w-[200px] justify-between truncate text-xs"
           >
+            {selectedConfig !== undefined ? truncate(`${aiConfigs[selectedConfig].provider}:${aiConfigs[selectedConfig].model}`, 20) : "Select AI Config..."}
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            {selectedConfig !== undefined ? `${aiConfigs[selectedConfig].provider}:${aiConfigs[selectedConfig].model}` : "Select AI Config..."}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[200px] p-0">
@@ -49,6 +50,7 @@ export function AIConfigCombobox({
                       setSelectedConfig(index);
                       setOpen(false);
                     }}
+                    className="text-xs"
                   >
                     <Check
                       className={cn(
@@ -60,6 +62,7 @@ export function AIConfigCombobox({
                   </CommandItem>
                 ))}
                 <CommandItem
+                  className="text-xs"
                   onSelect={() => {
                     setOpen(false);
                     onAddNewAIConfig();
