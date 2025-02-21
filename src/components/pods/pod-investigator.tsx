@@ -6,10 +6,10 @@ import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { CircleStop, SendIcon } from "lucide-react";
 import { useAIConfigStore } from "@/stores/use-ai-config-store";
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
 import { AIConfigCombobox } from "../ai/ai-config-combobox";
 import { useEffect, useRef } from 'react';
+import { MemoizedMarkdown } from '../markdown/memoized-markdown';
+import { useThrottledScroll } from '@/hooks/use-throttled-scroll';
 
 interface PodInvestigatorProps {
   pod: V1Pod;
@@ -22,15 +22,13 @@ export function PodInvestigator({ pod, onAddNewAIConfig }: PodInvestigatorProps)
   const { messages, input, handleSubmit, handleInputChange, status: chatStatus, stop, error } = useKubeChatbot();
   const { aiConfigs, setSelectedConfig, selectedConfig } = useAIConfigStore();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const throttledScroll = useThrottledScroll(100); // 100ms throttle
 
   useEffect(() => {
     const target = messagesEndRef.current;
     if (target) {
       const observer = new MutationObserver(() => {
-        target.scroll({
-          top: target.scrollHeight,
-          behavior: 'smooth'
-        });
+        throttledScroll(target);
       });
 
       observer.observe(target, {
@@ -39,9 +37,11 @@ export function PodInvestigator({ pod, onAddNewAIConfig }: PodInvestigatorProps)
         characterData: true,
       });
 
-      return () => observer.disconnect();
+      return () => {
+        observer.disconnect();
+      };
     }
-  }, []);
+  }, [throttledScroll]);
 
   return (
     <div className="bg-neutral-50 dark:bg-muted p-4 rounded-md">
@@ -90,37 +90,16 @@ export function PodInvestigator({ pod, onAddNewAIConfig }: PodInvestigatorProps)
                 className={cn(
                   "rounded-lg px-4 py-2",
                   message.role === "assistant"
-                    ? "bg-muted dark:bg-gray-900 text-primary prose dark:prose-invert prose-sm max-w-none"
+                    ? "bg-muted dark:bg-gray-900 text-primary prose dark:prose-invert max-w-none"
                     : "bg-primary text-primary-foreground"
                 )}
               >
                 {message.role === "assistant" ? (
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
-                    components={{
-                      pre: ({ node, ...props }) => (
-                        <div className="overflow-auto rounded-lg bg-black/10 dark:bg-white/10 p-2 my-2">
-                          <pre {...props} />
-                        </div>
-                      ),
-                      code: ({ node, inline, className, children, ...props }: {
-                        node?: any;
-                        inline?: boolean;
-                        className?: string;
-                        children?: React.ReactNode;
-                      }) => (
-                        inline
-                          ? <code className="bg-black/10 dark:bg-white/10 rounded px-1" {...props}>
-                            {children}
-                          </code>
-                          : <code className={className} {...props}>
-                            {children}
-                          </code>
-                      )
-                    }}
-                  >
-                    {message.content}
-                  </ReactMarkdown>
+                  <MemoizedMarkdown
+                    //id={message.id}
+                    content={message.content}
+                    className="bg-muted dark:bg-gray-900 text-primary prose dark:prose-invert max-w-none"
+                  />
                 ) : (
                   <p className="text-sm">{message.content}</p>
                 )}

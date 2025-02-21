@@ -59,7 +59,8 @@ export function useKubeChatbot() {
       try {
         const result = streamText({
           model: model,
-          system: 'You are a helpful kubernetes assistant.',
+          system:
+            'You are a helpful kubernetes assistant. Always answer in valid markdown.',
           messages,
         });
 
