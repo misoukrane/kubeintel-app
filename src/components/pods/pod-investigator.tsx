@@ -10,6 +10,7 @@ import { AIConfigCombobox } from "../ai/ai-config-combobox";
 import { useEffect, useRef } from 'react';
 import { MemoizedMarkdown } from '../markdown/memoized-markdown';
 import { useThrottledScroll } from '@/hooks/use-throttled-scroll';
+import { toast } from "@/hooks/use-toast";
 
 interface PodInvestigatorProps {
   pod: V1Pod;
@@ -42,6 +43,18 @@ export function PodInvestigator({ pod, onAddNewAIConfig }: PodInvestigatorProps)
       };
     }
   }, [throttledScroll]);
+
+  useEffect(() => {
+    if (error) {
+      console.error('Error:', error.message);
+      // use a toast or notification to show the error
+      toast({
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive',
+      });
+    }
+  }, [error]);
 
   return (
     <div className="bg-neutral-50 dark:bg-muted p-4 rounded-md">
@@ -90,7 +103,7 @@ export function PodInvestigator({ pod, onAddNewAIConfig }: PodInvestigatorProps)
                 className={cn(
                   "rounded-lg px-4 py-2",
                   message.role === "assistant"
-                    ? "bg-muted dark:bg-gray-900 text-primary prose dark:prose-invert max-w-none"
+                    ? "bg-muted dark:bg-gray-900 text-primary prose dark:prose-invert min-w-full w-full"
                     : "bg-primary text-primary-foreground"
                 )}
               >
@@ -146,7 +159,6 @@ export function PodInvestigator({ pod, onAddNewAIConfig }: PodInvestigatorProps)
           </div>
         </div>
       </form>
-      {error && <p className="text-red-500">{JSON.stringify(error)}</p>}
     </div>
   );
 }

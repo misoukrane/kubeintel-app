@@ -43,12 +43,12 @@ export function useKubeChatbot() {
           model = google(config.model);
           break;
         case 'anthropic':
-          console.log('Anthropic model:', config.model);
-          console.log('Anthropic API key:', apiKey);
-          console.log('Anthropic URL:', config.url);
           const anthropic = createAnthropic({
             apiKey,
             baseURL: config.url || undefined,
+            headers: {
+              'anthropic-dangerous-direct-browser-access': 'true',
+            },
           });
           model = anthropic(config.model);
           break;
