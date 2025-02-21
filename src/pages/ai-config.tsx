@@ -1,5 +1,6 @@
 import { useAIConfigStore } from '@/stores/use-ai-config-store';
 import { AIConfigManager } from '@/components/ai/ai-config-manager';
+import { useSearchParams } from 'react-router';
 
 export function AIConfigPage() {
   const {
@@ -10,6 +11,8 @@ export function AIConfigPage() {
     setSelectedConfig,
     getAPIKey,
   } = useAIConfigStore();
+
+  const [searchParams] = useSearchParams();
   return (
     <div className="container mx-auto py-10">
       <AIConfigManager
@@ -19,6 +22,7 @@ export function AIConfigPage() {
         removeAIConfig={removeAIConfig}
         setSelectedConfig={setSelectedConfig}
         getAPIKey={getAPIKey}
+        addingView={searchParams.get('addnew') === 'true'}
       />
     </div>
   );

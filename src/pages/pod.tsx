@@ -62,6 +62,9 @@ export const Pod = () => {
             onDebug={debugPod}
             onDelete={() => deleteResource()}
             onOpenEvents={() => openEvents()}
+            onAddNewAIConfig={() => {
+              navigate(ROUTES.AI_CONFIG_ADD_NEW);
+            }}
           />
         </>
       )}

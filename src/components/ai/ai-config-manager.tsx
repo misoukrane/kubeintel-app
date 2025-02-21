@@ -12,6 +12,7 @@ interface AIConfigManagerProps {
   removeAIConfig: (index: number) => Promise<void>;
   setSelectedConfig: (index: number) => void;
   getAPIKey: (index: number) => Promise<string>;
+  addingView: boolean
 }
 
 export function AIConfigManager({
@@ -21,8 +22,9 @@ export function AIConfigManager({
   removeAIConfig,
   setSelectedConfig,
   getAPIKey,
+  addingView,
 }: AIConfigManagerProps) {
-  const [isAdding, setIsAdding] = useState(false);
+  const [isAdding, setIsAdding] = useState(addingView);
 
   const handleSubmit = async (values: { provider: "openai" | "google" | "anthropic"; url: string; model: string; apiKey: string }) => {
     try {

@@ -1,4 +1,6 @@
 import { useChat } from '@ai-sdk/react';
+import { createAnthropic } from '@ai-sdk/anthropic';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createOpenAI } from '@ai-sdk/openai';
 import { streamText } from 'ai';
 import { useAIConfigStore } from '@/stores/use-ai-config-store';
@@ -23,15 +25,40 @@ export function useKubeChatbot() {
         throw new Error('Failed to retrieve API key');
       }
 
-      const openai = createOpenAI({
-        apiKey,
-        baseURL: config.url || undefined,
-        compatibility: 'strict',
-      });
+      let model;
+      switch (config.provider) {
+        case 'openai':
+          const openai = createOpenAI({
+            apiKey,
+            baseURL: config.url || undefined,
+            compatibility: 'strict',
+          });
+          model = openai(config.model);
+          break;
+        case 'google':
+          const google = createGoogleGenerativeAI({
+            apiKey,
+            baseURL: config.url || undefined,
+          });
+          model = google(config.model);
+          break;
+        case 'anthropic':
+          console.log('Anthropic model:', config.model);
+          console.log('Anthropic API key:', apiKey);
+          console.log('Anthropic URL:', config.url);
+          const anthropic = createAnthropic({
+            apiKey,
+            baseURL: config.url || undefined,
+          });
+          model = anthropic(config.model);
+          break;
+        default:
+          throw new Error('Unsupported AI provider');
+      }
 
       try {
         const result = streamText({
-          model: openai(config.model),
+          model: model,
           system: 'You are a helpful kubernetes assistant.',
           messages,
         });

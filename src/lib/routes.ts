@@ -5,6 +5,7 @@ export const ROUTES = {
   DEPLOYMENTS: '/deployments',
   DAEMONSETS: '/daemonsets',
   AI_CONFIG: '/config/ai',
+  AI_CONFIG_ADD_NEW: '/config/ai?addnew=true',
   STATEFULSETS: '/statefulsets',
   POD: '/pods/:podName',
   DEPLOYMENT: '/deployments/:deploymentName',

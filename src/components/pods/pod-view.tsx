@@ -23,9 +23,10 @@ interface PodViewProps {
   onDebug: (image: string, target?: string) => void;
   onDelete: () => void;
   onOpenEvents: () => void;
+  onAddNewAIConfig: () => void;
 }
 
-export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebug, onOpenEvents }: PodViewProps) => {
+export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebug, onOpenEvents, onAddNewAIConfig }: PodViewProps) => {
   if (!pod) return null;
 
   const { metadata, status, spec } = pod;
@@ -160,7 +161,10 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebu
           </TabsContent>
 
           <TabsContent value="investigator">
-            <PodInvestigator pod={pod} />
+            <PodInvestigator
+              pod={pod}
+              onAddNewAIConfig={onAddNewAIConfig}
+            />
           </TabsContent>
         </Tabs>
       </CardContent>

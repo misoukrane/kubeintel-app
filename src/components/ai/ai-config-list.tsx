@@ -57,13 +57,19 @@ export function AIConfigList({
 
             <CardContent className="space-y-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Link className="h-4 w-4" />
-                <span className="truncate">{config.url}</span>
+
+                {config.url.trim() && (
+                  <>
+                    <Link className="h-4 w-4" />
+                    <span className="truncate">{config.url}</span>
+                  </>
+                )}
+                <Key className="h-4 w-4" /> <span>API Key: ••••••••</span>
               </div>
 
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Key className="h-4 w-4" />
-                <span>API Key: ••••••••</span>
+
+
               </div>
 
               <div className={`flex justify-end gap-2 transition-opacity duration-200 ${isHovered ? "opacity-100" : "opacity-0"
