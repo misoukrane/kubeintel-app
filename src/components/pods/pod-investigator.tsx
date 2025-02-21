@@ -21,7 +21,6 @@ export function PodInvestigator({ pod, onAddNewAIConfig }: PodInvestigatorProps)
   const { status, metadata, spec } = pod;
   const { messages, input, handleSubmit, handleInputChange, status: chatStatus, stop, error } = useKubeChatbot();
   const { aiConfigs, setSelectedConfig, selectedConfig } = useAIConfigStore();
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
