@@ -4,13 +4,12 @@ import { ScrollArea } from "../ui/scroll-area";
 import { useKubeChatbot } from "@/hooks/use-kube-chatbot";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
-import { Check, ChevronsUpDown, CircleStop, Plus, SendIcon } from "lucide-react";
-import { AIConfig, useAIConfigStore } from "@/stores/use-ai-config-store";
-import { useState } from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command";
+import { CircleStop, SendIcon } from "lucide-react";
+import { useAIConfigStore } from "@/stores/use-ai-config-store";
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { AIConfigCombobox } from "../ai/ai-config-combobox";
+import { useEffect, useRef } from 'react';
 
 interface PodInvestigatorProps {
   pod: V1Pod;
@@ -22,6 +21,29 @@ export function PodInvestigator({ pod, onAddNewAIConfig }: PodInvestigatorProps)
   const { status, metadata, spec } = pod;
   const { messages, input, handleSubmit, handleInputChange, status: chatStatus, stop, error } = useKubeChatbot();
   const { aiConfigs, setSelectedConfig, selectedConfig } = useAIConfigStore();
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  // Replace the existing useEffect with this one
+  useEffect(() => {
+    const target = scrollAreaRef.current;
+    console.log(target);
+    if (target) {
+      const observer = new MutationObserver(() => {
+        target.scroll({
+          top: target.scrollHeight,
+          behavior: 'smooth'
+        });
+      });
+
+      observer.observe(target, {
+        childList: true,
+        subtree: true,
+        characterData: true, // Added to detect text content changes
+      });
+
+      return () => observer.disconnect();
+    }
+  }, []); // Empty dependency array since we only want to set up the observer once
 
   return (
     <div className="bg-neutral-50 dark:bg-muted p-4 rounded-md">
@@ -51,14 +73,19 @@ export function PodInvestigator({ pod, onAddNewAIConfig }: PodInvestigatorProps)
           <p className="text-xs">{status?.podIP || 'N/A'}</p>
         </div>
       </div>
-      <ScrollArea className="h-[600px] w-full mt-4 border rounded-md bg-white dark:bg-black">
-        <div className="flex flex-col gap-4 p-4 w-full ">
+      <ScrollArea
+        viewportRef={scrollAreaRef}
+        className="h-[600px] w-full mt-4 border rounded-md bg-white dark:bg-black"
+      >
+        <div
+          className="flex flex-col gap-4 p-4 w-full"
+        >
           {messages.map((message, index) => (
             <div
               key={index}
               className={cn(
                 "flex",
-                message.role === "user" ? "justify-end" : "justify-start max-w-[90%]"
+                message.role === "user" ? "justify-end" : "justify-start"
               )}
             >
               <div
@@ -145,76 +172,4 @@ export function PodInvestigator({ pod, onAddNewAIConfig }: PodInvestigatorProps)
       {error && <p className="text-red-500">{JSON.stringify(error)}</p>}
     </div>
   );
-}
-
-interface AIConfigComboboxProps {
-  aiConfigs: AIConfig[];
-  selectedConfig: number | undefined;
-  setSelectedConfig: (index: number) => void;
-  onAddNewAIConfig: () => void;
-}
-
-function AIConfigCombobox({
-  aiConfigs,
-  selectedConfig,
-  setSelectedConfig,
-  onAddNewAIConfig
-}: AIConfigComboboxProps) {
-
-  const [open, setOpen] = useState(false);
-
-  return (
-    <div className="flex gap-2">
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="w-[200px] justify-between truncate"
-          >
-            {selectedConfig !== undefined ? `${aiConfigs[selectedConfig].provider}:${aiConfigs[selectedConfig].model}` : "Select AI Config..."}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-[200px] p-0">
-          <Command>
-            <CommandInput placeholder="Search AI config..." />
-            <CommandList>
-              <CommandEmpty>No AI config found.</CommandEmpty>
-              <CommandGroup>
-                {aiConfigs.map((config, index) => (
-                  <CommandItem
-                    key={`${config.provider}-${config.model}-${index}`}
-                    value={index.toString()}
-                    onSelect={() => {
-                      setSelectedConfig(index);
-                      setOpen(false);
-                    }}
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        selectedConfig === index ? "opacity-100" : "opacity-0"
-                      )}
-                    />
-                    {`${config.provider}:${config.model}`}
-                  </CommandItem>
-                ))}
-                <CommandItem
-                  onSelect={() => {
-                    setOpen(false);
-                    onAddNewAIConfig();
-                  }}
-                >
-                  <Plus /> New AI Config
-                </CommandItem>
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
-    </div>
-  )
-
 }
