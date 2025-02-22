@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { invoke } from '@tauri-apps/api/core';
 import { useToast } from '@/hooks/use-toast';
-import { DeleteKubeResourceProps } from './types';
+import { DeleteKubeResourceProps } from '../../lib/types';
 
 export const useDeleteKubeResource = ({
   kubeconfigPath,

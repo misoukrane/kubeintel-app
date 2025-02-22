@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { invoke } from '@tauri-apps/api/core';
-import { ListKubeResourceProps } from './types';
+import { ListKubeResourceProps } from '../../lib/types';
 
 export const useListKubeResource = <T extends object>({
   kubeconfigPath,

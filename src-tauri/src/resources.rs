@@ -1,7 +1,7 @@
 use crate::k8s_client;
 use crate::kubectl::run_kubectl_command;
 use k8s_openapi::api::apps::v1::{DaemonSet, Deployment, StatefulSet};
-use k8s_openapi::api::core::v1::{Node, Pod};
+use k8s_openapi::api::core::v1::{Event, Node, Pod};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -290,5 +290,37 @@ pub async fn restart_resource(
             "Resource type {:?} cannot be restarted",
             resource_type
         )),
+    }
+}
+
+// list events of a resource by name
+#[tauri::command]
+pub async fn list_resource_events(
+    kubeconfig_path: String,
+    context: String,
+    namespace: String,
+    resource_type: ResourceType,
+    name: String,
+) -> Result<Vec<Event>, String> {
+    let client = k8s_client::create_k8s_client(kubeconfig_path, context).await?;
+
+    match resource_type {
+        ResourceType::Pod => {
+            let events = k8s_client::list_events::<Pod>(client, &namespace, &name).await?;
+            Ok(events)
+        }
+        ResourceType::Deployment => {
+            let events = k8s_client::list_events::<Deployment>(client, &namespace, &name).await?;
+            Ok(events)
+        }
+        ResourceType::StatefulSet => {
+            let events = k8s_client::list_events::<StatefulSet>(client, &namespace, &name).await?;
+            Ok(events)
+        }
+        ResourceType::DaemonSet => {
+            let events = k8s_client::list_events::<DaemonSet>(client, &namespace, &name).await?;
+            Ok(events)
+        }
+        _ => Err(format!("Unsupported resource type: {:?}", resource_type)),
     }
 }

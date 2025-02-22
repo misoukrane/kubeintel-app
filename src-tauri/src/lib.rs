@@ -31,6 +31,7 @@ pub fn run() {
             pods::debug_pod,
             resources::get_resource,
             resources::list_resource,
+            resources::list_resource_events,
             resources::delete_resource,
             resources::scale_resource,
             resources::restart_resource,

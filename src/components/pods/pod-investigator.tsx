@@ -13,20 +13,71 @@ import { toast } from "@/hooks/use-toast";
 import { MultiSelect } from "../ui/multi-select";
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
+import { ListEventsResult } from "@/lib/types";
+import { ChatRequestOptions } from "ai";
 
 interface PodInvestigatorProps {
   pod: V1Pod;
   onAddNewAIConfig: () => void;
+  listResourceEvents: () => Promise<ListEventsResult>;
 }
 
 
-export function PodInvestigator({ pod, onAddNewAIConfig }: PodInvestigatorProps) {
+export function PodInvestigator({ pod, onAddNewAIConfig, listResourceEvents }: PodInvestigatorProps) {
   const { messages, input, handleSubmit, handleInputChange, status: chatStatus, stop, error } = useKubeChatbot();
   const { aiConfigs, setSelectedConfig, selectedConfig } = useAIConfigStore();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const throttledScroll = useThrottledScroll(100);
   const [attachEvents, setAttachEvents] = useState(false);
   const [selectedContainers, setSelectedContainers] = useState<string[]>([]);
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    let options: ChatRequestOptions = {};
+    // include pod json
+    options.experimental_attachments = []
+    options.experimental_attachments.push({
+      name: 'pod.json',
+      contentType: 'text/plain',
+      url: `data:text/plain;base64,${btoa(JSON.stringify(pod))}`
+    });
+
+    if (attachEvents) {
+      try {
+        const events = await listResourceEvents();
+        if (events.error) {
+          throw new Error(events.error);
+        }
+
+        const eventsJson = JSON.stringify(events);
+        const eventsDataUrl = `data:text/plain;base64,${btoa(eventsJson)}`;
+
+        options.experimental_attachments.push({
+          name: 'pod-events.json',
+          contentType: 'text/plain',
+          url: eventsDataUrl
+        });
+      } catch (error) {
+        console.error('Failed to fetch events:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to fetch pod events',
+          variant: 'destructive',
+        });
+      }
+    }
+
+    try {
+      await handleSubmit(e, options);
+    } catch (error) {
+      console.error('Submit error:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to send message with attachments',
+        variant: 'destructive',
+      });
+    }
+  }
 
   useEffect(() => {
     const target = messagesEndRef.current;
@@ -49,7 +100,13 @@ export function PodInvestigator({ pod, onAddNewAIConfig }: PodInvestigatorProps)
 
   useEffect(() => {
     if (error) {
-      console.error('Error:', error.message);
+      console.error('Chat Error Details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack,
+        cause: error.cause,
+        fullError: error
+      });
       // use a toast or notification to show the error
       toast({
         title: 'Error',
@@ -123,7 +180,7 @@ export function PodInvestigator({ pod, onAddNewAIConfig }: PodInvestigatorProps)
           ))}
         </div>
       </ScrollArea>
-      <form onSubmit={handleSubmit} className="mt-2 p-4">
+      <form onSubmit={onSubmit} className="mt-2 p-4">
         <div className="max-w-[80%] flex flex-col gap-2 rounded-3xl border p-4 mx-auto bg-white dark:bg-black" >
           <textarea
             name="prompt"
