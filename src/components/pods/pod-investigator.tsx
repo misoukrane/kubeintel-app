@@ -7,10 +7,13 @@ import { Button } from "../ui/button";
 import { CircleStop, SendIcon } from "lucide-react";
 import { useAIConfigStore } from "@/stores/use-ai-config-store";
 import { AIConfigCombobox } from "../ai/ai-config-combobox";
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { MemoizedMarkdown } from '../markdown/memoized-markdown';
 import { useThrottledScroll } from '@/hooks/use-throttled-scroll';
 import { toast } from "@/hooks/use-toast";
+import { MultiSelect } from "../ui/multi-select";
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
 
 interface PodInvestigatorProps {
   pod: V1Pod;
@@ -24,6 +27,8 @@ export function PodInvestigator({ pod, onAddNewAIConfig }: PodInvestigatorProps)
   const { aiConfigs, setSelectedConfig, selectedConfig } = useAIConfigStore();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const throttledScroll = useThrottledScroll(100); // 100ms throttle
+  const [attachEvents, setAttachEvents] = useState(false);
+  const [selectedContainers, setSelectedContainers] = useState<string[]>([]);
 
   useEffect(() => {
     const target = messagesEndRef.current;
@@ -109,7 +114,6 @@ export function PodInvestigator({ pod, onAddNewAIConfig }: PodInvestigatorProps)
               >
                 {message.role === "assistant" ? (
                   <MemoizedMarkdown
-                    //id={message.id}
                     content={message.content}
                     className="bg-muted dark:bg-gray-900 text-primary prose dark:prose-invert max-w-none"
                   />
@@ -134,28 +138,55 @@ export function PodInvestigator({ pod, onAddNewAIConfig }: PodInvestigatorProps)
             style={{ height: "44px" }}
             rows={4}
           />
-          <div className="flex flex-row justify-end gap-2">
-            <AIConfigCombobox
-              aiConfigs={aiConfigs}
-              selectedConfig={selectedConfig}
-              setSelectedConfig={setSelectedConfig}
-              onAddNewAIConfig={onAddNewAIConfig}
-            />
-            {chatStatus !== "submitted" && chatStatus !== "streaming" && (
-              <Button
-                variant={input.trim() === '' ? "outline" : "default"}
-                type="submit"
-                size="icon"
-                disabled={!input.trim()}
-                className="transition-all duration-500 rounded-full"
-              >
-                <SendIcon />
-              </Button>
-            )}
-            {(chatStatus === "submitted" || chatStatus === "streaming") && (
-              <Button variant="default" type="button" size="icon" onClick={stop}>
-                <CircleStop />
-              </Button>)}
+          <div className="flex flex-row justify-between gap-2">
+            <div className="flex flex-row items-center gap-4">
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="attach-events"
+                  checked={attachEvents}
+                  onCheckedChange={setAttachEvents}
+                />
+                <Label htmlFor="attach-events" className="text-xs text-muted-foreground">
+                  Include events
+                </Label>
+              </div>
+              <MultiSelect
+                options={pod.spec?.containers.map(container => ({
+                  label: container.name,
+                  value: container.name
+                })) ?? []}
+                value={selectedContainers}
+                onValueChange={(values) => {
+                  setSelectedContainers(values);
+                }}
+                placeholder="include logs"
+                title="Include container logs in the prompt"
+                className="text-xs"
+              />
+            </div>
+            <div className="flex flex-row gap-2">
+              <AIConfigCombobox
+                aiConfigs={aiConfigs}
+                selectedConfig={selectedConfig}
+                setSelectedConfig={setSelectedConfig}
+                onAddNewAIConfig={onAddNewAIConfig}
+              />
+              {chatStatus !== "submitted" && chatStatus !== "streaming" && (
+                <Button
+                  variant={input.trim() === '' ? "outline" : "default"}
+                  type="submit"
+                  size="icon"
+                  disabled={!input.trim()}
+                  className="transition-all duration-500 rounded-full"
+                >
+                  <SendIcon />
+                </Button>
+              )}
+              {(chatStatus === "submitted" || chatStatus === "streaming") && (
+                <Button variant="default" type="button" size="icon" onClick={stop}>
+                  <CircleStop />
+                </Button>)}
+            </div>
           </div>
         </div>
       </form>
