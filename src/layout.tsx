@@ -81,7 +81,7 @@ export default function Layout() {
         onQuit={quitApp}
         onRelaunch={relaunchApp}
       />
-      <main className="flex-1 overflow-y-auto p-6 lg:p-8">
+      <main className="flex-1 overflow-y-auto p-1">
         <div className="flex items-center gap-4 mb-4">
           <SidebarTrigger />
           <div data-orientation="vertical" role="none" className="shrink-0 bg-border w-[1px] mr-2 h-4"></div>

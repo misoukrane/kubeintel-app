@@ -1,5 +1,4 @@
 import { V1Pod } from "@kubernetes/client-node";
-import { Link } from "react-router";
 import { ScrollArea } from "../ui/scroll-area";
 import { useKubeChatbot } from "@/hooks/use-kube-chatbot";
 import { cn } from "@/lib/utils";
@@ -22,11 +21,10 @@ interface PodInvestigatorProps {
 
 
 export function PodInvestigator({ pod, onAddNewAIConfig }: PodInvestigatorProps) {
-  const { status, metadata, spec } = pod;
   const { messages, input, handleSubmit, handleInputChange, status: chatStatus, stop, error } = useKubeChatbot();
   const { aiConfigs, setSelectedConfig, selectedConfig } = useAIConfigStore();
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const throttledScroll = useThrottledScroll(100); // 100ms throttle
+  const throttledScroll = useThrottledScroll(100);
   const [attachEvents, setAttachEvents] = useState(false);
   const [selectedContainers, setSelectedContainers] = useState<string[]>([]);
 
@@ -62,8 +60,8 @@ export function PodInvestigator({ pod, onAddNewAIConfig }: PodInvestigatorProps)
   }, [error]);
 
   return (
-    <div className="bg-neutral-50 dark:bg-muted p-4 rounded-md">
-      <div className="flex flex-row items-center justify-between w-full">
+    <div className="bg-neutral-50 dark:bg-muted rounded-md">
+      {/* <div className="flex flex-row items-center justify-between w-full">
         <div>
           <h3 className="bold">Pod Name</h3>
           <p className="text-xs">{metadata?.name || 'N/A'}</p>
@@ -88,7 +86,7 @@ export function PodInvestigator({ pod, onAddNewAIConfig }: PodInvestigatorProps)
           <h3 className="bold">Pod IP</h3>
           <p className="text-xs">{status?.podIP || 'N/A'}</p>
         </div>
-      </div>
+      </div> */}
       <ScrollArea
         viewportRef={messagesEndRef}
         className="h-[600px] w-full mt-4 border rounded-md bg-white dark:bg-black"
@@ -177,13 +175,19 @@ export function PodInvestigator({ pod, onAddNewAIConfig }: PodInvestigatorProps)
                   type="submit"
                   size="icon"
                   disabled={!input.trim()}
-                  className="transition-all duration-500 rounded-full"
+                  className="transition-all duration-500 rounded-full hover:scale-110"
                 >
                   <SendIcon />
                 </Button>
               )}
               {(chatStatus === "submitted" || chatStatus === "streaming") && (
-                <Button variant="default" type="button" size="icon" onClick={stop}>
+                <Button
+                  variant="default"
+                  type="button"
+                  size="icon"
+                  className="transition-all rounded-full animate-pulse"
+                  onClick={stop}
+                >
                   <CircleStop />
                 </Button>)}
             </div>
