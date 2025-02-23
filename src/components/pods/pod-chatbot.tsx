@@ -16,16 +16,17 @@ import { Label } from "@/components/ui/label"
 import { ListEventsResult } from "@/lib/types";
 import { ChatRequestOptions } from "ai";
 import { PodLogsResult } from "@/lib/pods";
+import { PodChatMessages } from "./pod-chat-messages";
+import { PodChatInput } from "./pod-chat-input";
 
-interface PodInvestigatorProps {
+interface PodChatbotProps {
   pod: V1Pod;
   onAddNewAIConfig: () => void;
   listResourceEvents: () => Promise<ListEventsResult>;
   getContainerLogs: (containerName: string, tailLines?: number, limitBytes?: number) => Promise<PodLogsResult>;
 }
 
-
-export function PodInvestigator({ pod, onAddNewAIConfig, listResourceEvents, getContainerLogs }: PodInvestigatorProps) {
+export function PodChatbot({ pod, onAddNewAIConfig, listResourceEvents, getContainerLogs }: PodChatbotProps) {
   const { messages, input, handleSubmit, handleInputChange, status: chatStatus, stop, error } = useKubeChatbot();
   const { aiConfigs, setSelectedConfig, selectedConfig } = useAIConfigStore();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -157,114 +158,32 @@ export function PodInvestigator({ pod, onAddNewAIConfig, listResourceEvents, get
     }
   }, [error]);
 
+  useEffect(() => {
+    console.log(messages);
+  }, [messages]);
+
   return (
     <div className="bg-neutral-50 dark:bg-muted rounded-md">
-      <ScrollArea
+      <PodChatMessages
+        messages={messages}
         viewportRef={messagesEndRef}
-        className="h-[600px] w-full mt-4 border rounded-md bg-white dark:bg-black"
-      >
-        <div
-          className="flex flex-col gap-4 p-4 w-full"
-        >
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={cn(
-                "flex",
-                message.role === "user" ? "justify-end" : "justify-start"
-              )}
-            >
-              <div
-                className={cn(
-                  "rounded-lg px-4 py-2",
-                  message.role === "assistant"
-                    ? "bg-muted dark:bg-gray-900 text-primary prose dark:prose-invert min-w-full w-full"
-                    : "bg-primary text-primary-foreground"
-                )}
-              >
-                {message.role === "assistant" ? (
-                  <MemoizedMarkdown
-                    content={message.content}
-                    className="bg-muted dark:bg-gray-900 text-primary prose dark:prose-invert max-w-none"
-                  />
-                ) : (
-                  <p className="text-sm">{message.content}</p>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </ScrollArea>
+      />
       <form onSubmit={onSubmit} className="mt-2 p-4">
-        <div className="max-w-[80%] flex flex-col gap-2 rounded-3xl border p-4 mx-auto bg-white dark:bg-black" >
-          <textarea
-            name="prompt"
-            value={input}
-            dir="auto"
-            onChange={handleInputChange}
-            disabled={chatStatus === "submitted"}
-            placeholder="Ask questions about this pod..."
-            className="w-full bg-transparent focus:outline-none text-primary resize-none"
-            style={{ height: "44px" }}
-            rows={4}
-          />
-          <div className="flex flex-row justify-between gap-2">
-            <div className="flex flex-row items-center gap-4">
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="attach-events"
-                  checked={attachEvents}
-                  onCheckedChange={setAttachEvents}
-                />
-                <Label htmlFor="attach-events" className="text-xs text-muted-foreground">
-                  Include events
-                </Label>
-              </div>
-              <MultiSelect
-                options={pod.spec?.containers.map(container => ({
-                  label: container.name,
-                  value: container.name
-                })) ?? []}
-                value={selectedContainers}
-                onValueChange={(values) => {
-                  setSelectedContainers(values);
-                }}
-                placeholder="include logs"
-                title="Include container logs in the prompt"
-                className="text-xs"
-              />
-            </div>
-            <div className="flex flex-row gap-2">
-              <AIConfigCombobox
-                aiConfigs={aiConfigs}
-                selectedConfig={selectedConfig}
-                setSelectedConfig={setSelectedConfig}
-                onAddNewAIConfig={onAddNewAIConfig}
-              />
-              {chatStatus !== "submitted" && chatStatus !== "streaming" && (
-                <Button
-                  variant={input.trim() === '' ? "outline" : "default"}
-                  type="submit"
-                  size="icon"
-                  disabled={!input.trim()}
-                  className="transition-all duration-500 rounded-full hover:scale-110"
-                >
-                  <SendIcon />
-                </Button>
-              )}
-              {(chatStatus === "submitted" || chatStatus === "streaming") && (
-                <Button
-                  variant="default"
-                  type="button"
-                  size="icon"
-                  className="transition-all rounded-full animate-pulse"
-                  onClick={stop}
-                >
-                  <CircleStop />
-                </Button>)}
-            </div>
-          </div>
-        </div>
+        <PodChatInput
+          input={input}
+          onInputChange={handleInputChange}
+          chatStatus={chatStatus}
+          attachEvents={attachEvents}
+          setAttachEvents={setAttachEvents}
+          selectedContainers={selectedContainers}
+          setSelectedContainers={setSelectedContainers}
+          containers={pod.spec?.containers || []}
+          aiConfigs={aiConfigs}
+          selectedConfig={selectedConfig}
+          setSelectedConfig={setSelectedConfig}
+          onAddNewAIConfig={onAddNewAIConfig}
+          onStop={stop}
+        />
       </form>
     </div>
   );

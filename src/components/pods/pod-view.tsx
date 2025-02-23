@@ -11,7 +11,7 @@ import { StatusConditions } from '@/components/status-conditions';
 import { PodActions } from './pod-actions';
 import { Link } from 'react-router';
 import { Sparkles } from 'lucide-react';
-import { PodInvestigator } from './pod-investigator';
+import { PodChatbot } from './pod-chatbot';
 import { ListEventsResult } from '@/lib/types';
 import { PodLogsResult } from '@/lib/pods';
 
@@ -165,7 +165,7 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebu
           </TabsContent>
 
           <TabsContent value="investigator">
-            <PodInvestigator
+            <PodChatbot
               pod={pod}
               onAddNewAIConfig={onAddNewAIConfig}
               listResourceEvents={listResourceEvents}
