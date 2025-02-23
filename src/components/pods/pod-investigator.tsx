@@ -15,15 +15,17 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { ListEventsResult } from "@/lib/types";
 import { ChatRequestOptions } from "ai";
+import { PodLogsResult } from "@/lib/pods";
 
 interface PodInvestigatorProps {
   pod: V1Pod;
   onAddNewAIConfig: () => void;
   listResourceEvents: () => Promise<ListEventsResult>;
+  getContainerLogs: (containerName: string, tailLines?: number, limitBytes?: number) => Promise<PodLogsResult>;
 }
 
 
-export function PodInvestigator({ pod, onAddNewAIConfig, listResourceEvents }: PodInvestigatorProps) {
+export function PodInvestigator({ pod, onAddNewAIConfig, listResourceEvents, getContainerLogs }: PodInvestigatorProps) {
   const { messages, input, handleSubmit, handleInputChange, status: chatStatus, stop, error } = useKubeChatbot();
   const { aiConfigs, setSelectedConfig, selectedConfig } = useAIConfigStore();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -33,15 +35,14 @@ export function PodInvestigator({ pod, onAddNewAIConfig, listResourceEvents }: P
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let options: ChatRequestOptions = {};
-    // include pod json
-    options.experimental_attachments = []
-    options.experimental_attachments.push({
+    const attachments = []
+    attachments.push({
       name: 'pod.json',
       contentType: 'text/plain',
       url: `data:text/plain;base64,${btoa(JSON.stringify(pod))}`
     });
 
+    // Check events
     if (attachEvents) {
       try {
         const events = await listResourceEvents();
@@ -52,7 +53,7 @@ export function PodInvestigator({ pod, onAddNewAIConfig, listResourceEvents }: P
         const eventsJson = JSON.stringify(events);
         const eventsDataUrl = `data:text/plain;base64,${btoa(eventsJson)}`;
 
-        options.experimental_attachments.push({
+        attachments.push({
           name: 'pod-events.json',
           contentType: 'text/plain',
           url: eventsDataUrl
@@ -64,7 +65,47 @@ export function PodInvestigator({ pod, onAddNewAIConfig, listResourceEvents }: P
           description: 'Failed to fetch pod events',
           variant: 'destructive',
         });
+        return; // Stop here if events fetch fails
       }
+    }
+
+    // Check logs
+    if (selectedContainers.length > 0) {
+      try {
+        const logs = await Promise.all(
+          selectedContainers.map(async (containerName) => {
+            const logs = await getContainerLogs(containerName, 1000);
+            if (logs.error) {
+              throw new Error(logs.error);
+            }
+            return { containerName, logs: logs.data || '' };
+          })
+        );
+
+        console.log(logs);
+
+        logs.forEach(({ containerName, logs }) => {
+          const logsDataUrl = `data:text/plain;base64,${btoa(logs)}`;
+
+          attachments.push({
+            name: `${containerName}-logs.json`,
+            contentType: 'text/plain',
+            url: logsDataUrl
+          });
+        });
+      } catch (error) {
+        console.error('Failed to fetch logs:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to fetch pod logs',
+          variant: 'destructive',
+        });
+        return; // Stop here if logs fetch fails
+      }
+    }
+
+    const options: ChatRequestOptions = {
+      experimental_attachments: attachments
     }
 
     try {
@@ -118,32 +159,6 @@ export function PodInvestigator({ pod, onAddNewAIConfig, listResourceEvents }: P
 
   return (
     <div className="bg-neutral-50 dark:bg-muted rounded-md">
-      {/* <div className="flex flex-row items-center justify-between w-full">
-        <div>
-          <h3 className="bold">Pod Name</h3>
-          <p className="text-xs">{metadata?.name || 'N/A'}</p>
-        </div>
-        <div>
-          <h3 className="bold">Pod IP</h3>
-          <p className="text-xs">{status?.podIP || 'N/A'}</p>
-        </div>
-        <div>
-          <h3 className="bold">Node</h3>
-          <p className="text-xs">
-            {spec?.nodeName ? (
-              <Link
-                className='text-blue-600 hover:underline dark:text-blue-500'
-                to={`/nodes/${spec.nodeName}`}>{spec.nodeName} </Link>
-            ) : (
-              'N/A'
-            )}
-          </p>
-        </div>
-        <div>
-          <h3 className="bold">Pod IP</h3>
-          <p className="text-xs">{status?.podIP || 'N/A'}</p>
-        </div>
-      </div> */}
       <ScrollArea
         viewportRef={messagesEndRef}
         className="h-[600px] w-full mt-4 border rounded-md bg-white dark:bg-black"

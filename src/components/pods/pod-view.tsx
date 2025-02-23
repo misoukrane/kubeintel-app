@@ -13,6 +13,7 @@ import { Link } from 'react-router';
 import { Sparkles } from 'lucide-react';
 import { PodInvestigator } from './pod-investigator';
 import { ListEventsResult } from '@/lib/types';
+import { PodLogsResult } from '@/lib/pods';
 
 
 
@@ -26,9 +27,10 @@ interface PodViewProps {
   onOpenEvents: () => void;
   onAddNewAIConfig: () => void;
   listResourceEvents: () => Promise<ListEventsResult>;
+  getContainerLogs: (containerName: string, tailLines?: number, limitBytes?: number) => Promise<PodLogsResult>;
 }
 
-export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebug, onOpenEvents, onAddNewAIConfig, listResourceEvents }: PodViewProps) => {
+export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebug, onOpenEvents, onAddNewAIConfig, listResourceEvents, getContainerLogs }: PodViewProps) => {
   if (!pod) return null;
 
   const { metadata, status, spec } = pod;
@@ -167,6 +169,7 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebu
               pod={pod}
               onAddNewAIConfig={onAddNewAIConfig}
               listResourceEvents={listResourceEvents}
+              getContainerLogs={getContainerLogs}
             />
           </TabsContent>
         </Tabs>

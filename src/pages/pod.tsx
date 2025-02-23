@@ -10,7 +10,7 @@ import { useDebugPod } from '@/hooks/pods/use-debug-pod';
 import { useKubeResource } from '@/hooks/kube-resource/use-kube-resource';
 import { ROUTES } from '@/lib/routes';
 import { ResourceTypes } from '@/lib/strings';
-import { createResourceEventsLoader } from '@/lib/pods';
+import { createPodLogsLoader, createResourceEventsLoader } from '@/lib/pods';
 
 export const Pod = () => {
   const { podName } = useParams();
@@ -57,6 +57,14 @@ export const Pod = () => {
     name: podName,
   });
 
+  const getContainerLogs = createPodLogsLoader({
+    kubeconfigPath: selectedKubeconfig,
+    context: currentContext,
+    namespace: currentNamespace,
+    resourceType: ResourceTypes.POD,
+    name: podName,
+  });
+
   return (
     <div className="space-y-4">
       {isLoading && <Spinner />}
@@ -75,6 +83,7 @@ export const Pod = () => {
               navigate(ROUTES.AI_CONFIG_ADD_NEW);
             }}
             listResourceEvents={listResourceEvents}
+            getContainerLogs={getContainerLogs}
           />
         </>
       )}

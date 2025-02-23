@@ -1,4 +1,7 @@
+use crate::k8s_client;
 use crate::kubectl::run_kubectl_command;
+use k8s_openapi::api::core::v1::Pod;
+use kube::api::{Api, LogParams};
 
 // debug a pod by name in a namespace
 #[tauri::command]
@@ -41,4 +44,32 @@ pub fn open_pod_shell(
     );
     run_kubectl_command(&cmd_string)?;
     Ok(())
+}
+
+#[tauri::command]
+pub async fn get_pod_logs(
+    kubeconfig_path: String,
+    context: String,
+    namespace: String,
+    pod_name: String,
+    container_name: String,
+    tail_lines: Option<i64>,
+    limit_bytes: Option<i64>,
+) -> Result<String, String> {
+    let client = k8s_client::create_k8s_client(kubeconfig_path, context).await?;
+    let pods: Api<Pod> = Api::namespaced(client, &namespace);
+
+    let log_params = LogParams {
+        container: Some(container_name),
+        follow: false,
+        tail_lines: tail_lines.or(Some(50)), // Default to last 50 lines
+        limit_bytes: limit_bytes.or(Some(1_048_576)), // Default to 1MB (1024 * 1024 bytes)
+        ..LogParams::default()
+    };
+
+    let logs = pods
+        .logs(&pod_name, &log_params)
+        .await
+        .map_err(|e| e.to_string())?;
+    Ok(logs)
 }

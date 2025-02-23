@@ -29,6 +29,7 @@ pub fn run() {
             nodes::uncordon_node,
             pods::open_pod_shell,
             pods::debug_pod,
+            pods::get_pod_logs,
             resources::get_resource,
             resources::list_resource,
             resources::list_resource_events,
