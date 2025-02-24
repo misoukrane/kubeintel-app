@@ -4,7 +4,7 @@ import { useAIConfigStore } from "@/stores/use-ai-config-store";
 import { useEffect, useRef, useState } from 'react';
 import { useThrottledScroll } from '@/hooks/use-throttled-scroll';
 import { toast } from "@/hooks/use-toast";
-import { ListEventsResult } from "@/lib/types";
+import { ListEventsResult, PodChatbotAttachment } from "@/lib/types";
 import { ChatRequestOptions } from "ai";
 import { PodLogsResult } from "@/lib/pods";
 import { PodChatMessages } from "./pod-chat-messages";
@@ -24,11 +24,12 @@ export function PodChatbot({ pod, onAddNewAIConfig, listResourceEvents, getConta
   const throttledScroll = useThrottledScroll(100);
   const [attachEvents, setAttachEvents] = useState(false);
   const [selectedContainers, setSelectedContainers] = useState<string[]>([]);
+  const [attachements, setAttachements] = useState<Map<number, PodChatbotAttachment[]>>(new Map());
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const attachments = []
-    attachments.push({
+    const experimentalAttachments = []
+    experimentalAttachments.push({
       name: 'pod.json',
       contentType: 'text/plain',
       url: `data:text/plain;base64,${btoa(JSON.stringify(pod))}`
@@ -45,7 +46,7 @@ export function PodChatbot({ pod, onAddNewAIConfig, listResourceEvents, getConta
         const eventsJson = JSON.stringify(events);
         const eventsDataUrl = `data:text/plain;base64,${btoa(eventsJson)}`;
 
-        attachments.push({
+        experimentalAttachments.push({
           name: 'pod-events.json',
           contentType: 'text/plain',
           url: eventsDataUrl
@@ -79,7 +80,7 @@ export function PodChatbot({ pod, onAddNewAIConfig, listResourceEvents, getConta
         logs.forEach(({ containerName, logs }) => {
           const logsDataUrl = `data:text/plain;base64,${btoa(logs)}`;
 
-          attachments.push({
+          experimentalAttachments.push({
             name: `${containerName}-logs.json`,
             contentType: 'text/plain',
             url: logsDataUrl
@@ -97,8 +98,13 @@ export function PodChatbot({ pod, onAddNewAIConfig, listResourceEvents, getConta
     }
 
     const options: ChatRequestOptions = {
-      experimental_attachments: attachments
+      experimental_attachments: experimentalAttachments
     }
+
+    // use setAttachements to update the attachments state
+
+    attachements.set(messages.length, experimentalAttachments.map(a => ({ name: a.name })));
+    setAttachements(attachements);
 
     try {
       await handleSubmit(e, options);
@@ -157,6 +163,7 @@ export function PodChatbot({ pod, onAddNewAIConfig, listResourceEvents, getConta
     <div className="bg-neutral-50 dark:bg-muted rounded-md">
       <PodChatMessages
         messages={messages}
+        attachments={attachements}
         viewportRef={messagesEndRef}
       />
       <form onSubmit={onSubmit} className="mt-2 p-4">

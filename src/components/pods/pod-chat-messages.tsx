@@ -2,13 +2,17 @@ import { Message } from 'ai';
 import { ScrollArea } from "../ui/scroll-area";
 import { MemoizedMarkdown } from '../markdown/memoized-markdown';
 import { cn } from "@/lib/utils";
+import { PodChatbotAttachment } from '@/lib/types';
+import { Badge } from '../ui/badge';
+import { FileText } from 'lucide-react';
 
 interface PodChatMessagesProps {
   messages: Message[];
+  attachments: Map<number, PodChatbotAttachment[]>;
   viewportRef: React.RefObject<HTMLDivElement>;
 }
 
-export function PodChatMessages({ messages, viewportRef }: PodChatMessagesProps) {
+export function PodChatMessages({ messages, attachments, viewportRef }: PodChatMessagesProps) {
   return (
     <ScrollArea
       viewportRef={viewportRef}
@@ -37,12 +41,28 @@ export function PodChatMessages({ messages, viewportRef }: PodChatMessagesProps)
                   className="bg-muted dark:bg-gray-900 text-primary prose dark:prose-invert max-w-none"
                 />
               ) : (
-                <p className="text-sm">{message.content}</p>
+                <>
+                  <p className="text-sm">{message.content}</p>
+                  <PodChatMessageAttachements attachments={attachments.get(index)} />
+                </>
               )}
             </div>
           </div>
         ))}
       </div>
     </ScrollArea>
+  );
+}
+
+function PodChatMessageAttachements({ attachments }: { attachments?: PodChatbotAttachment[] }) {
+  if (!attachments || attachments.length === 0) return <></>;
+  return (
+    <div className="flex flex-wrap gap-2 mt-2">
+      {attachments.map((attachment, index) => (
+        <Badge key={index} variant="secondary" className='text-xs inline-flex'>
+          <FileText size={16} className='mr-1' /> {attachment.name}
+        </Badge>
+      ))}
+    </div>
   );
 }

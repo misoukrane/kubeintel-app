@@ -27,3 +27,7 @@ export interface ListEventsResult {
   data?: CoreV1Event[];
   error?: string;
 }
+
+export interface PodChatbotAttachment {
+  name: string;
+}
