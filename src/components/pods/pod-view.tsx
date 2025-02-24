@@ -170,6 +170,7 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebu
               onAddNewAIConfig={onAddNewAIConfig}
               listResourceEvents={listResourceEvents}
               getContainerLogs={getContainerLogs}
+              onCopy={onCopy}
             />
           </TabsContent>
         </Tabs>

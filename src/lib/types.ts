@@ -28,6 +28,8 @@ export interface ListEventsResult {
   error?: string;
 }
 
-export interface PodChatbotAttachment {
-  name: string;
-}
+export const ATTACHEMENT_NAMES = {
+  POD: 'pod.json',
+  POD_EVENTS: 'pod-events.json',
+  POD_LOGS: 'logs.json',
+} as const;

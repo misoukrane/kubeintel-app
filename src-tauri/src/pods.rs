@@ -63,7 +63,7 @@ pub async fn get_pod_logs(
         container: Some(container_name),
         follow: false,
         tail_lines: tail_lines.or(Some(50)), // Default to last 50 lines
-        limit_bytes: limit_bytes.or(Some(1_048_576)), // Default to 1MB (1024 * 1024 bytes)
+        limit_bytes: limit_bytes.or(Some(1024 * 100)), // Default to 100kb (1024 * 100 bytes)
         ..LogParams::default()
     };
 

@@ -1,3 +1,5 @@
+import { ATTACHEMENT_NAMES } from './types';
+
 export const truncate = (str: string, length: number = 56) =>
   str.length > length ? `${str.substring(0, length)}...` : str;
 
@@ -7,6 +9,10 @@ export const createLabelSelector = (matchLabels?: Record<string, string>) => {
         .map(([k, v]) => `${k}=${v}`)
         .join(',')
     : '';
+};
+
+export const getAttachemntLogName = (containerName: string) => {
+  return `${containerName}-${ATTACHEMENT_NAMES.POD_LOGS}`;
 };
 
 export const ResourceTypes = {
