@@ -1,18 +1,9 @@
 import { V1Pod } from "@kubernetes/client-node";
-import { ScrollArea } from "../ui/scroll-area";
 import { useKubeChatbot } from "@/hooks/use-kube-chatbot";
-import { cn } from "@/lib/utils";
-import { Button } from "../ui/button";
-import { CircleStop, SendIcon } from "lucide-react";
 import { useAIConfigStore } from "@/stores/use-ai-config-store";
-import { AIConfigCombobox } from "../ai/ai-config-combobox";
 import { useEffect, useRef, useState } from 'react';
-import { MemoizedMarkdown } from '../markdown/memoized-markdown';
 import { useThrottledScroll } from '@/hooks/use-throttled-scroll';
 import { toast } from "@/hooks/use-toast";
-import { MultiSelect } from "../ui/multi-select";
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
 import { ListEventsResult } from "@/lib/types";
 import { ChatRequestOptions } from "ai";
 import { PodLogsResult } from "@/lib/pods";
