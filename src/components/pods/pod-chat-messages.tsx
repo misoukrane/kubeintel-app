@@ -5,14 +5,16 @@ import { cn } from "@/lib/utils";
 import { PodChatbotAttachment } from '@/lib/types';
 import { Badge } from '../ui/badge';
 import { FileText } from 'lucide-react';
+import { Spinner } from '../spinner';
 
 interface PodChatMessagesProps {
   messages: Message[];
   attachments: Map<number, PodChatbotAttachment[]>;
   viewportRef: React.RefObject<HTMLDivElement>;
+  status: string;
 }
 
-export function PodChatMessages({ messages, attachments, viewportRef }: PodChatMessagesProps) {
+export function PodChatMessages({ messages, attachments, viewportRef, status }: PodChatMessagesProps) {
   return (
     <ScrollArea
       viewportRef={viewportRef}
@@ -49,6 +51,16 @@ export function PodChatMessages({ messages, attachments, viewportRef }: PodChatM
             </div>
           </div>
         ))}
+        {status !== "" && (
+          <div className="flex justify-end">
+            <div className="rounded-lg px-4 py-2 bg-primary text-primary-foreground">
+              <p className="text-sm"><Spinner className="bg-primary text-primary-foreground" /> {status}</p>
+            </div>
+          </div>
+        )}
+
+
+
       </div>
     </ScrollArea>
   );

@@ -25,6 +25,7 @@ export function PodChatbot({ pod, onAddNewAIConfig, listResourceEvents, getConta
   const [attachEvents, setAttachEvents] = useState(false);
   const [selectedContainers, setSelectedContainers] = useState<string[]>([]);
   const [attachements, setAttachements] = useState<Map<number, PodChatbotAttachment[]>>(new Map());
+  const [loadingStatus, setLoadingStatus] = useState<string>('');
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -38,6 +39,7 @@ export function PodChatbot({ pod, onAddNewAIConfig, listResourceEvents, getConta
     // Check events
     if (attachEvents) {
       try {
+        setLoadingStatus('Fetching events...');
         const events = await listResourceEvents();
         if (events.error) {
           throw new Error(events.error);
@@ -59,12 +61,15 @@ export function PodChatbot({ pod, onAddNewAIConfig, listResourceEvents, getConta
           variant: 'destructive',
         });
         return; // Stop here if events fetch fails
+      } finally {
+        setLoadingStatus('');
       }
     }
 
     // Check logs
     if (selectedContainers.length > 0) {
       try {
+        setLoadingStatus('Fetching logs...');
         const logs = await Promise.all(
           selectedContainers.map(async (containerName) => {
             const logs = await getContainerLogs(containerName, 1000);
@@ -94,6 +99,8 @@ export function PodChatbot({ pod, onAddNewAIConfig, listResourceEvents, getConta
           variant: 'destructive',
         });
         return; // Stop here if logs fetch fails
+      } finally {
+        setLoadingStatus('');
       }
     }
 
@@ -107,6 +114,7 @@ export function PodChatbot({ pod, onAddNewAIConfig, listResourceEvents, getConta
     setAttachements(attachements);
 
     try {
+      setLoadingStatus('Sending message with attachments...');
       await handleSubmit(e, options);
     } catch (error) {
       console.error('Submit error:', error);
@@ -115,6 +123,8 @@ export function PodChatbot({ pod, onAddNewAIConfig, listResourceEvents, getConta
         description: 'Failed to send message with attachments',
         variant: 'destructive',
       });
+    } finally {
+      setLoadingStatus('');
     }
   }
 
@@ -164,6 +174,7 @@ export function PodChatbot({ pod, onAddNewAIConfig, listResourceEvents, getConta
       <PodChatMessages
         messages={messages}
         attachments={attachements}
+        status={loadingStatus}
         viewportRef={messagesEndRef}
       />
       <form onSubmit={onSubmit} className="mt-2 p-4">
