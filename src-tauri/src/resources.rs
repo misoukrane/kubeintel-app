@@ -1,6 +1,7 @@
 use crate::k8s_client;
 use crate::kubectl::run_kubectl_command;
 use k8s_openapi::api::apps::v1::{DaemonSet, Deployment, StatefulSet};
+use k8s_openapi::api::batch::v1::{CronJob, Job};
 use k8s_openapi::api::core::v1::{Event, Node, Pod};
 use serde::{Deserialize, Serialize};
 
@@ -12,6 +13,8 @@ pub enum KubeResource {
     StatefulSet(StatefulSet),
     DaemonSet(DaemonSet),
     Node(Node),
+    Job(Job),
+    CronJob(CronJob),
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -80,6 +83,10 @@ pub async fn delete_resource(
         ResourceType::DaemonSet => {
             k8s_client::delete_resource::<DaemonSet>(client, &namespace, &name).await
         }
+        ResourceType::Job => k8s_client::delete_resource::<Job>(client, &namespace, &name).await,
+        ResourceType::CronJob => {
+            k8s_client::delete_resource::<CronJob>(client, &namespace, &name).await
+        }
         ResourceType::Node => k8s_client::delete_cluster_resource::<Node>(client, &name).await,
         _ => Err(format!("Unsupported resource type: {:?}", resource_type)),
     }
@@ -128,6 +135,8 @@ pub async fn open_resource_logs_in_terminal(
         ResourceType::Deployment => format!("{} -f deployment/{} --all-pods", cmd_string, name),
         ResourceType::StatefulSet => format!("{} -f statefulset/{} --all-pods", cmd_string, name),
         ResourceType::DaemonSet => format!("{} -f daemonset/{} --all-pods", cmd_string, name),
+        ResourceType::Job => format!("{} job/{}", cmd_string, name),
+        ResourceType::CronJob => format!("{} cronjob/{}", cmd_string, name),
         ResourceType::Pod => format!("{} {}", cmd_string, name),
         _ => {
             return Err(format!(
@@ -179,8 +188,15 @@ pub async fn get_resource(
             let resource = k8s_client::get_resource::<DaemonSet>(client, &namespace, &name).await?;
             Ok(KubeResource::DaemonSet(resource))
         }
+        ResourceType::Job => {
+            let resource = k8s_client::get_resource::<Job>(client, &namespace, &name).await?;
+            Ok(KubeResource::Job(resource))
+        }
+        ResourceType::CronJob => {
+            let resource = k8s_client::get_resource::<CronJob>(client, &namespace, &name).await?;
+            Ok(KubeResource::CronJob(resource))
+        }
         ResourceType::Node => {
-            // For nodes, we use get_cluster_resource since they are cluster-scoped
             let resource = k8s_client::get_cluster_resource::<Node>(client, &name).await?;
             Ok(KubeResource::Node(resource))
         }
@@ -220,6 +236,14 @@ pub async fn list_resource(
         ResourceType::DaemonSet => {
             let resources = k8s_client::list_resources::<DaemonSet>(client, &namespace).await?;
             Ok(resources.into_iter().map(KubeResource::DaemonSet).collect())
+        }
+        ResourceType::Job => {
+            let resources = k8s_client::list_resources::<Job>(client, &namespace).await?;
+            Ok(resources.into_iter().map(KubeResource::Job).collect())
+        }
+        ResourceType::CronJob => {
+            let resources = k8s_client::list_resources::<CronJob>(client, &namespace).await?;
+            Ok(resources.into_iter().map(KubeResource::CronJob).collect())
         }
         ResourceType::Node => {
             // For nodes, we ignore the namespace parameter since they are cluster-scoped
@@ -319,6 +343,14 @@ pub async fn list_resource_events(
         }
         ResourceType::DaemonSet => {
             let events = k8s_client::list_events::<DaemonSet>(client, &namespace, &name).await?;
+            Ok(events)
+        }
+        ResourceType::Job => {
+            let events = k8s_client::list_events::<Job>(client, &namespace, &name).await?;
+            Ok(events)
+        }
+        ResourceType::CronJob => {
+            let events = k8s_client::list_events::<CronJob>(client, &namespace, &name).await?;
             Ok(events)
         }
         _ => Err(format!("Unsupported resource type: {:?}", resource_type)),
