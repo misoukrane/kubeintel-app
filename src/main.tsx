@@ -22,6 +22,7 @@ import { Nodes } from "./pages/nodes";
 import { Node } from "./pages/node";
 import { NodePods } from "./pages/node-pods";
 import { AIConfigPage } from "./pages/ai-config";
+import { Jobs } from "./pages/jobs";
 
 const queryClient = new QueryClient()
 
@@ -46,6 +47,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
               <Route path={ROUTES.NODES} element={<Nodes />} />
               <Route path={ROUTES.NODE} element={<Node />} />
               <Route path={ROUTES.NODE_PODS} element={<NodePods />} />
+              <Route path={ROUTES.JOBS} element={<Jobs />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

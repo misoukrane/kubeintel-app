@@ -45,7 +45,7 @@ export function PodChatInput({
         dir="auto"
         onChange={onInputChange}
         disabled={chatStatus === "submitted"}
-        placeholder="Ask questions about this pod..."
+        placeholder="Ask anything about this pod..."
         className="w-full bg-transparent focus:outline-none text-primary resize-none"
         style={{ height: "44px" }}
         rows={4}
