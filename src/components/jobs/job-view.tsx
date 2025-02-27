@@ -16,7 +16,6 @@ interface JobViewProps {
   job?: V1Job;
   onCopy: (text: string) => void;
   onDelete: () => void;
-  onRestart: () => void;
   onLogs: (containerName?: string) => void;
   onOpenEvents: () => void;
 }
@@ -25,7 +24,6 @@ export const JobView = ({
   job,
   onCopy,
   onDelete,
-  onRestart,
   onLogs,
   onOpenEvents,
 }: JobViewProps) => {
@@ -222,10 +220,8 @@ export const JobView = ({
               kind="Job"
               resourceName={metadata?.name}
               onDelete={onDelete}
-              onRestart={onRestart}
               onLogs={onLogs}
               onOpenEvents={onOpenEvents}
-            // Jobs don't support scaling like StatefulSets
             />
           </TabsContent>
         </Tabs>

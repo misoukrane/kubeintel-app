@@ -15,22 +15,15 @@ export const Job = () => {
   const { selectedKubeconfig, currentContext, currentNamespace } =
     useConfigStore();
 
-  const {
-    resource,
-    isLoading,
-    error,
-    deleteResource,
-    openLogs,
-    openEvents,
-    restartResource,
-  } = useKubeResource<V1Job>({
-    kubeconfigPath: selectedKubeconfig,
-    context: currentContext,
-    namespace: currentNamespace,
-    resourceType: ResourceTypes.Job,
-    name: jobName,
-    onDeleteSuccess: () => navigate('/jobs'),
-  });
+  const { resource, isLoading, error, deleteResource, openLogs, openEvents } =
+    useKubeResource<V1Job>({
+      kubeconfigPath: selectedKubeconfig,
+      context: currentContext,
+      namespace: currentNamespace,
+      resourceType: ResourceTypes.Job,
+      name: jobName,
+      onDeleteSuccess: () => navigate('/jobs'),
+    });
 
   return (
     <div className="space-y-4">
@@ -41,7 +34,6 @@ export const Job = () => {
           job={resource}
           onCopy={copyToClipboard}
           onDelete={deleteResource}
-          onRestart={restartResource}
           onLogs={(containerName?: string) => openLogs(containerName)}
           onOpenEvents={openEvents}
         />
