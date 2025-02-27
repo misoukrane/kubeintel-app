@@ -15,3 +15,13 @@ export const formatDuration = (ms: number) => {
     return `${seconds}s`;
   }
 };
+
+// Format creation timestamp as age
+export const getAge = (timestamp: string | undefined) => {
+  if (!timestamp) return '';
+
+  const created = new Date(timestamp);
+  const now = new Date();
+  const diffMs = now.getTime() - created.getTime();
+  return formatDuration(diffMs);
+};

@@ -35,7 +35,7 @@ import { DataTablePagination } from '@/components/table/data-table-pagination';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { StatusBadge } from '../status-badge';
 import { getJobDuration, getJobStatus } from '@/lib/jobs';
-import { formatDuration } from '@/lib/time';
+import { formatDuration, getAge } from '@/lib/time';
 import { arrayToLabelSelector, labelSelectorToArray } from '@/lib/labels';
 
 interface JobsTableProps {
@@ -77,16 +77,6 @@ export const JobsTable = ({
       value: label,
     }));
   }, [jobs]);
-
-  // Format creation timestamp as age
-  const getAge = (timestamp: string | undefined) => {
-    if (!timestamp) return '';
-
-    const created = new Date(timestamp);
-    const now = new Date();
-    const diffMs = now.getTime() - created.getTime();
-    return formatDuration(diffMs);
-  };
 
   const columns: ColumnDef<V1Job>[] = [
     {

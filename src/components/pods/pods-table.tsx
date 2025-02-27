@@ -41,6 +41,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { arrayToLabelSelector, labelSelectorToArray } from '@/lib/labels';
+import { getAge } from '@/lib/time';
 
 interface PodsTableProps {
   pods: Array<V1Pod>;
@@ -133,11 +134,14 @@ export const PodsTable = ({ pods, initialFilters, columnVisibility, navigateToPo
       cell: ({ row }) => row.original.status?.phase,
     },
     {
+      id: 'age',
       accessorKey: 'metadata.creationTimestamp',
       header: ({ column }) => <SortableHeader column={column} title="Age" />,
-      cell: ({ row }) => {
-        const timestamp = row.original.metadata?.creationTimestamp;
-        return timestamp ? new Date(timestamp).toLocaleString() : '';
+      cell: ({ row }) => getAge(String(row.original.metadata?.creationTimestamp)),
+      sortingFn: (rowA, rowB) => {
+        const dateA = String(rowA.original.metadata?.creationTimestamp || '');
+        const dateB = String(rowB.original.metadata?.creationTimestamp || '');
+        return dateA.localeCompare(dateB);
       },
     },
     {
