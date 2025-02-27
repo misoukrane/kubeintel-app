@@ -68,21 +68,19 @@ export const CmLogo = (props: any) => (
           strokeOpacity: 1,
         }}
       />
-      <a>
-        <path
-          d="M10.354 8.408h3.708"
-          style={{
-            fill: 'none',
-            fillRule: 'evenodd',
-            stroke: '#fff',
-            strokeWidth: 0.79374999,
-            strokeLinecap: 'butt',
-            strokeLinejoin: 'round',
-            strokeMiterlimit: 10,
-            strokeOpacity: 1,
-          }}
-        />
-      </a>
+      <path
+        d="M10.354 8.408h3.708"
+        style={{
+          fill: 'none',
+          fillRule: 'evenodd',
+          stroke: '#fff',
+          strokeWidth: 0.79374999,
+          strokeLinecap: 'butt',
+          strokeLinejoin: 'round',
+          strokeMiterlimit: 10,
+          strokeOpacity: 1,
+        }}
+      />
       <path
         d="M7.84 8.408h1.458M10.354 10.525h3.708M7.84 10.525h1.458M8.237 12.641h5.825M5.723 12.641h1.458"
         style={{

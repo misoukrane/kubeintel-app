@@ -10,7 +10,6 @@ import { ContainersStatusTable } from '@/components/pods/containers-status-table
 import { Link } from 'react-router';
 import { createLabelSelector } from '@/lib/strings';
 import { ResourceActions } from '@/components/resources/resource-actions';
-import { Badge } from '@/components/ui/badge';
 
 interface JobViewProps {
   job?: V1Job;
@@ -34,13 +33,13 @@ export const JobView = ({
   // Get job status
   const getJobStatus = () => {
     if (status?.succeeded && status.succeeded > 0) {
-      return { status: 'Succeeded', className: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' };
+      return 'Succeeded'
     } else if (status?.failed && status.failed > 0) {
-      return { status: 'Failed', className: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' };
+      return 'Failed'
     } else if (status?.active && status.active > 0) {
-      return { status: 'Active', className: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' };
+      return 'Active'
     }
-    return { status: 'Pending', className: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' };
+    return 'Pending'
   };
 
   // Calculate job duration
@@ -91,14 +90,13 @@ export const JobView = ({
             Namespace: {metadata?.namespace}
           </div>
         </div>
-        <Badge variant="outline" className={jobStatus.className}>
-          {jobStatus.status}
-        </Badge>
+        <StatusBadge status={jobStatus} />
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="overview">
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="conditions">Conditions</TabsTrigger>
             <TabsTrigger value="containers">Containers</TabsTrigger>
             <TabsTrigger value="source">Source</TabsTrigger>
             <TabsTrigger value="actions">Actions</TabsTrigger>
@@ -190,6 +188,21 @@ export const JobView = ({
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
+          </TabsContent>
+
+          <TabsContent value="conditions">
+            <Card>
+              <CardHeader>
+                <CardTitle>Status Conditions</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {status?.conditions && status.conditions.length > 0 ? (
+                  <StatusConditions conditions={status.conditions} />
+                ) : (
+                  <p className="text-center text-muted-foreground">No conditions found</p>
+                )}
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="containers">

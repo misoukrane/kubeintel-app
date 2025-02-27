@@ -1,13 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router";
+import { createBrowserRouter, RouterProvider } from "react-router";
 import { KubeconfigFilePicker } from "@/pages/kubeconfig-file-picker";
 import "./global.css";
 import Layout from "./layout";
 import { Cluster } from "./pages/cluster";
 import { Pods } from "./pages/pods";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/toaster";
 import { ROUTES } from "@/lib/routes";
 import { Deployments } from "./pages/deployments";
 import { NotFound } from "@/pages/not-found";
@@ -15,7 +15,7 @@ import { DaemonSets } from "./pages/daemonsets";
 import { StatefulSets } from "./pages/statefulsets";
 import { Pod } from "./pages/pod";
 import { Deployment } from "./pages/deployment";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { DaemonSet } from "./pages/daemonset";
 import { StatefulSet } from "./pages/statefulset";
 import { Nodes } from "./pages/nodes";
@@ -24,38 +24,98 @@ import { NodePods } from "./pages/node-pods";
 import { AIConfigPage } from "./pages/ai-config";
 import { Jobs } from "./pages/jobs";
 import { Job } from "./pages/job";
+import { ErrorBoundary } from "./components/error-boundary";
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
+
+// Create router with proper error boundaries
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <KubeconfigFilePicker />,
+    errorElement: <ErrorBoundary />
+  },
+  {
+    path: "/",
+    element: <Layout />,
+    errorElement: <ErrorBoundary />,
+    children: [
+      {
+        path: ROUTES.CLUSTER,
+        element: <Cluster />
+      },
+      {
+        path: ROUTES.AI_CONFIG,
+        element: <AIConfigPage />
+      },
+      {
+        path: ROUTES.PODS,
+        element: <Pods />
+      },
+      {
+        path: ROUTES.DEPLOYMENTS,
+        element: <Deployments />
+      },
+      {
+        path: ROUTES.DAEMONSETS,
+        element: <DaemonSets />
+      },
+      {
+        path: ROUTES.STATEFULSETS,
+        element: <StatefulSets />
+      },
+      {
+        path: ROUTES.POD,
+        element: <Pod />
+      },
+      {
+        path: ROUTES.DEPLOYMENT,
+        element: <Deployment />
+      },
+      {
+        path: ROUTES.DAEMONSET,
+        element: <DaemonSet />
+      },
+      {
+        path: ROUTES.STATEFULSET,
+        element: <StatefulSet />
+      },
+      {
+        path: ROUTES.NODES,
+        element: <Nodes />
+      },
+      {
+        path: ROUTES.NODE,
+        element: <Node />
+      },
+      {
+        path: ROUTES.NODE_PODS,
+        element: <NodePods />
+      },
+      {
+        path: ROUTES.JOBS,
+        element: <Jobs />
+      },
+      {
+        path: ROUTES.JOB,
+        element: <Job />
+      }
+    ]
+  },
+  {
+    path: "*",
+    element: <NotFound />,
+    errorElement: <ErrorBoundary />
+  }
+]);
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<KubeconfigFilePicker />} />
-            <Route element={<Layout />} >
-              <Route path={ROUTES.CLUSTER} element={<Cluster />} />
-              <Route path={ROUTES.AI_CONFIG} element={<AIConfigPage />} />
-              <Route path={ROUTES.PODS} element={<Pods />} />
-              <Route path={ROUTES.DEPLOYMENTS} element={<Deployments />} />
-              <Route path={ROUTES.DAEMONSETS} element={<DaemonSets />} />
-              <Route path={ROUTES.STATEFULSETS} element={<StatefulSets />} />
-              <Route path={ROUTES.POD} element={<Pod />} />
-              <Route path={ROUTES.DEPLOYMENT} element={<Deployment />} />
-              <Route path={ROUTES.DAEMONSET} element={<DaemonSet />} />
-              <Route path={ROUTES.STATEFULSET} element={<StatefulSet />} />
-              <Route path={ROUTES.NODES} element={<Nodes />} />
-              <Route path={ROUTES.NODE} element={<Node />} />
-              <Route path={ROUTES.NODE_PODS} element={<NodePods />} />
-              <Route path={ROUTES.JOBS} element={<Jobs />} />
-              <Route path={ROUTES.JOB} element={<Job />} />
-            </Route>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        <RouterProvider router={router} />
         <Toaster />
       </ThemeProvider>
     </QueryClientProvider>
-  </React.StrictMode>,
+  </React.StrictMode>
 );

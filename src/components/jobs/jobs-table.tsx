@@ -1,7 +1,6 @@
 import { Link } from 'react-router';
-import { V1Job } from '@kubernetes/client-node';
+import { V1Job, V1JobStatus } from '@kubernetes/client-node';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import {
   Accordion,
   AccordionContent,
@@ -34,6 +33,7 @@ import { Button } from '@/components/ui/button';
 import { SortableHeader } from '@/components/table/sortable-header';
 import { DataTablePagination } from '@/components/table/data-table-pagination';
 import { MultiSelect } from '@/components/ui/multi-select';
+import { StatusBadge } from '../status-badge';
 
 interface JobsTableProps {
   jobs: Array<V1Job>;
@@ -82,15 +82,16 @@ export const JobsTable = ({
     array.join(',');
 
   // Helper function to get job status
-  const getJobStatus = (job: V1Job) => {
-    if (job.status?.succeeded && job.status.succeeded > 0) {
-      return { status: 'Succeeded', className: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' };
-    } else if (job.status?.failed && job.status.failed > 0) {
-      return { status: 'Failed', className: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' };
-    } else if (job.status?.active && job.status.active > 0) {
-      return { status: 'Active', className: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' };
+  // Get job status
+  const getJobStatus = (status: V1JobStatus | undefined) => {
+    if (status?.succeeded && status.succeeded > 0) {
+      return 'Succeeded'
+    } else if (status?.failed && status.failed > 0) {
+      return 'Failed'
+    } else if (status?.active && status.active > 0) {
+      return 'Active'
     }
-    return { status: 'Pending', className: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' };
+    return 'Pending'
   };
 
   // Calculate job duration or age
@@ -170,16 +171,14 @@ export const JobsTable = ({
         <SortableHeader column={column} title="Status" />
       ),
       cell: ({ row }) => {
-        const { status, className } = getJobStatus(row.original);
+        const status = getJobStatus(row.original.status);
         return (
-          <Badge variant="outline" className={className}>
-            {status}
-          </Badge>
+          <StatusBadge status={status} />
         );
       },
       sortingFn: (rowA, rowB) => {
-        const statusA = getJobStatus(rowA.original).status;
-        const statusB = getJobStatus(rowB.original).status;
+        const statusA = getJobStatus(rowA.original.status);
+        const statusB = getJobStatus(rowB.original.status);
         return statusA.localeCompare(statusB);
       },
     },
