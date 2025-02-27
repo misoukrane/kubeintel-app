@@ -33,6 +33,7 @@ import { Button } from '@/components/ui/button';
 import { SortableHeader } from '@/components/table/sortable-header';
 import { DataTablePagination } from '@/components/table/data-table-pagination';
 import { MultiSelect } from '@/components/ui/multi-select';
+import { arrayToLabelSelector, labelSelectorToArray } from '@/lib/labels';
 
 interface StatefulSetsTableProps {
   statefulsets: Array<V1StatefulSet>;
@@ -73,12 +74,6 @@ export const StatefulSetsTable = ({
       value: label,
     }));
   }, [statefulsets]);
-
-  const labelSelectorToArray = (selector: string) =>
-    selector.split(',').filter(Boolean);
-
-  const arrayToLabelSelector = (array: string[]) =>
-    array.join(',');
 
   const columns: ColumnDef<V1StatefulSet>[] = [
     {

@@ -33,6 +33,7 @@ import { Button } from '@/components/ui/button';
 import { SortableHeader } from '@/components/table/sortable-header';
 import { DataTablePagination } from '@/components/table/data-table-pagination';
 import { MultiSelect } from '@/components/ui/multi-select';
+import { arrayToLabelSelector, labelSelectorToArray } from '@/lib/labels';
 
 interface DeploymentsTableProps {
   deployments: Array<V1Deployment>;
@@ -73,13 +74,6 @@ export const DeploymentsTable = ({
       value: label,
     }));
   }, [deployments]);
-
-  // Convert label selector string to array and back
-  const labelSelectorToArray = (selector: string) =>
-    selector.split(',').filter(Boolean);
-
-  const arrayToLabelSelector = (array: string[]) =>
-    array.join(',');
 
   const columns: ColumnDef<V1Deployment>[] = [
     {

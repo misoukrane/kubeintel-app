@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import { V1Job, V1JobStatus } from '@kubernetes/client-node';
+import { V1Job } from '@kubernetes/client-node';
 import { Card, CardContent } from '@/components/ui/card';
 import {
   Accordion,
@@ -34,6 +34,9 @@ import { SortableHeader } from '@/components/table/sortable-header';
 import { DataTablePagination } from '@/components/table/data-table-pagination';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { StatusBadge } from '../status-badge';
+import { getJobDuration, getJobStatus } from '@/lib/jobs';
+import { formatDuration } from '@/lib/time';
+import { arrayToLabelSelector, labelSelectorToArray } from '@/lib/labels';
 
 interface JobsTableProps {
   jobs: Array<V1Job>;
@@ -74,60 +77,6 @@ export const JobsTable = ({
       value: label,
     }));
   }, [jobs]);
-
-  const labelSelectorToArray = (selector: string) =>
-    selector.split(',').filter(Boolean);
-
-  const arrayToLabelSelector = (array: string[]) =>
-    array.join(',');
-
-  // Helper function to get job status
-  // Get job status
-  const getJobStatus = (status: V1JobStatus | undefined) => {
-    if (status?.succeeded && status.succeeded > 0) {
-      return 'Succeeded'
-    } else if (status?.failed && status.failed > 0) {
-      return 'Failed'
-    } else if (status?.active && status.active > 0) {
-      return 'Active'
-    }
-    return 'Pending'
-  };
-
-  // Calculate job duration or age
-  const getJobDuration = (job: V1Job) => {
-    const startTime = job.status?.startTime ? new Date(job.status.startTime) : null;
-    const completionTime = job.status?.completionTime ? new Date(job.status.completionTime) : null;
-
-    if (startTime && completionTime) {
-      // Job is complete, show duration
-      const durationMs = completionTime.getTime() - startTime.getTime();
-      return formatDuration(durationMs);
-    } else if (startTime) {
-      // Job is running, show duration so far
-      const durationMs = new Date().getTime() - startTime.getTime();
-      return `${formatDuration(durationMs)} (running)`;
-    }
-    return 'N/A';
-  };
-
-  // Format duration in a human-readable format
-  const formatDuration = (ms: number) => {
-    const seconds = Math.floor(ms / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-
-    if (days > 0) {
-      return `${days}d ${hours % 24}h`;
-    } else if (hours > 0) {
-      return `${hours}h ${minutes % 60}m`;
-    } else if (minutes > 0) {
-      return `${minutes}m ${seconds % 60}s`;
-    } else {
-      return `${seconds}s`;
-    }
-  };
 
   // Format creation timestamp as age
   const getAge = (timestamp: string | undefined) => {

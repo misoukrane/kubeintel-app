@@ -40,6 +40,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { arrayToLabelSelector, labelSelectorToArray } from '@/lib/labels';
 
 interface PodsTableProps {
   pods: Array<V1Pod>;
@@ -90,13 +91,6 @@ export const PodsTable = ({ pods, initialFilters, columnVisibility, navigateToPo
       value: label,
     }));
   }, [pods]);
-
-  // Convert label selector string to array and back
-  const labelSelectorToArray = (selector: string) =>
-    selector.split(',').filter(Boolean);
-
-  const arrayToLabelSelector = (array: string[]) =>
-    array.join(',');
 
   // Get unique namespaces
   const namespaces = useMemo(() => {

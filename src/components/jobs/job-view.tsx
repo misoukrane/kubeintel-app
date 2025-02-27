@@ -10,6 +10,7 @@ import { ContainersStatusTable } from '@/components/pods/containers-status-table
 import { Link } from 'react-router';
 import { createLabelSelector } from '@/lib/strings';
 import { ResourceActions } from '@/components/resources/resource-actions';
+import { getJobDuration, getJobStatus } from '@/lib/jobs';
 
 interface JobViewProps {
   job?: V1Job;
@@ -30,56 +31,11 @@ export const JobView = ({
 
   const { metadata, status, spec } = job;
 
-  // Get job status
-  const getJobStatus = () => {
-    if (status?.succeeded && status.succeeded > 0) {
-      return 'Succeeded'
-    } else if (status?.failed && status.failed > 0) {
-      return 'Failed'
-    } else if (status?.active && status.active > 0) {
-      return 'Active'
-    }
-    return 'Pending'
-  };
 
-  // Calculate job duration
-  const getJobDuration = () => {
-    const startTime = status?.startTime ? new Date(status.startTime) : null;
-    const completionTime = status?.completionTime ? new Date(status.completionTime) : null;
-
-    if (startTime && completionTime) {
-      // Job is complete, show duration
-      const durationMs = completionTime.getTime() - startTime.getTime();
-      return formatDuration(durationMs);
-    } else if (startTime) {
-      // Job is running, show duration so far
-      const durationMs = new Date().getTime() - startTime.getTime();
-      return `${formatDuration(durationMs)} (running)`;
-    }
-    return 'N/A';
-  };
-
-  // Format duration in a human-readable format
-  const formatDuration = (ms: number) => {
-    const seconds = Math.floor(ms / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-
-    if (days > 0) {
-      return `${days}d ${hours % 24}h`;
-    } else if (hours > 0) {
-      return `${hours}h ${minutes % 60}m`;
-    } else if (minutes > 0) {
-      return `${minutes}m ${seconds % 60}s`;
-    } else {
-      return `${seconds}s`;
-    }
-  };
 
   // Create the label selector string from the job's selector
   const labelSelector = createLabelSelector(spec?.selector?.matchLabels);
-  const jobStatus = getJobStatus();
+  const jobStatus = getJobStatus(status);
 
   return (
     <Card className="max-w-6xl mx-auto">
@@ -138,7 +94,7 @@ export const JobView = ({
                     </div>
                     <div>
                       <h3 className="font-medium">Duration</h3>
-                      <p>{getJobDuration()}</p>
+                      <p>{getJobDuration(job)}</p>
                     </div>
                     <div>
                       <h3 className="font-medium">Start Time</h3>

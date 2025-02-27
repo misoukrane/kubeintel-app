@@ -41,6 +41,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { arrayToLabelSelector, labelSelectorToArray } from '@/lib/labels';
 
 interface NodesTableProps {
   nodes: Array<V1Node>;
@@ -93,12 +94,6 @@ export const NodesTable = ({ nodes, initialFilters }: NodesTableProps) => {
       value: status,
     }));
   }, [nodes]);
-
-  const labelSelectorToArray = (selector: string) =>
-    selector.split(',').filter(Boolean);
-
-  const arrayToLabelSelector = (array: string[]) =>
-    array.join(',');
 
   const columns: ColumnDef<V1Node>[] = [
     {
