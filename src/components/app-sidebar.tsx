@@ -23,10 +23,9 @@ import { StsLogo } from '@/assets/sts';
 import { ControlPlaneLogo } from '@/assets/control-plane';
 import { NodeLogo } from '@/assets/node';
 import { JobLogo } from '@/assets/job';
-import { CircleAlert } from 'lucide-react';
-// import { CronJobLogo} from '@/assets/cronjob';
-// import { ConfigLogo } from '@/assets/config';
-// import { SecretLogo } from '@/assets/secret';
+import { CmLogo } from '@/assets/cm';
+import { SecretLogo } from '@/assets/secret';
+import { CronJobLogo } from '@/assets/cron-job';
 
 // Menu items.
 const items = [
@@ -68,17 +67,17 @@ const items = [
   {
     title: 'CronJobs',
     url: '/cronjobs',
-    icon: CircleAlert,
+    icon: CronJobLogo,
   },
   {
     title: 'ConfigMaps',
     url: '/configmaps',
-    icon: CircleAlert,
+    icon: CmLogo,
   },
   {
     title: 'Secrets',
     url: '/secrets',
-    icon: CircleAlert,
+    icon: SecretLogo,
   },
 ];
 
