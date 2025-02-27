@@ -25,9 +25,7 @@ export const Jobs = () => {
     <div className="space-y-4">
       {isLoading && <Spinner />}
       {error && <ErrorAlert error={error} />}
-      {!isLoading && !error && (
-        <JobsTable jobs={jobs ?? []} />
-      )}
+      {!isLoading && !error && <JobsTable jobs={jobs ?? []} />}
     </div>
   );
 };

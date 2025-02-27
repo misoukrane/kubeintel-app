@@ -30,7 +30,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-type ResourceKind = 'Deployment' | 'StatefulSet' | 'DaemonSet';
+type ResourceKind = 'Deployment' | 'StatefulSet' | 'DaemonSet' | 'Job' | 'CronJob';
 
 const scaleFormSchema = z.object({
   replicas: z.string()
@@ -49,11 +49,11 @@ type ScaleFormValues = {
 interface ResourceActionsProps {
   kind: ResourceKind;
   resourceName?: string;
-  currentReplicas: number;
+  currentReplicas?: number;
   canScale?: boolean;
   onScale?: (params: { currentReplicas: number; replicas: number }) => void;
   onDelete: () => void;
-  onRestart: () => void;
+  onRestart?: () => void;
   onLogs: (containerName?: string) => void;
   onOpenEvents: () => void;
 }
@@ -61,7 +61,7 @@ interface ResourceActionsProps {
 export const ResourceActions = ({
   kind,
   resourceName,
-  currentReplicas,
+  currentReplicas = 0,
   canScale = true,
   onScale,
   onDelete,
@@ -71,6 +71,11 @@ export const ResourceActions = ({
 }: ResourceActionsProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
   const [scaleDialogOpen, setScaleDialogOpen] = React.useState(false)
+
+  // Check if resource supports restart
+  const supportsRestart = kind !== 'Job' && kind !== 'CronJob';
+  // Check if resource supports scaling
+  const supportsScaling = kind !== 'Job' && kind !== 'CronJob' && canScale && !!onScale;
 
   const form = useForm<ScaleFormValues>({
     resolver: zodResolver(scaleFormSchema),
@@ -98,16 +103,18 @@ export const ResourceActions = ({
           <CommandEmpty>No actions found.</CommandEmpty>
 
           <CommandGroup heading="Common Actions">
-            {canScale && onScale && (
+            {supportsScaling && (
               <CommandItem onSelect={() => setScaleDialogOpen(true)}>
                 <Scale className="mr-2 h-4 w-4" />
                 <span>Scale {kind}</span>
               </CommandItem>
             )}
-            <CommandItem onSelect={onRestart}>
-              <RefreshCw className="mr-2 h-4 w-4" />
-              <span>Rolling Restart</span>
-            </CommandItem>
+            {supportsRestart && onRestart && (
+              <CommandItem onSelect={onRestart}>
+                <RefreshCw className="mr-2 h-4 w-4" />
+                <span>Rolling Restart</span>
+              </CommandItem>
+            )}
             <CommandItem onSelect={() => { onLogs() }}>
               <FileTerminal className="mr-2 h-4 w-4" />
               <span>View Logs</span>
@@ -139,7 +146,8 @@ export const ResourceActions = ({
           <DialogHeader>
             <DialogTitle>Delete {kind}?</DialogTitle>
             <DialogDescription>
-              This action cannot be undone. This will permanently delete the {kind.toLowerCase()} {resourceName} and all its pods.
+              This action cannot be undone. This will permanently delete the {kind.toLowerCase()} {resourceName}
+              {kind !== 'Job' && kind !== 'CronJob' ? ' and all its pods.' : '.'}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -154,7 +162,7 @@ export const ResourceActions = ({
       </Dialog>
 
       {/* Scale Dialog */}
-      {canScale && onScale && (
+      {supportsScaling && (
         <Dialog
           open={scaleDialogOpen}
           onOpenChange={(open) => {

@@ -6,8 +6,8 @@ export const truncate = (str: string, length: number = 56) =>
 export const createLabelSelector = (matchLabels?: Record<string, string>) => {
   return matchLabels
     ? Object.entries(matchLabels)
-      .map(([k, v]) => `${k}=${v}`)
-      .join(',')
+        .map(([k, v]) => `${k}=${v}`)
+        .join(',')
     : '';
 };
 
