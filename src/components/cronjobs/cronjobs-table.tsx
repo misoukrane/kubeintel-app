@@ -1,4 +1,5 @@
-import { V1Job } from '@kubernetes/client-node';
+import { Link } from 'react-router';
+import { V1CronJob } from '@kubernetes/client-node';
 import { Card, CardContent } from '@/components/ui/card';
 import {
   Accordion,
@@ -25,7 +26,6 @@ import {
   getSortedRowModel,
   PaginationState,
   getPaginationRowModel,
-  VisibilityState,
 } from '@tanstack/react-table';
 import { Input } from '@/components/ui/input';
 import { useState, useMemo } from 'react';
@@ -34,31 +34,25 @@ import { SortableHeader } from '@/components/table/sortable-header';
 import { DataTablePagination } from '@/components/table/data-table-pagination';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { StatusBadge } from '../status-badge';
-import { getJobDuration, getJobStatus } from '@/lib/jobs';
 import { getAge } from '@/lib/time';
 import { arrayToLabelSelector, labelSelectorToArray } from '@/lib/labels';
+import { getCronJobStatus, getLastSchedule, getSchedule } from '@/lib/cronjobs';
 
-interface JobsTableProps {
-  jobs: Array<V1Job>;
+interface CronJobsTableProps {
+  cronjobs: Array<V1CronJob>;
   initialFilters?: {
     name: string;
-    status?: string;
     labelSelector: string;
   };
-  navigateToJob?: (namespace: string, name: string) => void;
-  columnVisibility?: VisibilityState;
 }
 
-export const JobsTable = ({
-  jobs,
-  initialFilters = { name: '', status: '', labelSelector: '' },
-  navigateToJob,
-  columnVisibility = {},
-}: JobsTableProps) => {
+export const CronJobsTable = ({
+  cronjobs,
+  initialFilters = { name: '', labelSelector: '' }
+}: CronJobsTableProps) => {
   // Create initial filters array
   const initialColumnFilters: ColumnFiltersState = [
     ...(initialFilters.name ? [{ id: 'name', value: initialFilters.name }] : []),
-    ...(initialFilters.status ? [{ id: 'status', value: initialFilters.status }] : []),
     ...(initialFilters.labelSelector ? [{ id: 'labels', value: initialFilters.labelSelector }] : []),
   ];
 
@@ -69,17 +63,11 @@ export const JobsTable = ({
     pageSize: 10,
   });
 
-  // Add visibility state
-  const [visibility, setVisibility] = useState<VisibilityState>({
-    labels: false,
-    ...columnVisibility
-  });
-
-  // Create unique label options from all jobs
+  // Create unique label options from all cronjobs
   const labelOptions = useMemo(() => {
     const labelSet = new Set<string>();
-    jobs.forEach(job => {
-      const labels = job.metadata?.labels || {};
+    cronjobs.forEach(cronjob => {
+      const labels = cronjob.metadata?.labels || {};
       Object.entries(labels).forEach(([key, value]) => {
         labelSet.add(`${key}=${value}`);
       });
@@ -88,10 +76,9 @@ export const JobsTable = ({
       label,
       value: label,
     }));
-  }, [jobs]);
+  }, [cronjobs]);
 
-  // Update the 'name' column cell to use navigateToJob if provided
-  const columns: ColumnDef<V1Job>[] = [
+  const columns: ColumnDef<V1CronJob>[] = [
     {
       id: 'name',
       accessorKey: 'metadata.name',
@@ -99,17 +86,13 @@ export const JobsTable = ({
         <SortableHeader column={column} title="Name" />
       ),
       cell: ({ row }) => {
-        const name = row.original.metadata?.name || '';
-        const namespace = row.original.metadata?.namespace || '';
-
+        const name = row.original.metadata?.name;
         return (
-          <Button
-            variant="link"
-            className="underline"
-            onClick={() => navigateToJob ? navigateToJob(namespace, name) : null}
-          >
-            {name}
-          </Button>
+          <Link to={`/cronjobs/${name}`}>
+            <Button variant="link" className="underline">
+              {name}
+            </Button>
+          </Link>
         );
       },
     },
@@ -122,52 +105,62 @@ export const JobsTable = ({
       cell: ({ row }) => row.original.metadata?.namespace,
     },
     {
+      id: 'schedule',
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Schedule" />
+      ),
+      cell: ({ row }) => getSchedule(row.original),
+      sortingFn: (rowA, rowB) => {
+        const scheduleA = getSchedule(rowA.original);
+        const scheduleB = getSchedule(rowB.original);
+        return scheduleA.localeCompare(scheduleB);
+      },
+    },
+    {
       id: 'status',
       header: ({ column }) => (
         <SortableHeader column={column} title="Status" />
       ),
       cell: ({ row }) => {
-        const status = getJobStatus(row.original.status);
-        return (
-          <StatusBadge status={status} />
-        );
+        const status = getCronJobStatus(row.original);
+        return <StatusBadge status={status} />;
       },
       sortingFn: (rowA, rowB) => {
-        const statusA = getJobStatus(rowA.original.status);
-        const statusB = getJobStatus(rowB.original.status);
+        const statusA = getCronJobStatus(rowA.original);
+        const statusB = getCronJobStatus(rowB.original);
         return statusA.localeCompare(statusB);
       },
     },
     {
-      id: 'completions',
+      id: 'lastSchedule',
       header: ({ column }) => (
-        <SortableHeader column={column} title="Completions" />
+        <SortableHeader column={column} title="Last Schedule" />
       ),
-      cell: ({ row }) => {
-        const succeeded = row.original.status?.succeeded || 0;
-        const completions = row.original.spec?.completions || 1;
-        return `${succeeded}/${completions}`;
-      },
-    },
-    {
-      id: 'parallelism',
-      accessorKey: 'spec.parallelism',
-      header: ({ column }) => (
-        <SortableHeader column={column} title="Parallelism" />
-      ),
-      cell: ({ row }) => row.original.spec?.parallelism || 1,
-    },
-    {
-      id: 'duration',
-      header: ({ column }) => (
-        <SortableHeader column={column} title="Duration" />
-      ),
-      cell: ({ row }) => getJobDuration(row.original),
+      cell: ({ row }) => getLastSchedule(row.original),
       sortingFn: (rowA, rowB) => {
-        const startTimeA = rowA.original.status?.startTime || '';
-        const startTimeB = rowB.original.status?.startTime || '';
-        return String(startTimeA).localeCompare(String(startTimeB));
+        const timeA = rowA.original.status?.lastScheduleTime || '';
+        const timeB = rowB.original.status?.lastScheduleTime || '';
+        return String(timeA).localeCompare(String(timeB));
       },
+    },
+    {
+      id: 'activeJobs',
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Active Jobs" />
+      ),
+      cell: ({ row }) => row.original.status?.active?.length || 0,
+      sortingFn: (rowA, rowB) => {
+        const countA = rowA.original.status?.active?.length || 0;
+        const countB = rowB.original.status?.active?.length || 0;
+        return countA - countB;
+      },
+    },
+    {
+      id: 'concurrencyPolicy',
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Concurrency Policy" />
+      ),
+      cell: ({ row }) => row.original.spec?.concurrencyPolicy || 'Allow',
     },
     {
       id: 'age',
@@ -222,9 +215,8 @@ export const JobsTable = ({
     },
   ];
 
-  // Update the useReactTable configuration to include visibility
   const table = useReactTable({
-    data: jobs,
+    data: cronjobs,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onColumnFiltersChange: setColumnFilters,
@@ -233,12 +225,11 @@ export const JobsTable = ({
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onPaginationChange: setPagination,
-    onColumnVisibilityChange: setVisibility,
     state: {
       columnFilters,
       sorting,
       pagination,
-      columnVisibility: visibility,
+      columnVisibility: { labels: false },
     },
   });
 
@@ -317,7 +308,7 @@ export const JobsTable = ({
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    No jobs found.
+                    No cron jobs found.
                   </TableCell>
                 </TableRow>
               )}

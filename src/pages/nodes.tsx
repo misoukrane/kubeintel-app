@@ -19,7 +19,7 @@ export const Nodes = () => {
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: '', // Nodes are cluster-scoped
-    resourceType: ResourceTypes.NODE,
+    resourceType: ResourceTypes.Node,
   });
 
   // Get filters from URL parameters

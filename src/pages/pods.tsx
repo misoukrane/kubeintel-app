@@ -25,7 +25,7 @@ export const Pods = () => {
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
-    resourceType: ResourceTypes.POD,
+    resourceType: ResourceTypes.Pod,
   });
 
   // Get filters from URL parameters

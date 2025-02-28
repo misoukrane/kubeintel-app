@@ -25,6 +25,8 @@ import { AIConfigPage } from "./pages/ai-config";
 import { Jobs } from "./pages/jobs";
 import { Job } from "./pages/job";
 import { ErrorBoundary } from "./components/error-boundary";
+import { CronJobs } from "./pages/cronjobs";
+import { CronJob } from "./pages/cronjob";
 
 const queryClient = new QueryClient();
 
@@ -99,6 +101,14 @@ const router = createBrowserRouter([
       {
         path: ROUTES.JOB,
         element: <Job />
+      },
+      {
+        path: ROUTES.CRONJOBS,
+        element: <CronJobs />
+      },
+      {
+        path: ROUTES.CRONJOB,
+        element: <CronJob />
       }
     ]
   },

@@ -54,7 +54,7 @@ interface ResourceActionsProps {
   onScale?: (params: { currentReplicas: number; replicas: number }) => void;
   onDelete: () => void;
   onRestart?: () => void;
-  onLogs: (containerName?: string) => void;
+  onLogs?: (containerName?: string) => void;
   onOpenEvents: () => void;
 }
 
@@ -115,10 +115,12 @@ export const ResourceActions = ({
                 <span>Rolling Restart</span>
               </CommandItem>
             )}
-            <CommandItem onSelect={() => { onLogs() }}>
+
+            {onLogs && (<CommandItem onSelect={() => { onLogs() }}>
               <FileTerminal className="mr-2 h-4 w-4" />
               <span>View Logs</span>
             </CommandItem>
+            )}
             <CommandItem onSelect={() => onOpenEvents()}>
               <FileTerminal className="mr-2 h-4 w-4" />
               <span>View Events</span>

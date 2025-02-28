@@ -30,7 +30,7 @@ export const Pod = () => {
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
-    resourceType: ResourceTypes.POD,
+    resourceType: ResourceTypes.Pod,
     name: podName,
     onDeleteSuccess: () => navigate(ROUTES.PODS),
   });
@@ -53,7 +53,7 @@ export const Pod = () => {
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
-    resourceType: ResourceTypes.POD,
+    resourceType: ResourceTypes.Pod,
     name: podName,
   });
 
@@ -61,7 +61,7 @@ export const Pod = () => {
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: currentNamespace,
-    resourceType: ResourceTypes.POD,
+    resourceType: ResourceTypes.Pod,
     name: podName,
   });
 

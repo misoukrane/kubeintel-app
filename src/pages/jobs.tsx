@@ -1,3 +1,4 @@
+import { useNavigate, useSearchParams } from 'react-router';
 import { useConfigStore } from '@/stores/use-config-store';
 import { Spinner } from '@/components/spinner';
 import { JobsTable } from '@/components/jobs/jobs-table';
@@ -5,10 +6,17 @@ import { ErrorAlert } from '@/components/error-alert';
 import { V1Job } from '@kubernetes/client-node';
 import { useListKubeResource } from '@/hooks/kube-resource/use-list-kube-resource';
 import { ResourceTypes } from '@/lib/strings';
+import { ROUTES } from '@/lib/routes';
 
 export const Jobs = () => {
-  const { selectedKubeconfig, currentContext, currentNamespace } =
-    useConfigStore();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const {
+    selectedKubeconfig,
+    currentContext,
+    currentNamespace,
+    setCurrentNamespace,
+  } = useConfigStore();
 
   const {
     data: jobs,
@@ -21,11 +29,30 @@ export const Jobs = () => {
     resourceType: ResourceTypes.Job,
   });
 
+  // Get filters from URL parameters
+  const initialFilters = {
+    name: searchParams.get('name') || '',
+    status: searchParams.get('status') || '',
+    labelSelector: searchParams.get('labelSelector') || '',
+  };
+
   return (
     <div className="space-y-4">
       {isLoading && <Spinner />}
       {error && <ErrorAlert error={error} />}
-      {!isLoading && !error && <JobsTable jobs={jobs ?? []} />}
+      {!isLoading && !error && (
+        <JobsTable
+          jobs={jobs ?? []}
+          initialFilters={initialFilters}
+          navigateToJob={(namespace: string, name: string) => {
+            if (namespace !== currentNamespace) {
+              setCurrentNamespace(namespace);
+            }
+            navigate(`${ROUTES.JOBS}/${name}`);
+          }}
+          columnVisibility={{ labels: false, namespace: false }}
+        />
+      )}
     </div>
   );
 };

@@ -26,7 +26,7 @@ export const Node = () => {
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
     namespace: '', // Nodes are cluster-scoped
-    resourceType: ResourceTypes.NODE,
+    resourceType: ResourceTypes.Node,
     name: nodeName,
     onDeleteSuccess: () => navigate(ROUTES.NODES),
   });

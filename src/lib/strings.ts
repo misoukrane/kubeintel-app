@@ -16,13 +16,11 @@ export const getAttachemntLogName = (containerName: string) => {
 };
 
 export enum ResourceTypes {
-  POD = 'Pod',
+  Pod = 'Pod',
   Deployment = 'Deployment',
   DaemonSet = 'DaemonSet',
   StatefulSet = 'StatefulSet',
   Job = 'Job',
   CronJob = 'CronJob',
-  Service = 'Service',
-  NODE = 'Node',
-  ConfigMap = 'ConfigMap',
+  Node = 'Node',
 }

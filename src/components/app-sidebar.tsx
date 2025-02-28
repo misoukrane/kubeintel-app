@@ -26,57 +26,58 @@ import { JobLogo } from '@/assets/job';
 import { CmLogo } from '@/assets/cm';
 import { SecretLogo } from '@/assets/secret';
 import { CronJobLogo } from '@/assets/cron-job';
+import { ROUTES } from '@/lib/routes';
 
-// Menu items.
+// Menu items using ROUTES constants
 const items = [
   {
     title: 'Cluster Info',
-    url: '/cluster',
+    url: ROUTES.CLUSTER,
     icon: ControlPlaneLogo,
   },
   {
     title: 'Pods',
-    url: '/pods',
+    url: ROUTES.PODS,
     icon: PodLogo,
   },
   {
     title: 'Deployments',
-    url: '/deployments',
+    url: ROUTES.DEPLOYMENTS,
     icon: DeployLogo,
   },
   {
     title: 'DaemonSets',
-    url: '/daemonsets',
+    url: ROUTES.DAEMONSETS,
     icon: DsLogo,
   },
   {
     title: 'StatefulSets',
-    url: '/statefulsets',
+    url: ROUTES.STATEFULSETS,
     icon: StsLogo,
   },
   {
     title: 'Nodes',
-    url: '/nodes',
+    url: ROUTES.NODES,
     icon: NodeLogo,
   },
   {
     title: 'Jobs',
-    url: '/jobs',
+    url: ROUTES.JOBS,
     icon: JobLogo,
   },
   {
     title: 'CronJobs',
-    url: '/cronjobs',
+    url: ROUTES.CRONJOBS,
     icon: CronJobLogo,
   },
   {
     title: 'ConfigMaps',
-    url: '/configmaps',
+    url: ROUTES.CONFIGMAPS,
     icon: CmLogo,
   },
   {
     title: 'Secrets',
-    url: '/secrets',
+    url: ROUTES.SECRETS,
     icon: SecretLogo,
   },
 ];
