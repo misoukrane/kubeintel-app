@@ -120,7 +120,7 @@ export const SecretView = ({
           <TabsContent value="data" className="space-y-4">
             <Card>
               <CardContent className="pt-6">
-                <Alert className="mb-4">
+                <Alert variant='destructive' className="mb-4">
                   <AlertTriangle className="h-4 w-4" />
                   <AlertTitle>Sensitive Information</AlertTitle>
                   <AlertDescription>
