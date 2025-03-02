@@ -29,6 +29,8 @@ import { CronJobs } from "./pages/cronjobs";
 import { CronJob } from "./pages/cronjob";
 import { ConfigMaps } from "./pages/configmaps";
 import { ConfigMap } from "./pages/configmap";
+import { Secrets } from "./pages/secrets";
+import { Secret } from "./pages/secret";
 
 const queryClient = new QueryClient();
 
@@ -119,6 +121,14 @@ const router = createBrowserRouter([
       {
         path: ROUTES.CONFIGMAP,
         element: <ConfigMap />
+      },
+      {
+        path: ROUTES.SECRETS,
+        element: <Secrets />
+      },
+      {
+        path: ROUTES.SECRET,
+        element: <Secret />
       }
     ]
   },
