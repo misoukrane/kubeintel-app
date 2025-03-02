@@ -8,7 +8,7 @@ import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { StatusConditions } from '@/components/status-conditions';
 import { ContainersStatusTable } from '@/components/pods/containers-status-table';
 import { Link } from 'react-router';
-import { createLabelSelector } from '@/lib/strings';
+import { createLabelSelector, ResourceTypes } from '@/lib/strings';
 import { ResourceActions } from '@/components/resources/resource-actions';
 
 interface StatefulSetViewProps {
@@ -166,7 +166,7 @@ export const StatefulSetView = ({
 
           <TabsContent value="actions">
             <ResourceActions
-              kind="StatefulSet"
+              kind={ResourceTypes.StatefulSet}
               resourceName={metadata?.name}
               currentReplicas={spec?.replicas ?? 0}
               onScale={onScale}

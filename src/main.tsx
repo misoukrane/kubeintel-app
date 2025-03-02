@@ -27,6 +27,8 @@ import { Job } from "./pages/job";
 import { ErrorBoundary } from "./components/error-boundary";
 import { CronJobs } from "./pages/cronjobs";
 import { CronJob } from "./pages/cronjob";
+import { ConfigMaps } from "./pages/configmaps";
+import { ConfigMap } from "./pages/configmap";
 
 const queryClient = new QueryClient();
 
@@ -109,6 +111,14 @@ const router = createBrowserRouter([
       {
         path: ROUTES.CRONJOB,
         element: <CronJob />
+      },
+      {
+        path: ROUTES.CONFIGMAPS,
+        element: <ConfigMaps />
+      },
+      {
+        path: ROUTES.CONFIGMAP,
+        element: <ConfigMap />
       }
     ]
   },

@@ -23,4 +23,7 @@ export enum ResourceTypes {
   Job = 'Job',
   CronJob = 'CronJob',
   Node = 'Node',
+  ConfigMap = 'ConfigMap',
+  Secret = 'Secret',
+  Service = 'Service',
 }

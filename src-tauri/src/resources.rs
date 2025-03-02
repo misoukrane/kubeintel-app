@@ -2,7 +2,7 @@ use crate::k8s_client;
 use crate::kubectl::run_kubectl_command;
 use k8s_openapi::api::apps::v1::{DaemonSet, Deployment, StatefulSet};
 use k8s_openapi::api::batch::v1::{CronJob, Job};
-use k8s_openapi::api::core::v1::{Event, Node, Pod};
+use k8s_openapi::api::core::v1::{ConfigMap, Event, Node, Pod};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -15,6 +15,7 @@ pub enum KubeResource {
     Node(Node),
     Job(Job),
     CronJob(CronJob),
+    ConfigMap(ConfigMap),
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -88,6 +89,9 @@ pub async fn delete_resource(
             k8s_client::delete_resource::<CronJob>(client, &namespace, &name).await
         }
         ResourceType::Node => k8s_client::delete_cluster_resource::<Node>(client, &name).await,
+        ResourceType::ConfigMap => {
+            k8s_client::delete_resource::<ConfigMap>(client, &namespace, &name).await
+        }
         _ => Err(format!("Unsupported resource type: {:?}", resource_type)),
     }
 }
@@ -200,6 +204,10 @@ pub async fn get_resource(
             let resource = k8s_client::get_cluster_resource::<Node>(client, &name).await?;
             Ok(KubeResource::Node(resource))
         }
+        ResourceType::ConfigMap => {
+            let resource = k8s_client::get_resource::<ConfigMap>(client, &namespace, &name).await?;
+            Ok(KubeResource::ConfigMap(resource))
+        }
         _ => Err(format!("Unsupported resource type: {:?}", resource_type)),
     }
 }
@@ -249,6 +257,10 @@ pub async fn list_resource(
             // For nodes, we ignore the namespace parameter since they are cluster-scoped
             let resources = k8s_client::list_cluster_resources::<Node>(client).await?;
             Ok(resources.into_iter().map(KubeResource::Node).collect())
+        }
+        ResourceType::ConfigMap => {
+            let resources = k8s_client::list_resources::<ConfigMap>(client, &namespace).await?;
+            Ok(resources.into_iter().map(KubeResource::ConfigMap).collect())
         }
         _ => Err(format!("Unsupported resource type: {:?}", resource_type)),
     }
@@ -351,6 +363,10 @@ pub async fn list_resource_events(
         }
         ResourceType::CronJob => {
             let events = k8s_client::list_events::<CronJob>(client, &namespace, &name).await?;
+            Ok(events)
+        }
+        ResourceType::ConfigMap => {
+            let events = k8s_client::list_events::<ConfigMap>(client, &namespace, &name).await?;
             Ok(events)
         }
         _ => Err(format!("Unsupported resource type: {:?}", resource_type)),

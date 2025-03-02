@@ -8,7 +8,7 @@ import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { ContainersStatusTable } from '@/components/pods/containers-status-table';
 import { StatusConditions } from '@/components/status-conditions';
 import { Link } from 'react-router';
-import { createLabelSelector } from '@/lib/strings';
+import { createLabelSelector, ResourceTypes } from '@/lib/strings';
 import { ResourceActions } from '@/components/resources/resource-actions';
 
 interface DaemonSetViewProps {
@@ -155,7 +155,7 @@ export const DaemonSetView = ({
 
           <TabsContent value="actions">
             <ResourceActions
-              kind="DaemonSet"
+              kind={ResourceTypes.DaemonSet}
               resourceName={metadata?.name}
               currentReplicas={status?.desiredNumberScheduled ?? 0}
               canScale={false}

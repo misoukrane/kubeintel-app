@@ -9,7 +9,7 @@ import { StatusConditions } from '@/components/status-conditions';
 import { ContainersStatusTable } from '@/components/pods/containers-status-table';
 import { ResourceActions } from '@/components/resources/resource-actions';
 import { Link } from 'react-router';
-import { createLabelSelector } from '@/lib/strings';
+import { createLabelSelector, ResourceTypes } from '@/lib/strings';
 
 interface DeploymentViewProps {
   deployment?: V1Deployment;
@@ -140,7 +140,7 @@ export const DeploymentView = ({ deployment, onCopy, onScale, onDelete, onRestar
 
           <TabsContent value="actions">
             <ResourceActions
-              kind="Deployment"
+              kind={ResourceTypes.Deployment}
               resourceName={metadata?.name}
               currentReplicas={spec?.replicas ?? 0}
               onScale={onScale}

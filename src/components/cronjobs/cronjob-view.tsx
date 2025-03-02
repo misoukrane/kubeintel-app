@@ -7,7 +7,7 @@ import { StatusBadge } from '@/components/status-badge';
 import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router';
-import { createLabelSelector } from '@/lib/strings';
+import { createLabelSelector, ResourceTypes } from '@/lib/strings';
 import { ResourceActions } from '@/components/resources/resource-actions';
 import { ContainersStatusTable } from '@/components/pods/containers-status-table';
 import { getCronJobStatus, getLastSchedule } from '@/lib/cronjobs';
@@ -216,7 +216,7 @@ export const CronJobView = ({
           <TabsContent value="actions">
             <div className="space-y-4">
               <ResourceActions
-                kind="CronJob"
+                kind={ResourceTypes.CronJob}
                 resourceName={metadata?.name}
                 onDelete={onDelete}
                 onOpenEvents={onOpenEvents}

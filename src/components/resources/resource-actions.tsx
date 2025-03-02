@@ -29,8 +29,7 @@ import {
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-
-type ResourceKind = 'Deployment' | 'StatefulSet' | 'DaemonSet' | 'Job' | 'CronJob';
+import { ResourceTypes } from "@/lib/strings"
 
 const scaleFormSchema = z.object({
   replicas: z.string()
@@ -47,7 +46,7 @@ type ScaleFormValues = {
 };
 
 interface ResourceActionsProps {
-  kind: ResourceKind;
+  kind: ResourceTypes;
   resourceName?: string;
   currentReplicas?: number;
   canScale?: boolean;
@@ -55,7 +54,7 @@ interface ResourceActionsProps {
   onDelete: () => void;
   onRestart?: () => void;
   onLogs?: (containerName?: string) => void;
-  onOpenEvents: () => void;
+  onOpenEvents?: () => void;
 }
 
 export const ResourceActions = ({
@@ -121,10 +120,10 @@ export const ResourceActions = ({
               <span>View Logs</span>
             </CommandItem>
             )}
-            <CommandItem onSelect={() => onOpenEvents()}>
+            {onOpenEvents && (<CommandItem onSelect={() => onOpenEvents()}>
               <FileTerminal className="mr-2 h-4 w-4" />
               <span>View Events</span>
-            </CommandItem>
+            </CommandItem>)}
           </CommandGroup>
 
           <CommandSeparator />

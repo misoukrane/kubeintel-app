@@ -8,7 +8,7 @@ import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { StatusConditions } from '@/components/status-conditions';
 import { ContainersStatusTable } from '@/components/pods/containers-status-table';
 import { Link } from 'react-router';
-import { createLabelSelector } from '@/lib/strings';
+import { createLabelSelector, ResourceTypes } from '@/lib/strings';
 import { ResourceActions } from '@/components/resources/resource-actions';
 import { getJobDuration, getJobStatus } from '@/lib/jobs';
 
@@ -186,7 +186,7 @@ export const JobView = ({
 
           <TabsContent value="actions">
             <ResourceActions
-              kind="Job"
+              kind={ResourceTypes.Job}
               resourceName={metadata?.name}
               onDelete={onDelete}
               onLogs={onLogs}
