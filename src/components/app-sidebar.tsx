@@ -71,6 +71,11 @@ const items = [
     icon: CronJobLogo,
   },
   {
+    title: 'Services',
+    url: ROUTES.SERVICES,
+    icon: ControlPlaneLogo,
+  },
+  {
     title: 'ConfigMaps',
     url: ROUTES.CONFIGMAPS,
     icon: CmLogo,

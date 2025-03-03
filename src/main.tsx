@@ -31,6 +31,8 @@ import { ConfigMaps } from "./pages/configmaps";
 import { ConfigMap } from "./pages/configmap";
 import { Secrets } from "./pages/secrets";
 import { Secret } from "./pages/secret";
+import { Services } from "./pages/services";
+import { Service } from "./pages/service";
 
 const queryClient = new QueryClient();
 
@@ -129,6 +131,14 @@ const router = createBrowserRouter([
       {
         path: ROUTES.SECRET,
         element: <Secret />
+      },
+      {
+        path: ROUTES.SERVICES,
+        element: <Services />
+      },
+      {
+        path: ROUTES.SERVICE,
+        element: <Service />
       }
     ]
   },

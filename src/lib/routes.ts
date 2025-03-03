@@ -22,4 +22,6 @@ export const ROUTES = {
   CONFIGMAP: '/configmaps/:configMapName',
   SECRETS: '/secrets',
   SECRET: '/secrets/:secretName',
+  SERVICES: '/services',
+  SERVICE: '/services/:serviceName',
 } as const;
