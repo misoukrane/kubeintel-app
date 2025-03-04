@@ -16,6 +16,12 @@ export const formatPort = (port: V1ServicePort): string => {
   return `${portStr}/${port.protocol || 'TCP'}`;
 };
 
+// Get ports as string
+export const getPortsString = (service: V1Service): string => {
+  const ports = service.spec?.ports || [];
+  return ports.map(formatPort).join(', ');
+};
+
 // Get external IP(s) as array
 export const getExternalIPs = (svc: V1Service): string[] => {
   const { spec, status } = svc;
@@ -36,4 +42,31 @@ export const getExternalIPs = (svc: V1Service): string[] => {
   }
 
   return result;
+};
+
+// Get external address(es)
+export const getExternalAddresses = (service: V1Service): string => {
+  const loadBalancer = service.status?.loadBalancer;
+  const type = service.spec?.type;
+
+  if (
+    type === 'LoadBalancer' &&
+    loadBalancer?.ingress &&
+    loadBalancer.ingress.length > 0
+  ) {
+    return loadBalancer.ingress
+      .map((ing) => ing.ip || ing.hostname)
+      .filter(Boolean)
+      .join(', ');
+  }
+
+  if (type === 'NodePort') {
+    return 'Uses node IP';
+  }
+
+  if (type === 'ExternalName') {
+    return service.spec?.externalName || 'N/A';
+  }
+
+  return 'None';
 };
