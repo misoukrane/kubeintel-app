@@ -12,6 +12,7 @@ import { ROUTES } from '@/lib/routes';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { ResourceTypes } from '@/lib/strings';
+import { formatPort, getExternalIPs } from '@/lib/services';
 
 interface ServiceViewProps {
   service?: V1Service;
@@ -28,47 +29,13 @@ export const ServiceView = ({
 }: ServiceViewProps) => {
   if (!service) return null;
 
-  const { metadata, spec, status } = service;
+  const { metadata, spec } = service;
   const serviceType = spec?.type || 'ClusterIP';
 
   // Helper to check if selector is present
   const hasSelector = spec?.selector && Object.keys(spec.selector).length > 0;
 
-  // Format service port
-  const formatPort = (port: V1ServicePort): string => {
-    let portStr = '';
-    if (port.name) {
-      portStr += `${port.name}: `;
-    }
-    portStr += `${port.port}`;
-    if (port.targetPort) {
-      portStr += `→${port.targetPort}`;
-    }
-    if (port.nodePort) {
-      portStr += `:${port.nodePort}`;
-    }
-    return `${portStr}/${port.protocol || 'TCP'}`;
-  };
 
-  // Get external IP(s) as array
-  const getExternalIPs = (): string[] => {
-    const result: string[] = [];
-
-    // External IPs from spec
-    if (spec?.externalIPs && spec.externalIPs.length > 0) {
-      result.push(...spec.externalIPs);
-    }
-
-    // LoadBalancer ingress IPs
-    if (serviceType === 'LoadBalancer' && status?.loadBalancer?.ingress) {
-      status.loadBalancer.ingress.forEach(ing => {
-        if (ing.ip) result.push(ing.ip);
-        if (ing.hostname) result.push(ing.hostname);
-      });
-    }
-
-    return result;
-  };
 
   // Format the selector as a label selector string for URL
   const getSelectorAsLabelSelector = (): string => {
@@ -180,11 +147,11 @@ export const ServiceView = ({
                       </div>
                     )}
 
-                    {getExternalIPs().length > 0 && (
+                    {getExternalIPs(service).length > 0 && (
                       <div>
                         <h3 className="font-medium mb-2">External Access</h3>
                         <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded font-mono text-sm overflow-auto">
-                          {getExternalIPs().map((ip, i) => (
+                          {getExternalIPs(service).map((ip, i) => (
                             <div key={i} className="flex items-center">
                               <ExternalLink className="h-3 w-3 mr-2 text-blue-500" />
                               {ip}
