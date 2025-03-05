@@ -36,7 +36,7 @@ import { MultiSelect } from '@/components/ui/multi-select';
 import { getAge } from '@/lib/time';
 import { arrayToLabelSelector, labelSelectorToArray } from '@/lib/labels';
 import { Badge } from '@/components/ui/badge';
-import { ShieldAlert, Lock } from 'lucide-react';
+import { Lock } from 'lucide-react';
 
 interface SecretsTableProps {
   secrets: Array<V1Secret>;
@@ -163,7 +163,7 @@ export const SecretsTable = ({
           </Badge>
         );
       },
-      filterFn: (row, columnId, filterValue) => {
+      filterFn: (row, _, filterValue) => {
         if (!filterValue) return true;
         const type = row.original.type || 'Opaque';
         return type === filterValue;
