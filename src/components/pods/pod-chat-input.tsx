@@ -5,6 +5,7 @@ import { Button } from "../ui/button"
 import { CircleStop, SendIcon } from "lucide-react"
 import { AIConfigCombobox } from "../ai/ai-config-combobox"
 import { V1Container } from "@kubernetes/client-node"
+import { AIConfig } from "@/stores/use-ai-config-store"
 
 interface PodChatInputProps {
   input: string;
@@ -15,7 +16,7 @@ interface PodChatInputProps {
   selectedContainers: string[];
   setSelectedContainers: (values: string[]) => void;
   containers: V1Container[];
-  aiConfigs: any[];
+  aiConfigs: AIConfig[];
   selectedConfig: number | undefined;
   setSelectedConfig: (index: number) => void;
   onAddNewAIConfig: () => void;
@@ -37,6 +38,8 @@ export function PodChatInput({
   onAddNewAIConfig,
   onStop,
 }: PodChatInputProps) {
+  const noAiConfigs = aiConfigs.length === 0;
+
   return (
     <div className="max-w-[80%] flex flex-col gap-2 rounded-3xl border p-4 mx-auto bg-white dark:bg-black">
       <textarea
@@ -44,8 +47,8 @@ export function PodChatInput({
         value={input}
         dir="auto"
         onChange={onInputChange}
-        disabled={chatStatus === "submitted"}
-        placeholder="Ask anything about this pod..."
+        disabled={chatStatus === "submitted" || noAiConfigs}
+        placeholder={noAiConfigs ? "Please add an AI configuration first..." : "Ask anything about this pod..."}
         className="w-full bg-transparent focus:outline-none text-primary resize-none"
         style={{ height: "44px" }}
         rows={4}
@@ -75,6 +78,9 @@ export function PodChatInput({
           />
         </div>
         <div className="flex flex-row gap-2">
+          {noAiConfigs && (
+            <span className="text-xs text-orange-500 self-center mr-2">Please add an AI configuration →</span>
+          )}
           <AIConfigCombobox
             aiConfigs={aiConfigs}
             selectedConfig={selectedConfig}
@@ -86,7 +92,7 @@ export function PodChatInput({
               variant={input.trim() === '' ? "outline" : "default"}
               type="submit"
               size="icon"
-              disabled={!input.trim()}
+              disabled={!input.trim() || noAiConfigs}
               className="transition-all duration-500 rounded-full hover:scale-110"
             >
               <SendIcon />
