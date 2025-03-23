@@ -31,6 +31,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ResourceTypes } from "@/lib/strings"
 
+// Define the schema for form validation
 const scaleFormSchema = z.object({
   replicas: z.string()
     .transform((val) => parseInt(val, 10))
@@ -41,10 +42,9 @@ const scaleFormSchema = z.object({
     ),
 });
 
-// Update this type definition to match what the form actually receives
-type ScaleFormValues = {
-  replicas: string;  // Keep as string since form inputs provide strings
-};
+// Define types based on the zod schema
+//type ScaleFormSchemaType = z.infer<typeof scaleFormSchema>;
+type ScaleFormValues = z.input<typeof scaleFormSchema>;
 
 interface ResourceActionsProps {
   kind: ResourceTypes;

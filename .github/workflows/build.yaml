@@ -38,13 +38,13 @@ jobs:
       - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
-          version: 8
+          version: 9.15.4
           run_install: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: lts/*
+          node-version: 23.5.0
           cache: 'pnpm'
 
       - name: install Rust stable
