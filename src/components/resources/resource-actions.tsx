@@ -31,6 +31,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ResourceTypes } from "@/lib/strings"
 
+// Define the schema for form validation
 const scaleFormSchema = z.object({
   replicas: z.string()
     .transform((val) => parseInt(val, 10))
@@ -41,9 +42,9 @@ const scaleFormSchema = z.object({
     ),
 });
 
-type ScaleFormValues = {
-  replicas: string;
-};
+// Define types based on the zod schema
+//type ScaleFormSchemaType = z.infer<typeof scaleFormSchema>;
+type ScaleFormValues = z.input<typeof scaleFormSchema>;
 
 interface ResourceActionsProps {
   kind: ResourceTypes;
@@ -90,7 +91,9 @@ export const ResourceActions = ({
 
   const handleScale = async (values: ScaleFormValues) => {
     if (!onScale) return;
-    await onScale({ currentReplicas, replicas: parseInt(values.replicas, 10) });
+    // Parse the string to a number here
+    const replicas = parseInt(values.replicas, 10);
+    await onScale({ currentReplicas, replicas });
     setScaleDialogOpen(false);
   }
 
