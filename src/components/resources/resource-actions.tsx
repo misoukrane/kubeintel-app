@@ -41,8 +41,9 @@ const scaleFormSchema = z.object({
     ),
 });
 
+// Update this type definition to match what the form actually receives
 type ScaleFormValues = {
-  replicas: string;
+  replicas: string;  // Keep as string since form inputs provide strings
 };
 
 interface ResourceActionsProps {
@@ -90,7 +91,9 @@ export const ResourceActions = ({
 
   const handleScale = async (values: ScaleFormValues) => {
     if (!onScale) return;
-    await onScale({ currentReplicas, replicas: parseInt(values.replicas, 10) });
+    // Parse the string to a number here
+    const replicas = parseInt(values.replicas, 10);
+    await onScale({ currentReplicas, replicas });
     setScaleDialogOpen(false);
   }
 
