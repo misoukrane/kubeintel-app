@@ -1,7 +1,12 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { V1Node } from '@kubernetes/client-node';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { LabelsAnnotations } from '@/components/metadata/labels-annotations';
 import { StatusBadge } from '@/components/status-badge';
 import { ScrollAreaCode } from '@/components/scroll-area-code';
@@ -34,7 +39,11 @@ export const NodeView = ({
 
   const { metadata, status, spec } = node;
   const isSchedulable = !spec?.unschedulable;
-  const nodeStatus = status?.conditions?.find((condition) => condition.type === 'Ready')?.status === 'True' ? 'Ready' : 'NotReady';
+  const nodeStatus =
+    status?.conditions?.find((condition) => condition.type === 'Ready')
+      ?.status === 'True'
+      ? 'Ready'
+      : 'NotReady';
 
   return (
     <Card className="max-w-6xl mx-auto">
@@ -42,15 +51,15 @@ export const NodeView = ({
         <div>
           <CardTitle className="text-2xl">{metadata?.name}</CardTitle>
           <div className="text-sm text-muted-foreground">
-            Role: {
-              metadata?.labels?.['node-role.kubernetes.io/control-plane'] ? 'Control Plane' :
-                metadata?.labels?.['node-role.kubernetes.io/master'] ? 'Master' : 'Worker'
-            }
+            Role:{' '}
+            {metadata?.labels?.['node-role.kubernetes.io/control-plane']
+              ? 'Control Plane'
+              : metadata?.labels?.['node-role.kubernetes.io/master']
+                ? 'Master'
+                : 'Worker'}
           </div>
         </div>
-        <StatusBadge
-          status={nodeStatus}
-        />
+        <StatusBadge status={nodeStatus} />
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="overview">
@@ -63,18 +72,30 @@ export const NodeView = ({
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
-            <Accordion type="multiple" defaultValue={["details", "info", "labels"]} className="w-full">
+            <Accordion
+              type="multiple"
+              defaultValue={['details', 'info', 'labels']}
+              className="w-full"
+            >
               <AccordionItem value="details">
                 <AccordionTrigger>Node Details</AccordionTrigger>
                 <AccordionContent>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <h3 className="font-medium">Internal IP</h3>
-                      <p>{status?.addresses?.find(addr => addr.type === 'InternalIP')?.address || 'N/A'}</p>
+                      <p>
+                        {status?.addresses?.find(
+                          (addr) => addr.type === 'InternalIP'
+                        )?.address || 'N/A'}
+                      </p>
                     </div>
                     <div>
                       <h3 className="font-medium">Hostname</h3>
-                      <p>{status?.addresses?.find(addr => addr.type === 'Hostname')?.address || 'N/A'}</p>
+                      <p>
+                        {status?.addresses?.find(
+                          (addr) => addr.type === 'Hostname'
+                        )?.address || 'N/A'}
+                      </p>
                     </div>
                     <div>
                       <h3 className="font-medium">Architecture</h3>
@@ -86,7 +107,9 @@ export const NodeView = ({
                     </div>
                     <div>
                       <h3 className="font-medium">Container Runtime</h3>
-                      <p>{status?.nodeInfo?.containerRuntimeVersion || 'N/A'}</p>
+                      <p>
+                        {status?.nodeInfo?.containerRuntimeVersion || 'N/A'}
+                      </p>
                     </div>
                     <div>
                       <h3 className="font-medium">Kubelet Version</h3>
@@ -98,14 +121,17 @@ export const NodeView = ({
                     </div>
                     <div>
                       <h3 className="font-medium">Schedulable</h3>
-                      <StatusBadge status={isSchedulable ? 'Enabled' : 'Disabled'} />
+                      <StatusBadge
+                        status={isSchedulable ? 'Enabled' : 'Disabled'}
+                      />
                     </div>
                     <div>
                       <h3 className="font-medium">Pods</h3>
                       <p>
                         <Link
-                          className='text-blue-600 hover:underline dark:text-blue-500'
-                          to={`/nodes/${metadata?.name}/pods`}>
+                          className="text-blue-600 hover:underline dark:text-blue-500"
+                          to={`/nodes/${metadata?.name}/pods`}
+                        >
                           View Pods →
                         </Link>
                       </p>
@@ -151,7 +177,9 @@ export const NodeView = ({
                       </div>
                       <div>
                         <h4 className="font-medium">Ephemeral Storage</h4>
-                        <p>{status?.capacity?.['ephemeral-storage'] || 'N/A'}</p>
+                        <p>
+                          {status?.capacity?.['ephemeral-storage'] || 'N/A'}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -172,7 +200,9 @@ export const NodeView = ({
                       </div>
                       <div>
                         <h4 className="font-medium">Ephemeral Storage</h4>
-                        <p>{status?.allocatable?.['ephemeral-storage'] || 'N/A'}</p>
+                        <p>
+                          {status?.allocatable?.['ephemeral-storage'] || 'N/A'}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -190,7 +220,9 @@ export const NodeView = ({
                 {status?.conditions && status.conditions.length > 0 ? (
                   <StatusConditions conditions={status.conditions} />
                 ) : (
-                  <p className="text-center text-muted-foreground">No conditions found</p>
+                  <p className="text-center text-muted-foreground">
+                    No conditions found
+                  </p>
                 )}
               </CardContent>
             </Card>
@@ -209,11 +241,7 @@ export const NodeView = ({
           </TabsContent>
 
           <TabsContent value="source">
-            <ScrollAreaCode
-              height="h-screen"
-              content={node}
-              onCopy={onCopy}
-            />
+            <ScrollAreaCode height="h-screen" content={node} onCopy={onCopy} />
           </TabsContent>
         </Tabs>
       </CardContent>

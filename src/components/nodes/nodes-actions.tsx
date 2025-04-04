@@ -1,7 +1,7 @@
-import * as React from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
+import * as React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import {
   MinusCircle,
   PlusCircle,
@@ -10,7 +10,7 @@ import {
   Trash2,
   FileTerminal,
   AlertTriangle,
-} from "lucide-react"
+} from 'lucide-react';
 import {
   Command,
   CommandEmpty,
@@ -19,7 +19,7 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from "@/components/ui/command"
+} from '@/components/ui/command';
 import {
   Dialog,
   DialogContent,
@@ -27,14 +27,22 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+} from '@/components/ui/dialog';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 // Define a Zod schema for our debug form fields
 const debugFormSchema = z.object({
-  debugImage: z.string().min(1, "Image is required"),
+  debugImage: z.string().min(1, 'Image is required'),
 });
 
 type DebugFormValues = z.infer<typeof debugFormSchema>;
@@ -68,7 +76,7 @@ export const NodesActions = ({
   const form = useForm<DebugFormValues>({
     resolver: zodResolver(debugFormSchema),
     defaultValues: {
-      debugImage: "busybox",
+      debugImage: 'busybox',
     },
   });
 
@@ -148,11 +156,15 @@ export const NodesActions = ({
           <DialogHeader>
             <DialogTitle>Delete Node?</DialogTitle>
             <DialogDescription>
-              This action cannot be undone. This will permanently delete the node {nodeName} from the cluster.
+              This action cannot be undone. This will permanently delete the
+              node {nodeName} from the cluster.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+            >
               Cancel
             </Button>
             <Button variant="destructive" onClick={handleDelete}>
@@ -167,7 +179,9 @@ export const NodesActions = ({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Debug Node</DialogTitle>
-            <DialogDescription>Choose debugger image to inspect the node</DialogDescription>
+            <DialogDescription>
+              Choose debugger image to inspect the node
+            </DialogDescription>
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleDebug)} className="py-4">
@@ -214,7 +228,8 @@ export const NodesActions = ({
           <DialogHeader>
             <DialogTitle>Drain Node?</DialogTitle>
             <DialogDescription>
-              This will safely evict all pods from node {nodeName} and mark it as unschedulable.
+              This will safely evict all pods from node {nodeName} and mark it
+              as unschedulable.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -234,11 +249,15 @@ export const NodesActions = ({
           <DialogHeader>
             <DialogTitle>Cordon Node?</DialogTitle>
             <DialogDescription>
-              This will mark node {nodeName} as unschedulable. New pods will not be scheduled on this node.
+              This will mark node {nodeName} as unschedulable. New pods will not
+              be scheduled on this node.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setCordonDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setCordonDialogOpen(false)}
+            >
               Cancel
             </Button>
             <Button variant="default" onClick={handleCordon}>
@@ -254,11 +273,15 @@ export const NodesActions = ({
           <DialogHeader>
             <DialogTitle>Uncordon Node?</DialogTitle>
             <DialogDescription>
-              This will mark node {nodeName} as schedulable. New pods can be scheduled on this node.
+              This will mark node {nodeName} as schedulable. New pods can be
+              scheduled on this node.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setUncordonDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setUncordonDialogOpen(false)}
+            >
               Cancel
             </Button>
             <Button variant="default" onClick={handleUncordon}>

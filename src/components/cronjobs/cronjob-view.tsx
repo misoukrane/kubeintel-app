@@ -1,7 +1,12 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { V1CronJob } from '@kubernetes/client-node';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { LabelsAnnotations } from '@/components/metadata/labels-annotations';
 import { StatusBadge } from '@/components/status-badge';
 import { ScrollAreaCode } from '@/components/scroll-area-code';
@@ -32,8 +37,12 @@ export const CronJobView = ({
   const cronJobStatus = getCronJobStatus(cronjob);
   const lastScheduleTime = getLastSchedule(cronjob);
 
-  const jobLabelSelector = createLabelSelector(cronjob.spec?.jobTemplate?.metadata?.labels);
-  const podLabelSelector = createLabelSelector(cronjob.spec?.jobTemplate?.spec?.template?.metadata?.labels);
+  const jobLabelSelector = createLabelSelector(
+    cronjob.spec?.jobTemplate?.metadata?.labels
+  );
+  const podLabelSelector = createLabelSelector(
+    cronjob.spec?.jobTemplate?.spec?.template?.metadata?.labels
+  );
 
   return (
     <Card className="max-w-6xl mx-auto">
@@ -56,7 +65,11 @@ export const CronJobView = ({
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
-            <Accordion type="multiple" defaultValue={["details", "labels"]} className="w-full">
+            <Accordion
+              type="multiple"
+              defaultValue={['details', 'labels']}
+              className="w-full"
+            >
               <AccordionItem value="details">
                 <AccordionTrigger>CronJob Details</AccordionTrigger>
                 <AccordionContent>
@@ -79,14 +92,20 @@ export const CronJobView = ({
                     </div>
                     <div>
                       <h3 className="font-medium">Starting Deadline</h3>
-                      <p>{spec?.startingDeadlineSeconds ? `${spec.startingDeadlineSeconds}s` : 'N/A'}</p>
+                      <p>
+                        {spec?.startingDeadlineSeconds
+                          ? `${spec.startingDeadlineSeconds}s`
+                          : 'N/A'}
+                      </p>
                     </div>
                     <div>
                       <h3 className="font-medium">Active Jobs</h3>
                       <p>{status?.active?.length || 0}</p>
                     </div>
                     <div>
-                      <h3 className="font-medium">Successful Jobs History Limit</h3>
+                      <h3 className="font-medium">
+                        Successful Jobs History Limit
+                      </h3>
                       <p>{spec?.successfulJobsHistoryLimit || 3}</p>
                     </div>
                     <div>
@@ -99,9 +118,11 @@ export const CronJobView = ({
                           <h3 className="font-medium">Jobs</h3>
                           <p>
                             <Link
-                              className='text-blue-600 hover:underline dark:text-blue-500'
+                              className="text-blue-600 hover:underline dark:text-blue-500"
                               to={`/jobs?labelSelector=${encodeURIComponent(jobLabelSelector)}`}
-                            >View Jobs →</Link>
+                            >
+                              View Jobs →
+                            </Link>
                           </p>
                         </>
                       )}
@@ -112,9 +133,11 @@ export const CronJobView = ({
                           <h3 className="font-medium">Pods</h3>
                           <p>
                             <Link
-                              className='text-blue-600 hover:underline dark:text-blue-500'
+                              className="text-blue-600 hover:underline dark:text-blue-500"
                               to={`/pods?labelSelector=${encodeURIComponent(podLabelSelector)}`}
-                            >View Pods →</Link>
+                            >
+                              View Pods →
+                            </Link>
                           </p>
                         </>
                       )}
@@ -168,14 +191,21 @@ export const CronJobView = ({
                     <div className="mt-2">
                       {spec?.jobTemplate?.metadata?.labels ? (
                         <div className="flex flex-wrap gap-1">
-                          {Object.entries(spec.jobTemplate.metadata.labels).map(([key, value]) => (
-                            <span key={key} className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold">
-                              {key}={value}
-                            </span>
-                          ))}
+                          {Object.entries(spec.jobTemplate.metadata.labels).map(
+                            ([key, value]) => (
+                              <span
+                                key={key}
+                                className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold"
+                              >
+                                {key}={value}
+                              </span>
+                            )
+                          )}
                         </div>
                       ) : (
-                        <span className="text-muted-foreground">No labels defined</span>
+                        <span className="text-muted-foreground">
+                          No labels defined
+                        </span>
                       )}
                     </div>
                   </div>
@@ -184,19 +214,26 @@ export const CronJobView = ({
                     <h3 className="font-medium">Containers</h3>
                     {spec?.jobTemplate?.spec?.template?.spec?.containers && (
                       <ContainersStatusTable
-                        containers={spec.jobTemplate.spec.template.spec.containers}
+                        containers={
+                          spec.jobTemplate.spec.template.spec.containers
+                        }
                       />
                     )}
                   </div>
 
                   <div>
                     <h3 className="font-medium">Restart Policy</h3>
-                    <p>{spec?.jobTemplate?.spec?.template?.spec?.restartPolicy || 'Never'}</p>
+                    <p>
+                      {spec?.jobTemplate?.spec?.template?.spec?.restartPolicy ||
+                        'Never'}
+                    </p>
                   </div>
 
                   <Button
                     variant="outline"
-                    onClick={() => onCopy(JSON.stringify(spec?.jobTemplate || {}, null, 2))}
+                    onClick={() =>
+                      onCopy(JSON.stringify(spec?.jobTemplate || {}, null, 2))
+                    }
                   >
                     Copy Template
                   </Button>

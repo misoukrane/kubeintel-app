@@ -1,11 +1,11 @@
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
-import { MultiSelect } from "../ui/multi-select"
-import { Button } from "../ui/button"
-import { CircleStop, SendIcon } from "lucide-react"
-import { AIConfigCombobox } from "../ai/ai-config-combobox"
-import { V1Container } from "@kubernetes/client-node"
-import { AIConfig } from "@/stores/use-ai-config-store"
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { MultiSelect } from '../ui/multi-select';
+import { Button } from '../ui/button';
+import { CircleStop, SendIcon } from 'lucide-react';
+import { AIConfigCombobox } from '../ai/ai-config-combobox';
+import { V1Container } from '@kubernetes/client-node';
+import { AIConfig } from '@/stores/use-ai-config-store';
 
 interface PodChatInputProps {
   input: string;
@@ -47,10 +47,14 @@ export function PodChatInput({
         value={input}
         dir="auto"
         onChange={onInputChange}
-        disabled={chatStatus === "submitted" || noAiConfigs}
-        placeholder={noAiConfigs ? "Please add an AI configuration first..." : "Ask anything about this pod..."}
+        disabled={chatStatus === 'submitted' || noAiConfigs}
+        placeholder={
+          noAiConfigs
+            ? 'Please add an AI configuration first...'
+            : 'Ask anything about this pod...'
+        }
         className="w-full bg-transparent focus:outline-none text-primary resize-none"
-        style={{ height: "44px" }}
+        style={{ height: '44px' }}
         rows={4}
       />
       <div className="flex flex-row justify-between gap-2">
@@ -61,15 +65,20 @@ export function PodChatInput({
               checked={attachEvents}
               onCheckedChange={setAttachEvents}
             />
-            <Label htmlFor="attach-events" className="text-xs text-muted-foreground">
+            <Label
+              htmlFor="attach-events"
+              className="text-xs text-muted-foreground"
+            >
               Include events
             </Label>
           </div>
           <MultiSelect
-            options={containers.map(container => ({
-              label: container.name,
-              value: container.name
-            })) ?? []}
+            options={
+              containers.map((container) => ({
+                label: container.name,
+                value: container.name,
+              })) ?? []
+            }
             value={selectedContainers}
             onValueChange={setSelectedContainers}
             placeholder="include logs"
@@ -79,7 +88,9 @@ export function PodChatInput({
         </div>
         <div className="flex flex-row gap-2">
           {noAiConfigs && (
-            <span className="text-xs text-orange-500 self-center mr-2">Please add an AI configuration →</span>
+            <span className="text-xs text-orange-500 self-center mr-2">
+              Please add an AI configuration →
+            </span>
           )}
           <AIConfigCombobox
             aiConfigs={aiConfigs}
@@ -87,9 +98,9 @@ export function PodChatInput({
             setSelectedConfig={setSelectedConfig}
             onAddNewAIConfig={onAddNewAIConfig}
           />
-          {chatStatus !== "submitted" && chatStatus !== "streaming" && (
+          {chatStatus !== 'submitted' && chatStatus !== 'streaming' && (
             <Button
-              variant={input.trim() === '' ? "outline" : "default"}
+              variant={input.trim() === '' ? 'outline' : 'default'}
               type="submit"
               size="icon"
               disabled={!input.trim() || noAiConfigs}
@@ -98,7 +109,7 @@ export function PodChatInput({
               <SendIcon />
             </Button>
           )}
-          {(chatStatus === "submitted" || chatStatus === "streaming") && (
+          {(chatStatus === 'submitted' || chatStatus === 'streaming') && (
             <Button
               variant="default"
               type="button"

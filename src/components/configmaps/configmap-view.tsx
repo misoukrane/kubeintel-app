@@ -1,14 +1,24 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { V1ConfigMap } from '@kubernetes/client-node';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { LabelsAnnotations } from '@/components/metadata/labels-annotations';
 import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { ResourceActions } from '@/components/resources/resource-actions';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useState } from 'react';
-import { Tabs as SimpleTabs, TabsList as SimpleTabsList, TabsTrigger as SimpleTabsTrigger, TabsContent as SimpleTabsContent } from '@/components/ui/tabs';
+import {
+  Tabs as SimpleTabs,
+  TabsList as SimpleTabsList,
+  TabsTrigger as SimpleTabsTrigger,
+  TabsContent as SimpleTabsContent,
+} from '@/components/ui/tabs';
 import { Button } from '../ui/button';
 import { ResourceTypes } from '@/lib/strings';
 
@@ -32,7 +42,9 @@ export const ConfigMapView = ({
     Object.keys(data || {}).length > 0 ? Object.keys(data || {})[0] : null
   );
   const [selectedBinaryKey, setSelectedBinaryKey] = useState<string | null>(
-    Object.keys(binaryData || {}).length > 0 ? Object.keys(binaryData || {})[0] : null
+    Object.keys(binaryData || {}).length > 0
+      ? Object.keys(binaryData || {})[0]
+      : null
   );
 
   // Count the number of keys in data and binaryData
@@ -49,7 +61,10 @@ export const ConfigMapView = ({
             Namespace: {metadata?.namespace}
           </div>
         </div>
-        <Badge variant="outline" className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+        <Badge
+          variant="outline"
+          className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+        >
           {totalKeys} {totalKeys === 1 ? 'Key' : 'Keys'}
         </Badge>
       </CardHeader>
@@ -63,25 +78,37 @@ export const ConfigMapView = ({
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
-            <Accordion type="multiple" defaultValue={["details", "labels"]} className="w-full">
+            <Accordion
+              type="multiple"
+              defaultValue={['details', 'labels']}
+              className="w-full"
+            >
               <AccordionItem value="details">
                 <AccordionTrigger>ConfigMap Details</AccordionTrigger>
                 <AccordionContent>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <h3 className="font-medium">Created</h3>
-                      <p>{metadata?.creationTimestamp
-                        ? new Date(metadata.creationTimestamp).toLocaleString()
-                        : 'N/A'}
+                      <p>
+                        {metadata?.creationTimestamp
+                          ? new Date(
+                              metadata.creationTimestamp
+                            ).toLocaleString()
+                          : 'N/A'}
                       </p>
                     </div>
                     <div>
                       <h3 className="font-medium">Data Keys</h3>
-                      <p>{dataCount} {dataCount === 1 ? 'key' : 'keys'}</p>
+                      <p>
+                        {dataCount} {dataCount === 1 ? 'key' : 'keys'}
+                      </p>
                     </div>
                     <div>
                       <h3 className="font-medium">Binary Data Keys</h3>
-                      <p>{binaryDataCount} {binaryDataCount === 1 ? 'key' : 'keys'}</p>
+                      <p>
+                        {binaryDataCount}{' '}
+                        {binaryDataCount === 1 ? 'key' : 'keys'}
+                      </p>
                     </div>
                   </div>
                 </AccordionContent>
@@ -104,15 +131,21 @@ export const ConfigMapView = ({
             <Card>
               <CardContent className="pt-6">
                 {dataCount === 0 && binaryDataCount === 0 ? (
-                  <p className="text-muted-foreground text-center py-8">No data found in this ConfigMap</p>
+                  <p className="text-muted-foreground text-center py-8">
+                    No data found in this ConfigMap
+                  </p>
                 ) : (
                   <SimpleTabs defaultValue="regular" className="w-full">
                     {dataCount > 0 && (
                       <>
                         <SimpleTabsList className="mb-4">
-                          <SimpleTabsTrigger value="regular">Regular Data ({dataCount})</SimpleTabsTrigger>
+                          <SimpleTabsTrigger value="regular">
+                            Regular Data ({dataCount})
+                          </SimpleTabsTrigger>
                           {binaryDataCount > 0 && (
-                            <SimpleTabsTrigger value="binary">Binary Data ({binaryDataCount})</SimpleTabsTrigger>
+                            <SimpleTabsTrigger value="binary">
+                              Binary Data ({binaryDataCount})
+                            </SimpleTabsTrigger>
                           )}
                         </SimpleTabsList>
                         <SimpleTabsContent value="regular">
@@ -120,11 +153,14 @@ export const ConfigMapView = ({
                             <div className="col-span-1 border rounded">
                               <ScrollArea className="h-96">
                                 <div className="p-2">
-                                  {Object.keys(data || {}).map(key => (
+                                  {Object.keys(data || {}).map((key) => (
                                     <button
                                       key={key}
-                                      className={`w-full text-left p-2 rounded hover:bg-muted ${selectedDataKey === key ? 'bg-muted font-medium' : ''
-                                        }`}
+                                      className={`w-full text-left p-2 rounded hover:bg-muted ${
+                                        selectedDataKey === key
+                                          ? 'bg-muted font-medium'
+                                          : ''
+                                      }`}
                                       onClick={() => setSelectedDataKey(key)}
                                     >
                                       {key}
@@ -135,11 +171,17 @@ export const ConfigMapView = ({
                             </div>
                             <div className="col-span-3 border rounded p-4">
                               <div className="flex justify-between mb-2">
-                                <h3 className="font-medium">{selectedDataKey}</h3>
+                                <h3 className="font-medium">
+                                  {selectedDataKey}
+                                </h3>
                                 <Button
                                   size="sm"
                                   variant="ghost"
-                                  onClick={() => selectedDataKey && data && onCopy(data[selectedDataKey])}
+                                  onClick={() =>
+                                    selectedDataKey &&
+                                    data &&
+                                    onCopy(data[selectedDataKey])
+                                  }
                                 >
                                   Copy
                                 </Button>
@@ -147,7 +189,11 @@ export const ConfigMapView = ({
                               <ScrollAreaCode
                                 height="h-80"
                                 onCopy={onCopy}
-                                content={selectedDataKey && data ? data[selectedDataKey] : ''}
+                                content={
+                                  selectedDataKey && data
+                                    ? data[selectedDataKey]
+                                    : ''
+                                }
                                 skipSerialization={true}
                               />
                             </div>
@@ -161,11 +207,14 @@ export const ConfigMapView = ({
                           <div className="col-span-1 border rounded">
                             <ScrollArea className="h-96">
                               <div className="p-2">
-                                {Object.keys(binaryData || {}).map(key => (
+                                {Object.keys(binaryData || {}).map((key) => (
                                   <button
                                     key={key}
-                                    className={`w-full text-left p-2 rounded hover:bg-muted ${selectedBinaryKey === key ? 'bg-muted font-medium' : ''
-                                      }`}
+                                    className={`w-full text-left p-2 rounded hover:bg-muted ${
+                                      selectedBinaryKey === key
+                                        ? 'bg-muted font-medium'
+                                        : ''
+                                    }`}
                                     onClick={() => setSelectedBinaryKey(key)}
                                   >
                                     {key}
@@ -176,11 +225,14 @@ export const ConfigMapView = ({
                           </div>
                           <div className="col-span-3 border rounded p-4">
                             <div className="flex justify-between mb-2">
-                              <h3 className="font-medium">{selectedBinaryKey}</h3>
+                              <h3 className="font-medium">
+                                {selectedBinaryKey}
+                              </h3>
                               <Badge variant="outline">Binary data</Badge>
                             </div>
                             <p className="text-muted-foreground">
-                              Binary data is encoded in base64 format and cannot be displayed directly.
+                              Binary data is encoded in base64 format and cannot
+                              be displayed directly.
                             </p>
                           </div>
                         </div>

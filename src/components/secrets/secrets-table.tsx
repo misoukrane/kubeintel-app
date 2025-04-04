@@ -57,12 +57,19 @@ export const SecretsTable = ({
 }: SecretsTableProps) => {
   // Create initial filters array
   const initialColumnFilters: ColumnFiltersState = [
-    ...(initialFilters.name ? [{ id: 'name', value: initialFilters.name }] : []),
-    ...(initialFilters.type ? [{ id: 'type', value: initialFilters.type }] : []),
-    ...(initialFilters.labelSelector ? [{ id: 'labels', value: initialFilters.labelSelector }] : []),
+    ...(initialFilters.name
+      ? [{ id: 'name', value: initialFilters.name }]
+      : []),
+    ...(initialFilters.type
+      ? [{ id: 'type', value: initialFilters.type }]
+      : []),
+    ...(initialFilters.labelSelector
+      ? [{ id: 'labels', value: initialFilters.labelSelector }]
+      : []),
   ];
 
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(initialColumnFilters);
+  const [columnFilters, setColumnFilters] =
+    useState<ColumnFiltersState>(initialColumnFilters);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -72,19 +79,19 @@ export const SecretsTable = ({
   // Add visibility state
   const [visibility, setVisibility] = useState<VisibilityState>({
     labels: false,
-    ...columnVisibility
+    ...columnVisibility,
   });
 
   // Create unique label options from all secrets
   const labelOptions = useMemo(() => {
     const labelSet = new Set<string>();
-    secrets.forEach(secret => {
+    secrets.forEach((secret) => {
       const labels = secret.metadata?.labels || {};
       Object.entries(labels).forEach(([key, value]) => {
         labelSet.add(`${key}=${value}`);
       });
     });
-    return Array.from(labelSet).map(label => ({
+    return Array.from(labelSet).map((label) => ({
       label,
       value: label,
     }));
@@ -93,12 +100,12 @@ export const SecretsTable = ({
   // Create unique type options from all secrets
   const typeOptions = useMemo(() => {
     const typeSet = new Set<string>();
-    secrets.forEach(secret => {
+    secrets.forEach((secret) => {
       if (secret.type) {
         typeSet.add(secret.type);
       }
     });
-    return Array.from(typeSet).map(type => ({
+    return Array.from(typeSet).map((type) => ({
       label: type,
       value: type,
     }));
@@ -113,9 +120,7 @@ export const SecretsTable = ({
     {
       id: 'name',
       accessorKey: 'metadata.name',
-      header: ({ column }) => (
-        <SortableHeader column={column} title="Name" />
-      ),
+      header: ({ column }) => <SortableHeader column={column} title="Name" />,
       cell: ({ row }) => {
         const name = row.original.metadata?.name || '';
         const namespace = row.original.metadata?.namespace || '';
@@ -126,7 +131,9 @@ export const SecretsTable = ({
             <Button
               variant="link"
               className="underline"
-              onClick={() => navigateToSecret ? navigateToSecret(namespace, name) : null}
+              onClick={() =>
+                navigateToSecret ? navigateToSecret(namespace, name) : null
+              }
             >
               {name}
             </Button>
@@ -145,9 +152,7 @@ export const SecretsTable = ({
     {
       id: 'type',
       accessorKey: 'type',
-      header: ({ column }) => (
-        <SortableHeader column={column} title="Type" />
-      ),
+      header: ({ column }) => <SortableHeader column={column} title="Type" />,
       cell: ({ row }) => {
         const type = row.original.type;
         if (!type) return 'Opaque';
@@ -156,8 +161,12 @@ export const SecretsTable = ({
 
         return (
           <Badge
-            variant={isSystemSecret ? "secondary" : "outline"}
-            className={isSystemSecret ? "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300" : ""}
+            variant={isSystemSecret ? 'secondary' : 'outline'}
+            className={
+              isSystemSecret
+                ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300'
+                : ''
+            }
           >
             {type}
           </Badge>
@@ -171,14 +180,12 @@ export const SecretsTable = ({
     },
     {
       id: 'data',
-      header: ({ column }) => (
-        <SortableHeader column={column} title="Data" />
-      ),
+      header: ({ column }) => <SortableHeader column={column} title="Data" />,
       cell: ({ row }) => {
         const dataCount = getDataCount(row.original);
 
         if (dataCount === 0) {
-          return "0 keys";
+          return '0 keys';
         }
 
         return `${dataCount} ${dataCount === 1 ? 'key' : 'keys'}`;
@@ -193,7 +200,8 @@ export const SecretsTable = ({
       id: 'age',
       accessorKey: 'metadata.creationTimestamp',
       header: ({ column }) => <SortableHeader column={column} title="Age" />,
-      cell: ({ row }) => getAge(String(row.original.metadata?.creationTimestamp)),
+      cell: ({ row }) =>
+        getAge(String(row.original.metadata?.creationTimestamp)),
       sortingFn: (rowA, rowB) => {
         const dateA = String(rowA.original.metadata?.creationTimestamp || '');
         const dateB = String(rowB.original.metadata?.creationTimestamp || '');
@@ -230,10 +238,10 @@ export const SecretsTable = ({
 
         if (labelSelectors.length === 0) return true;
 
-        return labelSelectors.every(selector => {
+        return labelSelectors.every((selector) => {
           if (!selector.includes('=')) return true;
 
-          const [key, value] = selector.split('=').map(s => s.trim());
+          const [key, value] = selector.split('=').map((s) => s.trim());
           if (!key || !value) return true;
 
           return labels[key] === value;
@@ -272,8 +280,13 @@ export const SecretsTable = ({
                 <div>
                   <Input
                     placeholder="Filter name..."
-                    value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-                    onChange={(e) => table.getColumn('name')?.setFilterValue(e.target.value)}
+                    value={
+                      (table.getColumn('name')?.getFilterValue() as string) ??
+                      ''
+                    }
+                    onChange={(e) =>
+                      table.getColumn('name')?.setFilterValue(e.target.value)
+                    }
                     className="max-w-xs"
                   />
                 </div>
@@ -281,7 +294,9 @@ export const SecretsTable = ({
                   <MultiSelect
                     options={typeOptions}
                     placeholder="Filter by type..."
-                    defaultValue={initialFilters.type ? [initialFilters.type] : []}
+                    defaultValue={
+                      initialFilters.type ? [initialFilters.type] : []
+                    }
                     onValueChange={(values) => {
                       if (values.length > 0) {
                         table.getColumn('type')?.setFilterValue(values[0]);
@@ -296,11 +311,15 @@ export const SecretsTable = ({
                   <MultiSelect
                     options={labelOptions}
                     placeholder="Filter by labels..."
-                    defaultValue={labelSelectorToArray(initialFilters.labelSelector)}
+                    defaultValue={labelSelectorToArray(
+                      initialFilters.labelSelector
+                    )}
                     onValueChange={(values) => {
                       const labelColumn = table.getColumn('labels');
                       if (labelColumn) {
-                        labelColumn.setFilterValue(arrayToLabelSelector(values));
+                        labelColumn.setFilterValue(
+                          arrayToLabelSelector(values)
+                        );
                       }
                     }}
                     className="max-w-xs"

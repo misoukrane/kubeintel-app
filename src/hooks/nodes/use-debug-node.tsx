@@ -49,7 +49,8 @@ export const useDebugNode = ({
       toast({
         variant: 'destructive',
         title: 'Failed to create debug container',
-        description: error instanceof Error ? error.message : JSON.stringify(error),
+        description:
+          error instanceof Error ? error.message : JSON.stringify(error),
       });
     },
   });

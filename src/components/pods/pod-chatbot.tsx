@@ -1,41 +1,61 @@
-import { V1Pod } from "@kubernetes/client-node";
-import { useKubeChatbot } from "@/hooks/use-kube-chatbot";
-import { useAIConfigStore } from "@/stores/use-ai-config-store";
+import { V1Pod } from '@kubernetes/client-node';
+import { useKubeChatbot } from '@/hooks/use-kube-chatbot';
+import { useAIConfigStore } from '@/stores/use-ai-config-store';
 import { useEffect, useRef, useState } from 'react';
 import { useThrottledScroll } from '@/hooks/use-throttled-scroll';
-import { toast } from "@/hooks/use-toast";
-import { ATTACHEMENT_NAMES, ListEventsResult } from "@/lib/types";
-import { Attachment, ChatRequestOptions } from "ai";
-import { PodLogsResult } from "@/lib/pods";
-import { PodChatMessages } from "./pod-chat-messages";
-import { PodChatInput } from "./pod-chat-input";
-import { getAttachemntLogName } from "@/lib/strings";
+import { toast } from '@/hooks/use-toast';
+import { ATTACHEMENT_NAMES, ListEventsResult } from '@/lib/types';
+import { Attachment, ChatRequestOptions } from 'ai';
+import { PodLogsResult } from '@/lib/pods';
+import { PodChatMessages } from './pod-chat-messages';
+import { PodChatInput } from './pod-chat-input';
+import { getAttachemntLogName } from '@/lib/strings';
 
 interface PodChatbotProps {
   pod: V1Pod;
   onAddNewAIConfig: () => void;
   listResourceEvents: () => Promise<ListEventsResult>;
-  getContainerLogs: (containerName: string, tailLines?: number, limitBytes?: number) => Promise<PodLogsResult>;
+  getContainerLogs: (
+    containerName: string,
+    tailLines?: number,
+    limitBytes?: number
+  ) => Promise<PodLogsResult>;
   onCopy: (text: string) => void;
 }
 
-export function PodChatbot({ pod, onAddNewAIConfig, listResourceEvents, getContainerLogs, onCopy }: PodChatbotProps) {
-  const { messages, input, handleSubmit, handleInputChange, status: chatStatus, stop, error } = useKubeChatbot();
+export function PodChatbot({
+  pod,
+  onAddNewAIConfig,
+  listResourceEvents,
+  getContainerLogs,
+  onCopy,
+}: PodChatbotProps) {
+  const {
+    messages,
+    input,
+    handleSubmit,
+    handleInputChange,
+    status: chatStatus,
+    stop,
+    error,
+  } = useKubeChatbot();
   const { aiConfigs, setSelectedConfig, selectedConfig } = useAIConfigStore();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const throttledScroll = useThrottledScroll(100);
   const [attachEvents, setAttachEvents] = useState(false);
   const [selectedContainers, setSelectedContainers] = useState<string[]>([]);
-  const [attachements, setAttachements] = useState<Map<number, Attachment[]>>(new Map());
+  const [attachements, setAttachements] = useState<Map<number, Attachment[]>>(
+    new Map()
+  );
   const [loadingStatus, setLoadingStatus] = useState<string>('');
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const experimentalAttachments = []
+    const experimentalAttachments = [];
     experimentalAttachments.push({
       name: ATTACHEMENT_NAMES.POD,
       contentType: 'text/plain',
-      url: `data:text/plain;base64,${btoa(JSON.stringify(pod))}`
+      url: `data:text/plain;base64,${btoa(JSON.stringify(pod))}`,
     });
 
     // Check events
@@ -53,7 +73,7 @@ export function PodChatbot({ pod, onAddNewAIConfig, listResourceEvents, getConta
         experimentalAttachments.push({
           name: ATTACHEMENT_NAMES.POD_EVENTS,
           contentType: 'text/plain',
-          url: eventsDataUrl
+          url: eventsDataUrl,
         });
       } catch (error) {
         console.error('Failed to fetch events:', error);
@@ -90,7 +110,7 @@ export function PodChatbot({ pod, onAddNewAIConfig, listResourceEvents, getConta
           experimentalAttachments.push({
             name: getAttachemntLogName(containerName),
             contentType: 'text/plain',
-            url: logsDataUrl
+            url: logsDataUrl,
           });
         });
       } catch (error) {
@@ -107,8 +127,8 @@ export function PodChatbot({ pod, onAddNewAIConfig, listResourceEvents, getConta
     }
 
     const options: ChatRequestOptions = {
-      experimental_attachments: experimentalAttachments
-    }
+      experimental_attachments: experimentalAttachments,
+    };
 
     // use setAttachements to update the attachments state
 
@@ -128,7 +148,7 @@ export function PodChatbot({ pod, onAddNewAIConfig, listResourceEvents, getConta
     } finally {
       setLoadingStatus('');
     }
-  }
+  };
 
   useEffect(() => {
     const target = messagesEndRef.current;
@@ -156,7 +176,7 @@ export function PodChatbot({ pod, onAddNewAIConfig, listResourceEvents, getConta
         message: error.message,
         stack: error.stack,
         cause: error.cause,
-        fullError: error
+        fullError: error,
       });
       // use a toast or notification to show the error
       toast({

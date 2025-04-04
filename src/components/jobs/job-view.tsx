@@ -1,7 +1,12 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { V1Job } from '@kubernetes/client-node';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { LabelsAnnotations } from '@/components/metadata/labels-annotations';
 import { StatusBadge } from '@/components/status-badge';
 import { ScrollAreaCode } from '@/components/scroll-area-code';
@@ -31,8 +36,6 @@ export const JobView = ({
 
   const { metadata, status, spec } = job;
 
-
-
   // Create the label selector string from the job's selector
   const labelSelector = createLabelSelector(spec?.selector?.matchLabels);
   const jobStatus = getJobStatus(status);
@@ -59,7 +62,11 @@ export const JobView = ({
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
-            <Accordion type="multiple" defaultValue={["details", "labels"]} className="w-full">
+            <Accordion
+              type="multiple"
+              defaultValue={['details', 'labels']}
+              className="w-full"
+            >
               <AccordionItem value="details">
                 <AccordionTrigger>Job Details</AccordionTrigger>
                 <AccordionContent>
@@ -90,7 +97,12 @@ export const JobView = ({
                     </div>
                     <div>
                       <h3 className="font-medium">Backoff Limit</h3>
-                      <p>{spec?.backoffLimit !== undefined ? spec.backoffLimit : 6} retries</p>
+                      <p>
+                        {spec?.backoffLimit !== undefined
+                          ? spec.backoffLimit
+                          : 6}{' '}
+                        retries
+                      </p>
                     </div>
                     <div>
                       <h3 className="font-medium">Duration</h3>
@@ -98,15 +110,19 @@ export const JobView = ({
                     </div>
                     <div>
                       <h3 className="font-medium">Start Time</h3>
-                      <p>{status?.startTime
-                        ? new Date(status.startTime).toLocaleString()
-                        : 'Not started'}</p>
+                      <p>
+                        {status?.startTime
+                          ? new Date(status.startTime).toLocaleString()
+                          : 'Not started'}
+                      </p>
                     </div>
                     <div>
                       <h3 className="font-medium">Completion Time</h3>
-                      <p>{status?.completionTime
-                        ? new Date(status.completionTime).toLocaleString()
-                        : 'Not completed'}</p>
+                      <p>
+                        {status?.completionTime
+                          ? new Date(status.completionTime).toLocaleString()
+                          : 'Not completed'}
+                      </p>
                     </div>
                     <div>
                       <h3 className="font-medium">Selector</h3>
@@ -122,9 +138,11 @@ export const JobView = ({
                           <h3 className="font-medium">Pods</h3>
                           <p>
                             <Link
-                              className='text-blue-600 hover:underline dark:text-blue-500'
+                              className="text-blue-600 hover:underline dark:text-blue-500"
                               to={`/pods?labelSelector=${encodeURIComponent(labelSelector)}`}
-                            >View Pods →</Link>
+                            >
+                              View Pods →
+                            </Link>
                           </p>
                         </>
                       )}
@@ -155,7 +173,9 @@ export const JobView = ({
                 {status?.conditions && status.conditions.length > 0 ? (
                   <StatusConditions conditions={status.conditions} />
                 ) : (
-                  <p className="text-center text-muted-foreground">No conditions found</p>
+                  <p className="text-center text-muted-foreground">
+                    No conditions found
+                  </p>
                 )}
               </CardContent>
             </Card>
@@ -177,11 +197,7 @@ export const JobView = ({
           </TabsContent>
 
           <TabsContent value="source">
-            <ScrollAreaCode
-              height="h-screen"
-              content={job}
-              onCopy={onCopy}
-            />
+            <ScrollAreaCode height="h-screen" content={job} onCopy={onCopy} />
           </TabsContent>
 
           <TabsContent value="actions">

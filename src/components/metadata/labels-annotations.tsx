@@ -1,8 +1,8 @@
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Copy } from "lucide-react";
-import { truncate } from "@/lib/strings";
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Copy } from 'lucide-react';
+import { truncate } from '@/lib/strings';
 
 interface LabelsAnnotationsProps {
   labels?: { [key: string]: string };
@@ -13,18 +13,16 @@ interface LabelsAnnotationsProps {
 const KeyValueBadge = ({
   keyName,
   value,
-  variant = "secondary",
-  onCopy
+  variant = 'secondary',
+  onCopy,
 }: {
   keyName: string;
   value: string;
-  variant?: "secondary" | "outline";
+  variant?: 'secondary' | 'outline';
   onCopy: (text: string) => void;
 }) => (
   <div className="group relative flex items-center gap-1">
-    <Badge variant={variant}>
-      {truncate(`${keyName}: ${value}`)}
-    </Badge>
+    <Badge variant={variant}>{truncate(`${keyName}: ${value}`)}</Badge>
     <Button
       variant="ghost"
       size="icon"
@@ -39,7 +37,7 @@ const KeyValueBadge = ({
 export const LabelsAnnotations = ({
   labels,
   annotations,
-  onCopy
+  onCopy,
 }: LabelsAnnotationsProps) => {
   return (
     <div className="grid grid-cols-2 gap-4">
@@ -58,9 +56,10 @@ export const LabelsAnnotations = ({
                 onCopy={onCopy}
               />
             ))}
-            {!labels || Object.keys(labels).length === 0 && (
-              <span className="text-muted-foreground">No labels found</span>
-            )}
+            {!labels ||
+              (Object.keys(labels).length === 0 && (
+                <span className="text-muted-foreground">No labels found</span>
+              ))}
           </div>
         </CardContent>
       </Card>
@@ -80,9 +79,12 @@ export const LabelsAnnotations = ({
                 onCopy={onCopy}
               />
             ))}
-            {!annotations || Object.keys(annotations).length === 0 && (
-              <span className="text-muted-foreground">No annotations found</span>
-            )}
+            {!annotations ||
+              (Object.keys(annotations).length === 0 && (
+                <span className="text-muted-foreground">
+                  No annotations found
+                </span>
+              ))}
           </div>
         </CardContent>
       </Card>

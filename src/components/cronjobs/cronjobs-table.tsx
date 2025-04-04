@@ -48,15 +48,20 @@ interface CronJobsTableProps {
 
 export const CronJobsTable = ({
   cronjobs,
-  initialFilters = { name: '', labelSelector: '' }
+  initialFilters = { name: '', labelSelector: '' },
 }: CronJobsTableProps) => {
   // Create initial filters array
   const initialColumnFilters: ColumnFiltersState = [
-    ...(initialFilters.name ? [{ id: 'name', value: initialFilters.name }] : []),
-    ...(initialFilters.labelSelector ? [{ id: 'labels', value: initialFilters.labelSelector }] : []),
+    ...(initialFilters.name
+      ? [{ id: 'name', value: initialFilters.name }]
+      : []),
+    ...(initialFilters.labelSelector
+      ? [{ id: 'labels', value: initialFilters.labelSelector }]
+      : []),
   ];
 
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(initialColumnFilters);
+  const [columnFilters, setColumnFilters] =
+    useState<ColumnFiltersState>(initialColumnFilters);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -66,13 +71,13 @@ export const CronJobsTable = ({
   // Create unique label options from all cronjobs
   const labelOptions = useMemo(() => {
     const labelSet = new Set<string>();
-    cronjobs.forEach(cronjob => {
+    cronjobs.forEach((cronjob) => {
       const labels = cronjob.metadata?.labels || {};
       Object.entries(labels).forEach(([key, value]) => {
         labelSet.add(`${key}=${value}`);
       });
     });
-    return Array.from(labelSet).map(label => ({
+    return Array.from(labelSet).map((label) => ({
       label,
       value: label,
     }));
@@ -82,9 +87,7 @@ export const CronJobsTable = ({
     {
       id: 'name',
       accessorKey: 'metadata.name',
-      header: ({ column }) => (
-        <SortableHeader column={column} title="Name" />
-      ),
+      header: ({ column }) => <SortableHeader column={column} title="Name" />,
       cell: ({ row }) => {
         const name = row.original.metadata?.name;
         return (
@@ -118,9 +121,7 @@ export const CronJobsTable = ({
     },
     {
       id: 'status',
-      header: ({ column }) => (
-        <SortableHeader column={column} title="Status" />
-      ),
+      header: ({ column }) => <SortableHeader column={column} title="Status" />,
       cell: ({ row }) => {
         const status = getCronJobStatus(row.original);
         return <StatusBadge status={status} />;
@@ -166,7 +167,8 @@ export const CronJobsTable = ({
       id: 'age',
       accessorKey: 'metadata.creationTimestamp',
       header: ({ column }) => <SortableHeader column={column} title="Age" />,
-      cell: ({ row }) => getAge(String(row.original.metadata?.creationTimestamp)),
+      cell: ({ row }) =>
+        getAge(String(row.original.metadata?.creationTimestamp)),
       sortingFn: (rowA, rowB) => {
         const dateA = String(rowA.original.metadata?.creationTimestamp || '');
         const dateB = String(rowB.original.metadata?.creationTimestamp || '');
@@ -203,10 +205,10 @@ export const CronJobsTable = ({
 
         if (labelSelectors.length === 0) return true;
 
-        return labelSelectors.every(selector => {
+        return labelSelectors.every((selector) => {
           if (!selector.includes('=')) return true;
 
-          const [key, value] = selector.split('=').map(s => s.trim());
+          const [key, value] = selector.split('=').map((s) => s.trim());
           if (!key || !value) return true;
 
           return labels[key] === value;
@@ -258,11 +260,15 @@ export const CronJobsTable = ({
                   <MultiSelect
                     options={labelOptions}
                     placeholder="Filter by labels..."
-                    defaultValue={labelSelectorToArray(initialFilters.labelSelector)}
+                    defaultValue={labelSelectorToArray(
+                      initialFilters.labelSelector
+                    )}
                     onValueChange={(values) => {
                       const labelColumn = table.getColumn('labels');
                       if (labelColumn) {
-                        labelColumn.setFilterValue(arrayToLabelSelector(values));
+                        labelColumn.setFilterValue(
+                          arrayToLabelSelector(values)
+                        );
                       }
                     }}
                     className="max-w-xs"

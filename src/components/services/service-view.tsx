@@ -1,7 +1,12 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { V1Service } from '@kubernetes/client-node';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { LabelsAnnotations } from '@/components/metadata/labels-annotations';
 import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { ResourceActions } from '@/components/resources/resource-actions';
@@ -9,7 +14,14 @@ import { Badge } from '@/components/ui/badge';
 import { Network, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router';
 import { ROUTES } from '@/lib/routes';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { ResourceTypes } from '@/lib/strings';
 import { formatPort, getExternalIPs } from '@/lib/services';
@@ -35,8 +47,6 @@ export const ServiceView = ({
   // Helper to check if selector is present
   const hasSelector = spec?.selector && Object.keys(spec.selector).length > 0;
 
-
-
   // Format the selector as a label selector string for URL
   const getSelectorAsLabelSelector = (): string => {
     if (!spec?.selector) return '';
@@ -51,11 +61,32 @@ export const ServiceView = ({
       case 'ClusterIP':
         return <Badge variant="outline">ClusterIP</Badge>;
       case 'NodePort':
-        return <Badge variant="outline" className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">NodePort</Badge>;
+        return (
+          <Badge
+            variant="outline"
+            className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+          >
+            NodePort
+          </Badge>
+        );
       case 'LoadBalancer':
-        return <Badge variant="outline" className="bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300">LoadBalancer</Badge>;
+        return (
+          <Badge
+            variant="outline"
+            className="bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300"
+          >
+            LoadBalancer
+          </Badge>
+        );
       case 'ExternalName':
-        return <Badge variant="outline" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">ExternalName</Badge>;
+        return (
+          <Badge
+            variant="outline"
+            className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+          >
+            ExternalName
+          </Badge>
+        );
       default:
         return <Badge variant="outline">{type}</Badge>;
     }
@@ -86,16 +117,23 @@ export const ServiceView = ({
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
-            <Accordion type="multiple" defaultValue={["details", "access", "labels"]} className="w-full">
+            <Accordion
+              type="multiple"
+              defaultValue={['details', 'access', 'labels']}
+              className="w-full"
+            >
               <AccordionItem value="details">
                 <AccordionTrigger>Service Details</AccordionTrigger>
                 <AccordionContent>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <h3 className="font-medium">Created</h3>
-                      <p>{metadata?.creationTimestamp
-                        ? new Date(metadata.creationTimestamp).toLocaleString()
-                        : 'N/A'}
+                      <p>
+                        {metadata?.creationTimestamp
+                          ? new Date(
+                              metadata.creationTimestamp
+                            ).toLocaleString()
+                          : 'N/A'}
                       </p>
                     </div>
                     <div>
@@ -104,7 +142,11 @@ export const ServiceView = ({
                     </div>
                     <div>
                       <h3 className="font-medium">Cluster IP</h3>
-                      <p>{serviceType === 'ExternalName' ? 'None' : spec?.clusterIP || 'None'}</p>
+                      <p>
+                        {serviceType === 'ExternalName'
+                          ? 'None'
+                          : spec?.clusterIP || 'None'}
+                      </p>
                     </div>
                     {serviceType === 'ExternalName' && (
                       <div>
@@ -142,7 +184,8 @@ export const ServiceView = ({
                       <div>
                         <h3 className="font-medium mb-2">Internal Access</h3>
                         <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded font-mono text-sm overflow-auto">
-                          {metadata?.name}.{metadata?.namespace}.svc.cluster.local
+                          {metadata?.name}.{metadata?.namespace}
+                          .svc.cluster.local
                         </div>
                       </div>
                     )}
@@ -165,7 +208,8 @@ export const ServiceView = ({
                       <div>
                         <h3 className="font-medium mb-2">Node Port Access</h3>
                         <p className="text-sm text-muted-foreground">
-                          This service is accessible on every node IP at the NodePort(s) listed in the Ports tab.
+                          This service is accessible on every node IP at the
+                          NodePort(s) listed in the Ports tab.
                         </p>
                       </div>
                     )}
@@ -179,19 +223,21 @@ export const ServiceView = ({
                   <AccordionContent>
                     <div className="space-y-4">
                       <div className="flex flex-wrap gap-1">
-                        {spec?.selector && Object.entries(spec.selector).map(([key, value]) => (
-                          <Badge key={key} className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-                            {key}={value}
-                          </Badge>
-                        ))}
+                        {spec?.selector &&
+                          Object.entries(spec.selector).map(([key, value]) => (
+                            <Badge
+                              key={key}
+                              className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+                            >
+                              {key}={value}
+                            </Badge>
+                          ))}
                       </div>
 
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        asChild
-                      >
-                        <Link to={`${ROUTES.PODS}?labelSelector=${getSelectorAsLabelSelector()}`}>
+                      <Button variant="outline" size="sm" asChild>
+                        <Link
+                          to={`${ROUTES.PODS}?labelSelector=${getSelectorAsLabelSelector()}`}
+                        >
                           View matching pods
                         </Link>
                       </Button>
@@ -217,7 +263,9 @@ export const ServiceView = ({
             <Card>
               <CardContent className="pt-6">
                 {!spec?.ports || spec.ports.length === 0 ? (
-                  <p className="text-muted-foreground text-center py-8">No ports defined for this service</p>
+                  <p className="text-muted-foreground text-center py-8">
+                    No ports defined for this service
+                  </p>
                 ) : (
                   <div className="space-y-4">
                     <Table>
@@ -227,7 +275,10 @@ export const ServiceView = ({
                           <TableHead>Port</TableHead>
                           <TableHead>Target Port</TableHead>
                           <TableHead>Protocol</TableHead>
-                          {(serviceType === 'NodePort' || serviceType === 'LoadBalancer') && <TableHead>Node Port</TableHead>}
+                          {(serviceType === 'NodePort' ||
+                            serviceType === 'LoadBalancer') && (
+                            <TableHead>Node Port</TableHead>
+                          )}
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -235,9 +286,12 @@ export const ServiceView = ({
                           <TableRow key={idx}>
                             <TableCell>{port.name || '-'}</TableCell>
                             <TableCell>{port.port}</TableCell>
-                            <TableCell>{port.targetPort?.toString() || port.port}</TableCell>
+                            <TableCell>
+                              {port.targetPort?.toString() || port.port}
+                            </TableCell>
                             <TableCell>{port.protocol || 'TCP'}</TableCell>
-                            {(serviceType === 'NodePort' || serviceType === 'LoadBalancer') && (
+                            {(serviceType === 'NodePort' ||
+                              serviceType === 'LoadBalancer') && (
                               <TableCell>{port.nodePort || '-'}</TableCell>
                             )}
                           </TableRow>
@@ -246,7 +300,9 @@ export const ServiceView = ({
                     </Table>
 
                     <div className="mt-4">
-                      <h3 className="text-sm font-medium mb-2">Formatted Port String:</h3>
+                      <h3 className="text-sm font-medium mb-2">
+                        Formatted Port String:
+                      </h3>
                       <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded font-mono text-sm">
                         {spec.ports.map(formatPort).join(', ')}
                       </div>
@@ -263,8 +319,8 @@ export const ServiceView = ({
                 {!hasSelector ? (
                   <div className="text-center py-8">
                     <p className="text-muted-foreground mb-4">
-                      This service does not have a selector defined. It might be manually managed
-                      or used with an ExternalName.
+                      This service does not have a selector defined. It might be
+                      manually managed or used with an ExternalName.
                     </p>
                     {serviceType === 'ExternalName' && (
                       <p>
@@ -283,11 +339,10 @@ export const ServiceView = ({
                         {getSelectorAsLabelSelector()}
                       </code>
                     </p>
-                    <Button
-                      variant="outline"
-                      asChild
-                    >
-                      <Link to={`${ROUTES.PODS}?labelSelector=${getSelectorAsLabelSelector()}`}>
+                    <Button variant="outline" asChild>
+                      <Link
+                        to={`${ROUTES.PODS}?labelSelector=${getSelectorAsLabelSelector()}`}
+                      >
                         View matching pods
                       </Link>
                     </Button>

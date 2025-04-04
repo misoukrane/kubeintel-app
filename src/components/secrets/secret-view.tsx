@@ -1,7 +1,12 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { V1Secret } from '@kubernetes/client-node';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { LabelsAnnotations } from '@/components/metadata/labels-annotations';
 import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { ResourceActions } from '@/components/resources/resource-actions';
@@ -52,8 +57,12 @@ export const SecretView = ({
           </div>
         </div>
         <Badge
-          variant={isSystemSecret ? "secondary" : "outline"}
-          className={isSystemSecret ? "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300" : ""}
+          variant={isSystemSecret ? 'secondary' : 'outline'}
+          className={
+            isSystemSecret
+              ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300'
+              : ''
+          }
         >
           {type || 'Opaque'}
         </Badge>
@@ -68,16 +77,23 @@ export const SecretView = ({
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
-            <Accordion type="multiple" defaultValue={["details", "labels"]} className="w-full">
+            <Accordion
+              type="multiple"
+              defaultValue={['details', 'labels']}
+              className="w-full"
+            >
               <AccordionItem value="details">
                 <AccordionTrigger>Secret Details</AccordionTrigger>
                 <AccordionContent>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <h3 className="font-medium">Created</h3>
-                      <p>{metadata?.creationTimestamp
-                        ? new Date(metadata.creationTimestamp).toLocaleString()
-                        : 'N/A'}
+                      <p>
+                        {metadata?.creationTimestamp
+                          ? new Date(
+                              metadata.creationTimestamp
+                            ).toLocaleString()
+                          : 'N/A'}
                       </p>
                     </div>
                     <div>
@@ -86,7 +102,9 @@ export const SecretView = ({
                     </div>
                     <div>
                       <h3 className="font-medium">Data Keys</h3>
-                      <p>{dataCount} {dataCount === 1 ? 'key' : 'keys'}</p>
+                      <p>
+                        {dataCount} {dataCount === 1 ? 'key' : 'keys'}
+                      </p>
                     </div>
                     {isSystemSecret && (
                       <div className="col-span-2">
@@ -94,8 +112,9 @@ export const SecretView = ({
                           <ShieldAlert className="h-4 w-4" />
                           <AlertTitle>System Secret</AlertTitle>
                           <AlertDescription>
-                            This is a Kubernetes system secret with type <code>{type}</code>.
-                            Modifying it directly may break cluster functionality.
+                            This is a Kubernetes system secret with type{' '}
+                            <code>{type}</code>. Modifying it directly may break
+                            cluster functionality.
                           </AlertDescription>
                         </Alert>
                       </div>
@@ -120,26 +139,31 @@ export const SecretView = ({
           <TabsContent value="data" className="space-y-4">
             <Card>
               <CardContent className="pt-6">
-                <Alert variant='destructive' className="mb-4">
+                <Alert variant="destructive" className="mb-4">
                   <AlertTriangle className="h-4 w-4" />
                   <AlertTitle>Sensitive Information</AlertTitle>
                   <AlertDescription>
-                    Secret values are base64 encoded and can contain sensitive information.
-                    Exercise caution when handling these values.
+                    Secret values are base64 encoded and can contain sensitive
+                    information. Exercise caution when handling these values.
                   </AlertDescription>
                 </Alert>
                 {dataCount === 0 ? (
-                  <p className="text-muted-foreground text-center py-8">No data found in this Secret</p>
+                  <p className="text-muted-foreground text-center py-8">
+                    No data found in this Secret
+                  </p>
                 ) : (
                   <div className="grid grid-cols-4 gap-4">
                     <div className="col-span-1 border rounded">
                       <ScrollArea className="h-96">
                         <div className="p-2">
-                          {Object.keys(data || {}).map(key => (
+                          {Object.keys(data || {}).map((key) => (
                             <button
                               key={key}
-                              className={`w-full text-left p-2 rounded hover:bg-muted ${selectedKey === key ? 'bg-muted font-medium' : ''
-                                }`}
+                              className={`w-full text-left p-2 rounded hover:bg-muted ${
+                                selectedKey === key
+                                  ? 'bg-muted font-medium'
+                                  : ''
+                              }`}
                               onClick={() => setSelectedKey(key)}
                             >
                               {key}
@@ -156,7 +180,9 @@ export const SecretView = ({
                           <Button
                             size="sm"
                             variant="ghost"
-                            onClick={() => selectedKey && data && onCopy(data[selectedKey])}
+                            onClick={() =>
+                              selectedKey && data && onCopy(data[selectedKey])
+                            }
                           >
                             Copy encoded value
                           </Button>
@@ -166,7 +192,9 @@ export const SecretView = ({
                         {selectedKey && data ? data[selectedKey] : ''}
                       </div>
                       <p className="text-muted-foreground text-xs mt-2">
-                        Note: Decode this value with <code>echo 'VALUE' | base64 -d</code> to see the actual content
+                        Note: Decode this value with{' '}
+                        <code>echo 'VALUE' | base64 -d</code> to see the actual
+                        content
                       </p>
                     </div>
                   </div>

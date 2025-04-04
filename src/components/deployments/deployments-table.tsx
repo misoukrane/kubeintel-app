@@ -46,15 +46,20 @@ interface DeploymentsTableProps {
 
 export const DeploymentsTable = ({
   deployments,
-  initialFilters = { name: '', labelSelector: '' }
+  initialFilters = { name: '', labelSelector: '' },
 }: DeploymentsTableProps) => {
   // Create initial filters array
   const initialColumnFilters: ColumnFiltersState = [
-    ...(initialFilters.name ? [{ id: 'name', value: initialFilters.name }] : []),
-    ...(initialFilters.labelSelector ? [{ id: 'labels', value: initialFilters.labelSelector }] : []),
+    ...(initialFilters.name
+      ? [{ id: 'name', value: initialFilters.name }]
+      : []),
+    ...(initialFilters.labelSelector
+      ? [{ id: 'labels', value: initialFilters.labelSelector }]
+      : []),
   ];
 
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(initialColumnFilters);
+  const [columnFilters, setColumnFilters] =
+    useState<ColumnFiltersState>(initialColumnFilters);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -64,13 +69,13 @@ export const DeploymentsTable = ({
   // Create unique label options from all deployments
   const labelOptions = useMemo(() => {
     const labelSet = new Set<string>();
-    deployments.forEach(deployment => {
+    deployments.forEach((deployment) => {
       const labels = deployment.metadata?.labels || {};
       Object.entries(labels).forEach(([key, value]) => {
         labelSet.add(`${key}=${value}`);
       });
     });
-    return Array.from(labelSet).map(label => ({
+    return Array.from(labelSet).map((label) => ({
       label,
       value: label,
     }));
@@ -95,33 +100,42 @@ export const DeploymentsTable = ({
     {
       id: 'namespace',
       accessorKey: 'metadata.namespace',
-      header: ({ column }) => <SortableHeader column={column} title="Namespace" />,
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Namespace" />
+      ),
       cell: ({ row }) => row.original.metadata?.namespace,
     },
     {
       id: 'replicas',
       accessorKey: 'status.replicas',
-      header: ({ column }) => <SortableHeader column={column} title="Replicas" />,
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Replicas" />
+      ),
       cell: ({ row }) =>
         `${row.original.status?.availableReplicas ?? 0}/${row.original.spec?.replicas ?? 0}`,
     },
     {
       id: 'updatedReplicas',
       accessorKey: 'status.updatedReplicas',
-      header: ({ column }) => <SortableHeader column={column} title="Up-to-date" />,
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Up-to-date" />
+      ),
       cell: ({ row }) => row.original.status?.updatedReplicas ?? 0,
     },
     {
       id: 'availableReplicas',
       accessorKey: 'status.availableReplicas',
-      header: ({ column }) => <SortableHeader column={column} title="Available" />,
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Available" />
+      ),
       cell: ({ row }) => row.original.status?.availableReplicas ?? 0,
     },
     {
       id: 'age',
       accessorKey: 'metadata.creationTimestamp',
       header: ({ column }) => <SortableHeader column={column} title="Age" />,
-      cell: ({ row }) => getAge(String(row.original.metadata?.creationTimestamp)),
+      cell: ({ row }) =>
+        getAge(String(row.original.metadata?.creationTimestamp)),
       sortingFn: (rowA, rowB) => {
         const dateA = String(rowA.original.metadata?.creationTimestamp || '');
         const dateB = String(rowB.original.metadata?.creationTimestamp || '');
@@ -159,10 +173,10 @@ export const DeploymentsTable = ({
 
         if (labelSelectors.length === 0) return true;
 
-        return labelSelectors.every(selector => {
+        return labelSelectors.every((selector) => {
           if (!selector.includes('=')) return true;
 
-          const [key, value] = selector.split('=').map(s => s.trim());
+          const [key, value] = selector.split('=').map((s) => s.trim());
           if (!key || !value) return true;
 
           return labels[key] === value;
@@ -214,11 +228,15 @@ export const DeploymentsTable = ({
                   <MultiSelect
                     options={labelOptions}
                     placeholder="Filter by labels..."
-                    defaultValue={labelSelectorToArray(initialFilters.labelSelector)}
+                    defaultValue={labelSelectorToArray(
+                      initialFilters.labelSelector
+                    )}
                     onValueChange={(values) => {
                       const labelColumn = table.getColumn('labels');
                       if (labelColumn) {
-                        labelColumn.setFilterValue(arrayToLabelSelector(values));
+                        labelColumn.setFilterValue(
+                          arrayToLabelSelector(values)
+                        );
                       }
                     }}
                     className="max-w-xs"

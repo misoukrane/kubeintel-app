@@ -1,5 +1,5 @@
-import { V1Container, V1ContainerStatus } from "@kubernetes/client-node";
-import { Badge } from "@/components/ui/badge";
+import { V1Container, V1ContainerStatus } from '@kubernetes/client-node';
+import { Badge } from '@/components/ui/badge';
 import {
   Table,
   TableBody,
@@ -7,11 +7,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { StatusBadge } from "@/components/status-badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Menu } from "lucide-react";
-import { ContainerCommands } from "@/components/pods/container-commands";
+} from '@/components/ui/table';
+import { StatusBadge } from '@/components/status-badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Menu } from 'lucide-react';
+import { ContainerCommands } from '@/components/pods/container-commands';
 
 interface ContainersStatusTableProps {
   containers?: V1Container[];
@@ -32,7 +32,6 @@ export const ContainersStatusTable = ({
   onOpenLogs,
   onDebug,
 }: ContainersStatusTableProps) => {
-
   return (
     <>
       <div className="space-y-4">
@@ -85,15 +84,21 @@ export const ContainersStatusTable = ({
   );
 };
 
-const ContainerTable = ({ containers, statuses, onOpenShell, onOpenLogs, onDebug }: {
-  containers?: V1Container[],
-  statuses?: V1ContainerStatus[],
-  onOpenShell?: (containerName: string, shell: string) => void,
-  onOpenLogs?: (containerName?: string) => void,
+const ContainerTable = ({
+  containers,
+  statuses,
+  onOpenShell,
+  onOpenLogs,
+  onDebug,
+}: {
+  containers?: V1Container[];
+  statuses?: V1ContainerStatus[];
+  onOpenShell?: (containerName: string, shell: string) => void;
+  onOpenLogs?: (containerName?: string) => void;
   onDebug?: (debugImage: string, target?: string) => void;
 }) => {
   const getStatusForContainer = (name: string) =>
-    statuses?.find(s => s.name === name);
+    statuses?.find((s) => s.name === name);
 
   return (
     <Table>
@@ -106,7 +111,9 @@ const ContainerTable = ({ containers, statuses, onOpenShell, onOpenLogs, onDebug
               <TableHead>State</TableHead>
               <TableHead>Restarts</TableHead>
               <TableHead>Ready</TableHead>
-              <TableHead><Menu /></TableHead>
+              <TableHead>
+                <Menu />
+              </TableHead>
             </>
           )}
         </TableRow>
@@ -116,9 +123,7 @@ const ContainerTable = ({ containers, statuses, onOpenShell, onOpenLogs, onDebug
           const status = getStatusForContainer(container.name);
           return (
             <TableRow key={container.name}>
-              <TableCell className="font-medium">
-                {container.name}
-              </TableCell>
+              <TableCell className="font-medium">{container.name}</TableCell>
               <TableCell className="text-xs">{container.image}</TableCell>
               {statuses && (
                 <>
@@ -133,7 +138,7 @@ const ContainerTable = ({ containers, statuses, onOpenShell, onOpenLogs, onDebug
                   </TableCell>
                   <TableCell>{status?.restartCount || 0}</TableCell>
                   <TableCell>
-                    <Badge variant={status?.ready ? "default" : "destructive"}>
+                    <Badge variant={status?.ready ? 'default' : 'destructive'}>
                       {status?.ready ? 'Yes' : 'No'}
                     </Badge>
                   </TableCell>

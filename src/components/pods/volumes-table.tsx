@@ -1,4 +1,4 @@
-import { V1Volume } from "@kubernetes/client-node";
+import { V1Volume } from '@kubernetes/client-node';
 import {
   Table,
   TableBody,
@@ -6,8 +6,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { ScrollAreaCode } from "@/components/scroll-area-code";
+} from '@/components/ui/table';
+import { ScrollAreaCode } from '@/components/scroll-area-code';
 
 interface VolumesTableProps {
   volumes: V1Volume[];
@@ -27,8 +27,10 @@ export const VolumesTable = ({ volumes, onCopy }: VolumesTableProps) => {
       <TableBody>
         {volumes.map((volume) => {
           // Get volume type (first key that's not 'name')
-          const volumeType = Object.keys(volume).find(key => key !== 'name');
-          const details = volumeType ? volume[volumeType as keyof V1Volume] : {};
+          const volumeType = Object.keys(volume).find((key) => key !== 'name');
+          const details = volumeType
+            ? volume[volumeType as keyof V1Volume]
+            : {};
 
           return (
             <TableRow key={volume.name}>

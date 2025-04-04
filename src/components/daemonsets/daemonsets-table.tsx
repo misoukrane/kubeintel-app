@@ -46,15 +46,20 @@ interface DaemonSetsTableProps {
 
 export const DaemonSetsTable = ({
   daemonsets,
-  initialFilters = { name: '', labelSelector: '' }
+  initialFilters = { name: '', labelSelector: '' },
 }: DaemonSetsTableProps) => {
   // Create initial filters array
   const initialColumnFilters: ColumnFiltersState = [
-    ...(initialFilters.name ? [{ id: 'name', value: initialFilters.name }] : []),
-    ...(initialFilters.labelSelector ? [{ id: 'labels', value: initialFilters.labelSelector }] : []),
+    ...(initialFilters.name
+      ? [{ id: 'name', value: initialFilters.name }]
+      : []),
+    ...(initialFilters.labelSelector
+      ? [{ id: 'labels', value: initialFilters.labelSelector }]
+      : []),
   ];
 
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(initialColumnFilters);
+  const [columnFilters, setColumnFilters] =
+    useState<ColumnFiltersState>(initialColumnFilters);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -64,13 +69,13 @@ export const DaemonSetsTable = ({
   // Create unique label options from all daemonsets
   const labelOptions = useMemo(() => {
     const labelSet = new Set<string>();
-    daemonsets.forEach(daemonset => {
+    daemonsets.forEach((daemonset) => {
       const labels = daemonset.metadata?.labels || {};
       Object.entries(labels).forEach(([key, value]) => {
         labelSet.add(`${key}=${value}`);
       });
     });
-    return Array.from(labelSet).map(label => ({
+    return Array.from(labelSet).map((label) => ({
       label,
       value: label,
     }));
@@ -95,19 +100,25 @@ export const DaemonSetsTable = ({
     {
       id: 'namespace',
       accessorKey: 'metadata.namespace',
-      header: ({ column }) => <SortableHeader column={column} title="Namespace" />,
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Namespace" />
+      ),
       cell: ({ row }) => row.original.metadata?.namespace,
     },
     {
       id: 'desired',
       accessorKey: 'status.desiredNumberScheduled',
-      header: ({ column }) => <SortableHeader column={column} title="Desired" />,
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Desired" />
+      ),
       cell: ({ row }) => row.original.status?.desiredNumberScheduled ?? 0,
     },
     {
       id: 'current',
       accessorKey: 'status.currentNumberScheduled',
-      header: ({ column }) => <SortableHeader column={column} title="Current" />,
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Current" />
+      ),
       cell: ({ row }) => row.original.status?.currentNumberScheduled ?? 0,
     },
     {
@@ -119,14 +130,17 @@ export const DaemonSetsTable = ({
     {
       id: 'upToDate',
       accessorKey: 'status.updatedNumberScheduled',
-      header: ({ column }) => <SortableHeader column={column} title="Up-to-date" />,
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Up-to-date" />
+      ),
       cell: ({ row }) => row.original.status?.updatedNumberScheduled ?? 0,
     },
     {
       id: 'age',
       accessorKey: 'metadata.creationTimestamp',
       header: ({ column }) => <SortableHeader column={column} title="Age" />,
-      cell: ({ row }) => getAge(String(row.original.metadata?.creationTimestamp)),
+      cell: ({ row }) =>
+        getAge(String(row.original.metadata?.creationTimestamp)),
       sortingFn: (rowA, rowB) => {
         const dateA = String(rowA.original.metadata?.creationTimestamp || '');
         const dateB = String(rowB.original.metadata?.creationTimestamp || '');
@@ -163,10 +177,10 @@ export const DaemonSetsTable = ({
 
         if (labelSelectors.length === 0) return true;
 
-        return labelSelectors.every(selector => {
+        return labelSelectors.every((selector) => {
           if (!selector.includes('=')) return true;
 
-          const [key, value] = selector.split('=').map(s => s.trim());
+          const [key, value] = selector.split('=').map((s) => s.trim());
           if (!key || !value) return true;
 
           return labels[key] === value;
@@ -218,11 +232,15 @@ export const DaemonSetsTable = ({
                   <MultiSelect
                     options={labelOptions}
                     placeholder="Filter by labels..."
-                    defaultValue={labelSelectorToArray(initialFilters.labelSelector)}
+                    defaultValue={labelSelectorToArray(
+                      initialFilters.labelSelector
+                    )}
                     onValueChange={(values) => {
                       const labelColumn = table.getColumn('labels');
                       if (labelColumn) {
-                        labelColumn.setFilterValue(arrayToLabelSelector(values));
+                        labelColumn.setFilterValue(
+                          arrayToLabelSelector(values)
+                        );
                       }
                     }}
                     className="max-w-xs"

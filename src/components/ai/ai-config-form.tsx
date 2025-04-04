@@ -1,8 +1,8 @@
-import * as React from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { Button } from "@/components/ui/button"
+import * as React from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -11,18 +11,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
+} from '@/components/ui/form';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-import { getProviderModels } from "@/stores/use-ai-config-store"
-import { Check, ChevronsUpDown } from "lucide-react"
-import { cn } from "@/lib/utils"
+} from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { getProviderModels } from '@/stores/use-ai-config-store';
+import { Check, ChevronsUpDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import {
   Command,
   CommandEmpty,
@@ -30,29 +30,29 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command"
+} from '@/components/ui/command';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from '@/components/ui/popover';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
+} from '@/components/ui/accordion';
 
 const formSchema = z.object({
   provider: z.enum(['openai', 'google', 'anthropic']),
   url: z.string().url().or(z.literal('')),
   model: z.string().min(1),
   apiKey: z.string().min(1),
-})
+});
 
 interface AIConfigFormProps {
-  onSubmit: (values: z.infer<typeof formSchema>) => Promise<void>
-  onCancel: () => void
+  onSubmit: (values: z.infer<typeof formSchema>) => Promise<void>;
+  onCancel: () => void;
 }
 
 export function AIConfigForm({ onSubmit, onCancel }: AIConfigFormProps) {
@@ -64,11 +64,11 @@ export function AIConfigForm({ onSubmit, onCancel }: AIConfigFormProps) {
       model: '',
       apiKey: '',
     },
-  })
+  });
 
-  const provider = form.watch('provider')
-  const models = getProviderModels(provider)
-  const [open, setOpen] = React.useState(false)
+  const provider = form.watch('provider');
+  const models = getProviderModels(provider);
+  const [open, setOpen] = React.useState(false);
 
   return (
     <Form {...form}>
@@ -102,10 +102,7 @@ export function AIConfigForm({ onSubmit, onCancel }: AIConfigFormProps) {
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Model</FormLabel>
-              <Popover
-                open={open}
-                onOpenChange={setOpen}
-              >
+              <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
@@ -114,16 +111,19 @@ export function AIConfigForm({ onSubmit, onCancel }: AIConfigFormProps) {
                       role="combobox"
                       aria-expanded={open}
                       className={cn(
-                        "w-full justify-between",
-                        !field.value && "text-muted-foreground"
+                        'w-full justify-between',
+                        !field.value && 'text-muted-foreground'
                       )}
                     >
-                      {field.value || "Select model..."}
+                      {field.value || 'Select model...'}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                <PopoverContent
+                  className="w-[--radix-popover-trigger-width] p-0"
+                  align="start"
+                >
                   <Command>
                     <CommandInput
                       placeholder="Search model or enter custom..."
@@ -143,8 +143,10 @@ export function AIConfigForm({ onSubmit, onCancel }: AIConfigFormProps) {
                           >
                             <Check
                               className={cn(
-                                "mr-2 h-4 w-4",
-                                field.value === model ? "opacity-100" : "opacity-0"
+                                'mr-2 h-4 w-4',
+                                field.value === model
+                                  ? 'opacity-100'
+                                  : 'opacity-0'
                               )}
                             />
                             {model}
@@ -219,18 +221,12 @@ export function AIConfigForm({ onSubmit, onCancel }: AIConfigFormProps) {
         </Accordion>
 
         <div className="flex justify-end space-x-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onCancel}
-          >
+          <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
-          <Button type="submit">
-            Add Configuration
-          </Button>
+          <Button type="submit">Add Configuration</Button>
         </div>
       </form>
     </Form>
-  )
+  );
 }

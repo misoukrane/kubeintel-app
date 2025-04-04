@@ -57,12 +57,19 @@ export const JobsTable = ({
 }: JobsTableProps) => {
   // Create initial filters array
   const initialColumnFilters: ColumnFiltersState = [
-    ...(initialFilters.name ? [{ id: 'name', value: initialFilters.name }] : []),
-    ...(initialFilters.status ? [{ id: 'status', value: initialFilters.status }] : []),
-    ...(initialFilters.labelSelector ? [{ id: 'labels', value: initialFilters.labelSelector }] : []),
+    ...(initialFilters.name
+      ? [{ id: 'name', value: initialFilters.name }]
+      : []),
+    ...(initialFilters.status
+      ? [{ id: 'status', value: initialFilters.status }]
+      : []),
+    ...(initialFilters.labelSelector
+      ? [{ id: 'labels', value: initialFilters.labelSelector }]
+      : []),
   ];
 
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(initialColumnFilters);
+  const [columnFilters, setColumnFilters] =
+    useState<ColumnFiltersState>(initialColumnFilters);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -72,19 +79,19 @@ export const JobsTable = ({
   // Add visibility state
   const [visibility, setVisibility] = useState<VisibilityState>({
     labels: false,
-    ...columnVisibility
+    ...columnVisibility,
   });
 
   // Create unique label options from all jobs
   const labelOptions = useMemo(() => {
     const labelSet = new Set<string>();
-    jobs.forEach(job => {
+    jobs.forEach((job) => {
       const labels = job.metadata?.labels || {};
       Object.entries(labels).forEach(([key, value]) => {
         labelSet.add(`${key}=${value}`);
       });
     });
-    return Array.from(labelSet).map(label => ({
+    return Array.from(labelSet).map((label) => ({
       label,
       value: label,
     }));
@@ -95,9 +102,7 @@ export const JobsTable = ({
     {
       id: 'name',
       accessorKey: 'metadata.name',
-      header: ({ column }) => (
-        <SortableHeader column={column} title="Name" />
-      ),
+      header: ({ column }) => <SortableHeader column={column} title="Name" />,
       cell: ({ row }) => {
         const name = row.original.metadata?.name || '';
         const namespace = row.original.metadata?.namespace || '';
@@ -106,7 +111,9 @@ export const JobsTable = ({
           <Button
             variant="link"
             className="underline"
-            onClick={() => navigateToJob ? navigateToJob(namespace, name) : null}
+            onClick={() =>
+              navigateToJob ? navigateToJob(namespace, name) : null
+            }
           >
             {name}
           </Button>
@@ -123,14 +130,10 @@ export const JobsTable = ({
     },
     {
       id: 'status',
-      header: ({ column }) => (
-        <SortableHeader column={column} title="Status" />
-      ),
+      header: ({ column }) => <SortableHeader column={column} title="Status" />,
       cell: ({ row }) => {
         const status = getJobStatus(row.original.status);
-        return (
-          <StatusBadge status={status} />
-        );
+        return <StatusBadge status={status} />;
       },
       sortingFn: (rowA, rowB) => {
         const statusA = getJobStatus(rowA.original.status);
@@ -173,7 +176,8 @@ export const JobsTable = ({
       id: 'age',
       accessorKey: 'metadata.creationTimestamp',
       header: ({ column }) => <SortableHeader column={column} title="Age" />,
-      cell: ({ row }) => getAge(String(row.original.metadata?.creationTimestamp)),
+      cell: ({ row }) =>
+        getAge(String(row.original.metadata?.creationTimestamp)),
       sortingFn: (rowA, rowB) => {
         const dateA = String(rowA.original.metadata?.creationTimestamp || '');
         const dateB = String(rowB.original.metadata?.creationTimestamp || '');
@@ -210,10 +214,10 @@ export const JobsTable = ({
 
         if (labelSelectors.length === 0) return true;
 
-        return labelSelectors.every(selector => {
+        return labelSelectors.every((selector) => {
           if (!selector.includes('=')) return true;
 
-          const [key, value] = selector.split('=').map(s => s.trim());
+          const [key, value] = selector.split('=').map((s) => s.trim());
           if (!key || !value) return true;
 
           return labels[key] === value;
@@ -267,11 +271,15 @@ export const JobsTable = ({
                   <MultiSelect
                     options={labelOptions}
                     placeholder="Filter by labels..."
-                    defaultValue={labelSelectorToArray(initialFilters.labelSelector)}
+                    defaultValue={labelSelectorToArray(
+                      initialFilters.labelSelector
+                    )}
                     onValueChange={(values) => {
                       const labelColumn = table.getColumn('labels');
                       if (labelColumn) {
-                        labelColumn.setFilterValue(arrayToLabelSelector(values));
+                        labelColumn.setFilterValue(
+                          arrayToLabelSelector(values)
+                        );
                       }
                     }}
                     className="max-w-xs"

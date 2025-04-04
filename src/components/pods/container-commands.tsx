@@ -1,6 +1,6 @@
-import * as React from "react";
-import { Terminal, Logs } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import * as React from 'react';
+import { Terminal, Logs } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Command,
   CommandEmpty,
@@ -8,7 +8,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
+} from '@/components/ui/command';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,8 +20,8 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { EllipsisVertical } from "lucide-react";
+} from '@/components/ui/dropdown-menu';
+import { EllipsisVertical } from 'lucide-react';
 
 const commonShells = ['/bin/sh', '/bin/bash', '/bin/zsh'];
 
@@ -39,8 +39,8 @@ export const ContainerCommands = ({
   onDebug,
 }: ContainerCommandsProps) => {
   const [open, setOpen] = React.useState(false);
-  const [customShell, setCustomShell] = React.useState("");
-  const [customDebugImage, setCustomDebugImage] = React.useState("");
+  const [customShell, setCustomShell] = React.useState('');
+  const [customDebugImage, setCustomDebugImage] = React.useState('');
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -102,10 +102,12 @@ export const ContainerCommands = ({
           {onOpenLogs && (
             <>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => {
-                onOpenLogs(containerName);
-                setOpen(false);
-              }}>
+              <DropdownMenuItem
+                onClick={() => {
+                  onOpenLogs(containerName);
+                  setOpen(false);
+                }}
+              >
                 <Logs className="mr-2 h-4 w-4" />
                 View Logs
               </DropdownMenuItem>
@@ -130,10 +132,10 @@ export const ContainerCommands = ({
                       <CommandEmpty>No image found.</CommandEmpty>
                       <CommandGroup heading="Common Images">
                         {[
-                          "docker.io/library/busybox:latest",
-                          "docker.io/library/alpine:latest",
-                          "docker.io/library/debian:latest",
-                          "docker.io/library/ubuntu:latest",
+                          'docker.io/library/busybox:latest',
+                          'docker.io/library/alpine:latest',
+                          'docker.io/library/debian:latest',
+                          'docker.io/library/ubuntu:latest',
                         ].map((image) => (
                           <CommandItem
                             key={image}

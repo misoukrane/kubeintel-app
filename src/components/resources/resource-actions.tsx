@@ -1,14 +1,14 @@
-import * as React from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
+import * as React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import {
   RefreshCw,
   Scale,
   Trash2,
   FileTerminal,
   AlertTriangle,
-} from "lucide-react"
+} from 'lucide-react';
 import {
   Command,
   CommandEmpty,
@@ -17,7 +17,7 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from "@/components/ui/command"
+} from '@/components/ui/command';
 import {
   Dialog,
   DialogContent,
@@ -25,20 +25,27 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { ResourceTypes } from "@/lib/strings"
+} from '@/components/ui/dialog';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { ResourceTypes } from '@/lib/strings';
 
 // Define the schema for form validation
 const scaleFormSchema = z.object({
-  replicas: z.string()
+  replicas: z
+    .string()
     .transform((val) => parseInt(val, 10))
     .pipe(
-      z.number()
-        .min(0, "Must be 0 or greater")
-        .int("Must be a whole number")
+      z.number().min(0, 'Must be 0 or greater').int('Must be a whole number')
     ),
 });
 
@@ -69,25 +76,26 @@ export const ResourceActions = ({
   onLogs,
   onOpenEvents,
 }: ResourceActionsProps) => {
-  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
-  const [scaleDialogOpen, setScaleDialogOpen] = React.useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const [scaleDialogOpen, setScaleDialogOpen] = React.useState(false);
 
   // Check if resource supports restart
   const supportsRestart = kind !== 'Job' && kind !== 'CronJob';
   // Check if resource supports scaling
-  const supportsScaling = kind !== 'Job' && kind !== 'CronJob' && canScale && !!onScale;
+  const supportsScaling =
+    kind !== 'Job' && kind !== 'CronJob' && canScale && !!onScale;
 
   const form = useForm<ScaleFormValues>({
     resolver: zodResolver(scaleFormSchema),
     defaultValues: {
       replicas: currentReplicas.toString(),
     },
-  })
+  });
 
   const handleDelete = async () => {
-    await onDelete()
-    setDeleteDialogOpen(false)
-  }
+    await onDelete();
+    setDeleteDialogOpen(false);
+  };
 
   const handleScale = async (values: ScaleFormValues) => {
     if (!onScale) return;
@@ -95,7 +103,7 @@ export const ResourceActions = ({
     const replicas = parseInt(values.replicas, 10);
     await onScale({ currentReplicas, replicas });
     setScaleDialogOpen(false);
-  }
+  };
 
   return (
     <div className="w-full pt-4 flex justify-center align-center">
@@ -118,15 +126,22 @@ export const ResourceActions = ({
               </CommandItem>
             )}
 
-            {onLogs && (<CommandItem onSelect={() => { onLogs() }}>
-              <FileTerminal className="mr-2 h-4 w-4" />
-              <span>View Logs</span>
-            </CommandItem>
+            {onLogs && (
+              <CommandItem
+                onSelect={() => {
+                  onLogs();
+                }}
+              >
+                <FileTerminal className="mr-2 h-4 w-4" />
+                <span>View Logs</span>
+              </CommandItem>
             )}
-            {onOpenEvents && (<CommandItem onSelect={() => onOpenEvents()}>
-              <FileTerminal className="mr-2 h-4 w-4" />
-              <span>View Events</span>
-            </CommandItem>)}
+            {onOpenEvents && (
+              <CommandItem onSelect={() => onOpenEvents()}>
+                <FileTerminal className="mr-2 h-4 w-4" />
+                <span>View Events</span>
+              </CommandItem>
+            )}
           </CommandGroup>
 
           <CommandSeparator />
@@ -150,12 +165,18 @@ export const ResourceActions = ({
           <DialogHeader>
             <DialogTitle>Delete {kind}?</DialogTitle>
             <DialogDescription>
-              This action cannot be undone. This will permanently delete the {kind.toLowerCase()} {resourceName}
-              {kind !== 'Job' && kind !== 'CronJob' ? ' and all its pods.' : '.'}
+              This action cannot be undone. This will permanently delete the{' '}
+              {kind.toLowerCase()} {resourceName}
+              {kind !== 'Job' && kind !== 'CronJob'
+                ? ' and all its pods.'
+                : '.'}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+            >
               Cancel
             </Button>
             <Button variant="destructive" onClick={handleDelete}>
@@ -178,11 +199,15 @@ export const ResourceActions = ({
             <DialogHeader>
               <DialogTitle>Scale {kind}</DialogTitle>
               <DialogDescription>
-                Adjust the number of replicas for {kind.toLowerCase()} {resourceName}
+                Adjust the number of replicas for {kind.toLowerCase()}{' '}
+                {resourceName}
               </DialogDescription>
             </DialogHeader>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(handleScale)} className="space-y-4">
+              <form
+                onSubmit={form.handleSubmit(handleScale)}
+                className="space-y-4"
+              >
                 <FormField
                   control={form.control}
                   name="replicas"
@@ -208,16 +233,14 @@ export const ResourceActions = ({
                   <Button
                     variant="outline"
                     onClick={() => {
-                      setScaleDialogOpen(false)
-                      form.reset()
+                      setScaleDialogOpen(false);
+                      form.reset();
                     }}
                     type="button"
                   >
                     Cancel
                   </Button>
-                  <Button type="submit">
-                    Scale {kind}
-                  </Button>
+                  <Button type="submit">Scale {kind}</Button>
                 </DialogFooter>
               </form>
             </Form>
@@ -225,5 +248,5 @@ export const ResourceActions = ({
         </Dialog>
       )}
     </div>
-  )
-}
+  );
+};

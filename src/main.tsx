@@ -1,155 +1,155 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router";
-import { KubeconfigFilePicker } from "@/pages/kubeconfig-file-picker";
-import "./global.css";
-import Layout from "./layout";
-import { Cluster } from "./pages/cluster";
-import { Pods } from "./pages/pods";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/toaster";
-import { ROUTES } from "@/lib/routes";
-import { Deployments } from "./pages/deployments";
-import { NotFound } from "@/pages/not-found";
-import { DaemonSets } from "./pages/daemonsets";
-import { StatefulSets } from "./pages/statefulsets";
-import { Pod } from "./pages/pod";
-import { Deployment } from "./pages/deployment";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { createBrowserRouter, RouterProvider } from 'react-router';
+import { KubeconfigFilePicker } from '@/pages/kubeconfig-file-picker';
+import './global.css';
+import Layout from './layout';
+import { Cluster } from './pages/cluster';
+import { Pods } from './pages/pods';
+import { ThemeProvider } from '@/components/theme-provider';
+import { Toaster } from '@/components/ui/toaster';
+import { ROUTES } from '@/lib/routes';
+import { Deployments } from './pages/deployments';
+import { NotFound } from '@/pages/not-found';
+import { DaemonSets } from './pages/daemonsets';
+import { StatefulSets } from './pages/statefulsets';
+import { Pod } from './pages/pod';
+import { Deployment } from './pages/deployment';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { DaemonSet } from "./pages/daemonset";
-import { StatefulSet } from "./pages/statefulset";
-import { Nodes } from "./pages/nodes";
-import { Node } from "./pages/node";
-import { NodePods } from "./pages/node-pods";
-import { AIConfigPage } from "./pages/ai-config";
-import { Jobs } from "./pages/jobs";
-import { Job } from "./pages/job";
-import { ErrorBoundary } from "./components/error-boundary";
-import { CronJobs } from "./pages/cronjobs";
-import { CronJob } from "./pages/cronjob";
-import { ConfigMaps } from "./pages/configmaps";
-import { ConfigMap } from "./pages/configmap";
-import { Secrets } from "./pages/secrets";
-import { Secret } from "./pages/secret";
-import { Services } from "./pages/services";
-import { Service } from "./pages/service";
+import { DaemonSet } from './pages/daemonset';
+import { StatefulSet } from './pages/statefulset';
+import { Nodes } from './pages/nodes';
+import { Node } from './pages/node';
+import { NodePods } from './pages/node-pods';
+import { AIConfigPage } from './pages/ai-config';
+import { Jobs } from './pages/jobs';
+import { Job } from './pages/job';
+import { ErrorBoundary } from './components/error-boundary';
+import { CronJobs } from './pages/cronjobs';
+import { CronJob } from './pages/cronjob';
+import { ConfigMaps } from './pages/configmaps';
+import { ConfigMap } from './pages/configmap';
+import { Secrets } from './pages/secrets';
+import { Secret } from './pages/secret';
+import { Services } from './pages/services';
+import { Service } from './pages/service';
 
 const queryClient = new QueryClient();
 
 // Create router with proper error boundaries
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <KubeconfigFilePicker />,
-    errorElement: <ErrorBoundary />
+    errorElement: <ErrorBoundary />,
   },
   {
-    path: "/",
+    path: '/',
     element: <Layout />,
     errorElement: <ErrorBoundary />,
     children: [
       {
         path: ROUTES.CLUSTER,
-        element: <Cluster />
+        element: <Cluster />,
       },
       {
         path: ROUTES.AI_CONFIG,
-        element: <AIConfigPage />
+        element: <AIConfigPage />,
       },
       {
         path: ROUTES.PODS,
-        element: <Pods />
+        element: <Pods />,
       },
       {
         path: ROUTES.DEPLOYMENTS,
-        element: <Deployments />
+        element: <Deployments />,
       },
       {
         path: ROUTES.DAEMONSETS,
-        element: <DaemonSets />
+        element: <DaemonSets />,
       },
       {
         path: ROUTES.STATEFULSETS,
-        element: <StatefulSets />
+        element: <StatefulSets />,
       },
       {
         path: ROUTES.POD,
-        element: <Pod />
+        element: <Pod />,
       },
       {
         path: ROUTES.DEPLOYMENT,
-        element: <Deployment />
+        element: <Deployment />,
       },
       {
         path: ROUTES.DAEMONSET,
-        element: <DaemonSet />
+        element: <DaemonSet />,
       },
       {
         path: ROUTES.STATEFULSET,
-        element: <StatefulSet />
+        element: <StatefulSet />,
       },
       {
         path: ROUTES.NODES,
-        element: <Nodes />
+        element: <Nodes />,
       },
       {
         path: ROUTES.NODE,
-        element: <Node />
+        element: <Node />,
       },
       {
         path: ROUTES.NODE_PODS,
-        element: <NodePods />
+        element: <NodePods />,
       },
       {
         path: ROUTES.JOBS,
-        element: <Jobs />
+        element: <Jobs />,
       },
       {
         path: ROUTES.JOB,
-        element: <Job />
+        element: <Job />,
       },
       {
         path: ROUTES.CRONJOBS,
-        element: <CronJobs />
+        element: <CronJobs />,
       },
       {
         path: ROUTES.CRONJOB,
-        element: <CronJob />
+        element: <CronJob />,
       },
       {
         path: ROUTES.CONFIGMAPS,
-        element: <ConfigMaps />
+        element: <ConfigMaps />,
       },
       {
         path: ROUTES.CONFIGMAP,
-        element: <ConfigMap />
+        element: <ConfigMap />,
       },
       {
         path: ROUTES.SECRETS,
-        element: <Secrets />
+        element: <Secrets />,
       },
       {
         path: ROUTES.SECRET,
-        element: <Secret />
+        element: <Secret />,
       },
       {
         path: ROUTES.SERVICES,
-        element: <Services />
+        element: <Services />,
       },
       {
         path: ROUTES.SERVICE,
-        element: <Service />
-      }
-    ]
+        element: <Service />,
+      },
+    ],
   },
   {
-    path: "*",
+    path: '*',
     element: <NotFound />,
-    errorElement: <ErrorBoundary />
-  }
+    errorElement: <ErrorBoundary />,
+  },
 ]);
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">

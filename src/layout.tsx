@@ -1,13 +1,12 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
-import { useNavigate, Outlet, useLocation } from "react-router";
-import { useConfigStore } from "@/stores/use-config-store";
-import { useEffect } from "react";
-import { ROUTES } from "@/lib/routes";
-import { quitApp, relaunchApp } from "@/lib/app-actions";
-import { useToast } from "@/hooks/use-toast"
-import { MainNavigation } from "@/components/upper-navigation";
-
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/app-sidebar';
+import { useNavigate, Outlet, useLocation } from 'react-router';
+import { useConfigStore } from '@/stores/use-config-store';
+import { useEffect } from 'react';
+import { ROUTES } from '@/lib/routes';
+import { quitApp, relaunchApp } from '@/lib/app-actions';
+import { useToast } from '@/hooks/use-toast';
+import { MainNavigation } from '@/components/upper-navigation';
 
 export default function Layout() {
   const navigate = useNavigate();
@@ -34,9 +33,10 @@ export default function Layout() {
         await loadKubeconfig(selectedKubeconfig);
       } catch (error) {
         toast({
-          variant: "destructive",
-          title: "Error loading kubeconfig",
-          description: error instanceof Error ? error.message : JSON.stringify(error)
+          variant: 'destructive',
+          title: 'Error loading kubeconfig',
+          description:
+            error instanceof Error ? error.message : JSON.stringify(error),
         });
       }
     };
@@ -45,14 +45,18 @@ export default function Layout() {
   }, [selectedKubeconfig, loadKubeconfig, toast]);
 
   // Handle loading namespaces and errors
-  const loadNs = async (selectedKubeconfig?: string, currentContext?: string) => {
+  const loadNs = async (
+    selectedKubeconfig?: string,
+    currentContext?: string
+  ) => {
     try {
       await loadNamespaces(selectedKubeconfig, currentContext);
     } catch (error) {
       toast({
-        variant: "destructive",
-        title: "Error loading namespaces",
-        description: error instanceof Error ? error.message : JSON.stringify(error)
+        variant: 'destructive',
+        title: 'Error loading namespaces',
+        description:
+          error instanceof Error ? error.message : JSON.stringify(error),
       });
     }
   };
@@ -84,11 +88,15 @@ export default function Layout() {
       <main className="flex-1 overflow-y-auto p-2">
         <div className="flex items-center gap-4 mb-3">
           <SidebarTrigger />
-          <div data-orientation="vertical" role="none" className="shrink-0 bg-border w-[1px] mr-2 h-4"></div>
+          <div
+            data-orientation="vertical"
+            role="none"
+            className="shrink-0 bg-border w-[1px] mr-2 h-4"
+          ></div>
           <MainNavigation location={location.pathname} />
         </div>
         <Outlet />
       </main>
     </SidebarProvider>
-  )
+  );
 }

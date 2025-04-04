@@ -31,7 +31,13 @@ export const useDeleteKubeResource = ({
     onSuccess: () => {
       // Invalidate queries to refetch the list
       queryClient.invalidateQueries({
-        queryKey: ['resources', resourceType, kubeconfigPath, context, namespace],
+        queryKey: [
+          'resources',
+          resourceType,
+          kubeconfigPath,
+          context,
+          namespace,
+        ],
       });
 
       toast({

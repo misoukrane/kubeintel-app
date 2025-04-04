@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { AIConfig } from '@/stores/use-ai-config-store';
-import { AIConfigForm } from "./ai-config-form";
-import { AIConfigList } from "./ai-config-list";
-import { Button } from "@/components/ui/button";
-import { Plus, ArrowLeft } from "lucide-react";
+import { AIConfigForm } from './ai-config-form';
+import { AIConfigList } from './ai-config-list';
+import { Button } from '@/components/ui/button';
+import { Plus, ArrowLeft } from 'lucide-react';
 
 interface AIConfigManagerProps {
   aiConfigs: AIConfig[];
@@ -12,7 +12,7 @@ interface AIConfigManagerProps {
   removeAIConfig: (index: number) => Promise<void>;
   setSelectedConfig: (index: number) => void;
   getAPIKey: (index: number) => Promise<string>;
-  addingView: boolean
+  addingView: boolean;
 }
 
 export function AIConfigManager({
@@ -26,7 +26,12 @@ export function AIConfigManager({
 }: AIConfigManagerProps) {
   const [isAdding, setIsAdding] = useState(addingView);
 
-  const handleSubmit = async (values: { provider: "openai" | "google" | "anthropic"; url: string; model: string; apiKey: string }) => {
+  const handleSubmit = async (values: {
+    provider: 'openai' | 'google' | 'anthropic';
+    url: string;
+    model: string;
+    apiKey: string;
+  }) => {
     try {
       await addAIConfig({ ...values, secretKey: values.apiKey });
       setIsAdding(false); // Return to list view on success
@@ -60,9 +65,16 @@ export function AIConfigManager({
               Back to List
             </Button>
           </div>
-          <h3 className="text-lg font-medium text-center">Add New Configuration</h3>
+          <h3 className="text-lg font-medium text-center">
+            Add New Configuration
+          </h3>
           <div className="border rounded-lg p-6 max-w-2xl mx-auto">
-            <AIConfigForm onSubmit={handleSubmit} onCancel={() => { setIsAdding(false) }} />
+            <AIConfigForm
+              onSubmit={handleSubmit}
+              onCancel={() => {
+                setIsAdding(false);
+              }}
+            />
           </div>
         </div>
       ) : aiConfigs.length > 0 ? (

@@ -1,14 +1,9 @@
-import * as React from "react"
-import { useForm, ControllerRenderProps } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
+import * as React from 'react';
+import { useForm, ControllerRenderProps } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
-import {
-  Bug,
-  Trash2,
-  FileTerminal,
-  AlertTriangle,
-} from "lucide-react"
+import { Bug, Trash2, FileTerminal, AlertTriangle } from 'lucide-react';
 import {
   Command,
   CommandEmpty,
@@ -17,7 +12,7 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from "@/components/ui/command"
+} from '@/components/ui/command';
 import {
   Dialog,
   DialogContent,
@@ -25,7 +20,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
+} from '@/components/ui/dialog';
 import {
   Select,
   SelectContent,
@@ -34,26 +29,34 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Button } from "@/components/ui/button"
-import { V1Container } from "@kubernetes/client-node"
-import { Input } from "../ui/input"
+} from '@/components/ui/select';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Button } from '@/components/ui/button';
+import { V1Container } from '@kubernetes/client-node';
+import { Input } from '../ui/input';
 
 // Define a Zod schema for our debug form fields
 const debugFormSchema = z.object({
-  debugImage: z.string().min(1, "Image is required"),
+  debugImage: z.string().min(1, 'Image is required'),
   debugTarget: z.string().optional(),
-})
+});
 
 type DebugFormValues = z.infer<typeof debugFormSchema>;
 
 interface PodActionsProps {
-  podName: string
-  containers?: V1Container[]
-  onDelete: () => void
-  onDebug: (image: string, target?: string) => void
-  onLogs: (containerName?: string) => void
+  podName: string;
+  containers?: V1Container[];
+  onDelete: () => void;
+  onDebug: (image: string, target?: string) => void;
+  onLogs: (containerName?: string) => void;
   onOpenEvents: () => void;
 }
 
@@ -65,32 +68,32 @@ export const PodActions = ({
   onLogs,
   onOpenEvents,
 }: PodActionsProps) => {
-  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
-  const [debugDialogOpen, setDebugDialogOpen] = React.useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const [debugDialogOpen, setDebugDialogOpen] = React.useState(false);
 
   // Form setup for debug dialog
   const form = useForm<DebugFormValues>({
     resolver: zodResolver(debugFormSchema),
     defaultValues: {
-      debugImage: "busybox",
-      debugTarget: "",
+      debugImage: 'busybox',
+      debugTarget: '',
     },
-  })
+  });
 
   const handleDelete = async () => {
     if (onDelete) {
-      await onDelete()
+      await onDelete();
     }
-    setDeleteDialogOpen(false)
-  }
+    setDeleteDialogOpen(false);
+  };
 
   // Called when the debug form is submitted
   const handleDebug = async (values: DebugFormValues) => {
     if (onDebug) {
-      await onDebug(values.debugImage, values.debugTarget)
+      await onDebug(values.debugImage, values.debugTarget);
     }
-    setDebugDialogOpen(false)
-  }
+    setDebugDialogOpen(false);
+  };
 
   return (
     <div className="w-full pt-4 flex justify-center align-center">
@@ -101,7 +104,7 @@ export const PodActions = ({
 
           <CommandGroup heading="Common Actions">
             <CommandItem
-              onSelect={() => onLogs("")} // Logs for all containers
+              onSelect={() => onLogs('')} // Logs for all containers
             >
               <FileTerminal className="mr-2 h-4 w-4" />
               <span>View Logs (all containers)</span>
@@ -138,11 +141,15 @@ export const PodActions = ({
           <DialogHeader>
             <DialogTitle>Delete Pod?</DialogTitle>
             <DialogDescription>
-              This action cannot be undone. This will permanently delete the pod {podName}.
+              This action cannot be undone. This will permanently delete the pod{' '}
+              {podName}.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+            >
               Cancel
             </Button>
             <Button variant="destructive" onClick={handleDelete}>
@@ -157,19 +164,22 @@ export const PodActions = ({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Debug Pod</DialogTitle>
-            <DialogDescription>Choose debugger image and target</DialogDescription>
+            <DialogDescription>
+              Choose debugger image and target
+            </DialogDescription>
           </DialogHeader>
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(handleDebug)}
-              className="py-4"
-            >
+            <form onSubmit={form.handleSubmit(handleDebug)} className="py-4">
               <FormField
                 control={form.control}
                 name="debugImage"
-                render={({ field }: { field: ControllerRenderProps<DebugFormValues, "debugImage"> }) => (
+                render={({
+                  field,
+                }: {
+                  field: ControllerRenderProps<DebugFormValues, 'debugImage'>;
+                }) => (
                   <FormItem>
-                    <FormLabel >Image</FormLabel>
+                    <FormLabel>Image</FormLabel>
                     <FormControl>
                       <Input
                         id="debugImage"
@@ -188,7 +198,14 @@ export const PodActions = ({
                 <FormField
                   control={form.control}
                   name="debugTarget"
-                  render={({ field }: { field: ControllerRenderProps<DebugFormValues, "debugTarget"> }) => (
+                  render={({
+                    field,
+                  }: {
+                    field: ControllerRenderProps<
+                      DebugFormValues,
+                      'debugTarget'
+                    >;
+                  }) => (
                     <FormItem className="">
                       <FormLabel>Target Container</FormLabel>
                       <FormControl>
@@ -239,5 +256,5 @@ export const PodActions = ({
         </DialogContent>
       </Dialog>
     </div>
-  )
-}
+  );
+};

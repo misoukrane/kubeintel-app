@@ -39,7 +39,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import { arrayToLabelSelector, labelSelectorToArray } from '@/lib/labels';
 import { getAge } from '@/lib/time';
 
@@ -58,17 +58,31 @@ interface PodsTableProps {
   navigateToPod: (namespace: string, name: string) => void;
 }
 
-export const PodsTable = ({ pods, initialFilters, columnVisibility, navigateToPod }: PodsTableProps) => {
+export const PodsTable = ({
+  pods,
+  initialFilters,
+  columnVisibility,
+  navigateToPod,
+}: PodsTableProps) => {
   // Create initial filters array
   const initialColumnFilters: ColumnFiltersState = [
-    ...(initialFilters.name ? [{ id: 'name', value: initialFilters.name }] : []),
-    ...(initialFilters.status ? [{ id: 'phase', value: initialFilters.status }] : []),
-    ...(initialFilters.node ? [{ id: 'nodeName', value: initialFilters.node }] : []),
-    ...(initialFilters.labelSelector ? [{ id: 'labels', value: initialFilters.labelSelector }] : []),
+    ...(initialFilters.name
+      ? [{ id: 'name', value: initialFilters.name }]
+      : []),
+    ...(initialFilters.status
+      ? [{ id: 'phase', value: initialFilters.status }]
+      : []),
+    ...(initialFilters.node
+      ? [{ id: 'nodeName', value: initialFilters.node }]
+      : []),
+    ...(initialFilters.labelSelector
+      ? [{ id: 'labels', value: initialFilters.labelSelector }]
+      : []),
   ];
 
   // Initialize state with the filters
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(initialColumnFilters);
+  const [columnFilters, setColumnFilters] =
+    useState<ColumnFiltersState>(initialColumnFilters);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -81,13 +95,13 @@ export const PodsTable = ({ pods, initialFilters, columnVisibility, navigateToPo
   // Create unique label options from all pods
   const labelOptions = useMemo(() => {
     const labelSet = new Set<string>();
-    pods.forEach(pod => {
+    pods.forEach((pod) => {
       const labels = pod.metadata?.labels || {};
       Object.entries(labels).forEach(([key, value]) => {
         labelSet.add(`${key}=${value}`);
       });
     });
-    return Array.from(labelSet).map(label => ({
+    return Array.from(labelSet).map((label) => ({
       label,
       value: label,
     }));
@@ -96,7 +110,7 @@ export const PodsTable = ({ pods, initialFilters, columnVisibility, navigateToPo
   // Get unique namespaces
   const namespaces = useMemo(() => {
     const namespaceSet = new Set<string>();
-    pods.forEach(pod => {
+    pods.forEach((pod) => {
       if (pod.metadata?.namespace) {
         namespaceSet.add(pod.metadata.namespace);
       }
@@ -112,7 +126,13 @@ export const PodsTable = ({ pods, initialFilters, columnVisibility, navigateToPo
       cell: ({ row }) => {
         const name = row.original.metadata?.name;
         return (
-          <Button variant="link" className="underline" onClick={() => navigateToPod(row.original.metadata?.namespace || '', name || '')}>
+          <Button
+            variant="link"
+            className="underline"
+            onClick={() =>
+              navigateToPod(row.original.metadata?.namespace || '', name || '')
+            }
+          >
             {name}
           </Button>
         );
@@ -137,7 +157,8 @@ export const PodsTable = ({ pods, initialFilters, columnVisibility, navigateToPo
       id: 'age',
       accessorKey: 'metadata.creationTimestamp',
       header: ({ column }) => <SortableHeader column={column} title="Age" />,
-      cell: ({ row }) => getAge(String(row.original.metadata?.creationTimestamp)),
+      cell: ({ row }) =>
+        getAge(String(row.original.metadata?.creationTimestamp)),
       sortingFn: (rowA, rowB) => {
         const dateA = String(rowA.original.metadata?.creationTimestamp || '');
         const dateB = String(rowB.original.metadata?.creationTimestamp || '');
@@ -215,11 +236,11 @@ export const PodsTable = ({ pods, initialFilters, columnVisibility, navigateToPo
         // If no valid selectors, show all pods
         if (labelSelectors.length === 0) return true;
 
-        return labelSelectors.every(selector => {
+        return labelSelectors.every((selector) => {
           // Skip invalid selectors
           if (!selector.includes('=')) return true;
 
-          const [key, value] = selector.split('=').map(s => s.trim());
+          const [key, value] = selector.split('=').map((s) => s.trim());
           // Skip if key or value is empty
           if (!key || !value) return true;
 
@@ -303,11 +324,15 @@ export const PodsTable = ({ pods, initialFilters, columnVisibility, navigateToPo
                   <MultiSelect
                     options={labelOptions}
                     placeholder="Filter by labels..."
-                    defaultValue={labelSelectorToArray(initialFilters.labelSelector)}
+                    defaultValue={labelSelectorToArray(
+                      initialFilters.labelSelector
+                    )}
                     onValueChange={(values) => {
                       const labelColumn = table.getColumn('labels');
                       if (labelColumn) {
-                        labelColumn.setFilterValue(arrayToLabelSelector(values));
+                        labelColumn.setFilterValue(
+                          arrayToLabelSelector(values)
+                        );
                       }
                     }}
                     className="max-w-xs"

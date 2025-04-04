@@ -54,11 +54,16 @@ export const ConfigMapsTable = ({
 }: ConfigMapsTableProps) => {
   // Create initial filters array
   const initialColumnFilters: ColumnFiltersState = [
-    ...(initialFilters.name ? [{ id: 'name', value: initialFilters.name }] : []),
-    ...(initialFilters.labelSelector ? [{ id: 'labels', value: initialFilters.labelSelector }] : []),
+    ...(initialFilters.name
+      ? [{ id: 'name', value: initialFilters.name }]
+      : []),
+    ...(initialFilters.labelSelector
+      ? [{ id: 'labels', value: initialFilters.labelSelector }]
+      : []),
   ];
 
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(initialColumnFilters);
+  const [columnFilters, setColumnFilters] =
+    useState<ColumnFiltersState>(initialColumnFilters);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -68,19 +73,19 @@ export const ConfigMapsTable = ({
   // Add visibility state
   const [visibility, setVisibility] = useState<VisibilityState>({
     labels: false,
-    ...columnVisibility
+    ...columnVisibility,
   });
 
   // Create unique label options from all configmaps
   const labelOptions = useMemo(() => {
     const labelSet = new Set<string>();
-    configmaps.forEach(configmap => {
+    configmaps.forEach((configmap) => {
       const labels = configmap.metadata?.labels || {};
       Object.entries(labels).forEach(([key, value]) => {
         labelSet.add(`${key}=${value}`);
       });
     });
-    return Array.from(labelSet).map(label => ({
+    return Array.from(labelSet).map((label) => ({
       label,
       value: label,
     }));
@@ -100,9 +105,7 @@ export const ConfigMapsTable = ({
     {
       id: 'name',
       accessorKey: 'metadata.name',
-      header: ({ column }) => (
-        <SortableHeader column={column} title="Name" />
-      ),
+      header: ({ column }) => <SortableHeader column={column} title="Name" />,
       cell: ({ row }) => {
         const name = row.original.metadata?.name || '';
         const namespace = row.original.metadata?.namespace || '';
@@ -111,7 +114,9 @@ export const ConfigMapsTable = ({
           <Button
             variant="link"
             className="underline"
-            onClick={() => navigateToConfigMap ? navigateToConfigMap(namespace, name) : null}
+            onClick={() =>
+              navigateToConfigMap ? navigateToConfigMap(namespace, name) : null
+            }
           >
             {name}
           </Button>
@@ -128,15 +133,13 @@ export const ConfigMapsTable = ({
     },
     {
       id: 'data',
-      header: ({ column }) => (
-        <SortableHeader column={column} title="Data" />
-      ),
+      header: ({ column }) => <SortableHeader column={column} title="Data" />,
       cell: ({ row }) => {
         const dataCount = getDataCount(row.original);
         const binaryDataCount = getBinaryDataCount(row.original);
 
         if (dataCount === 0 && binaryDataCount === 0) {
-          return "0 keys";
+          return '0 keys';
         }
 
         if (binaryDataCount === 0) {
@@ -150,8 +153,10 @@ export const ConfigMapsTable = ({
         return `${dataCount} ${dataCount === 1 ? 'key' : 'keys'}, ${binaryDataCount} binary`;
       },
       sortingFn: (rowA, rowB) => {
-        const countA = getDataCount(rowA.original) + getBinaryDataCount(rowA.original);
-        const countB = getDataCount(rowB.original) + getBinaryDataCount(rowB.original);
+        const countA =
+          getDataCount(rowA.original) + getBinaryDataCount(rowA.original);
+        const countB =
+          getDataCount(rowB.original) + getBinaryDataCount(rowB.original);
         return countA - countB;
       },
     },
@@ -159,7 +164,8 @@ export const ConfigMapsTable = ({
       id: 'age',
       accessorKey: 'metadata.creationTimestamp',
       header: ({ column }) => <SortableHeader column={column} title="Age" />,
-      cell: ({ row }) => getAge(String(row.original.metadata?.creationTimestamp)),
+      cell: ({ row }) =>
+        getAge(String(row.original.metadata?.creationTimestamp)),
       sortingFn: (rowA, rowB) => {
         const dateA = String(rowA.original.metadata?.creationTimestamp || '');
         const dateB = String(rowB.original.metadata?.creationTimestamp || '');
@@ -196,10 +202,10 @@ export const ConfigMapsTable = ({
 
         if (labelSelectors.length === 0) return true;
 
-        return labelSelectors.every(selector => {
+        return labelSelectors.every((selector) => {
           if (!selector.includes('=')) return true;
 
-          const [key, value] = selector.split('=').map(s => s.trim());
+          const [key, value] = selector.split('=').map((s) => s.trim());
           if (!key || !value) return true;
 
           return labels[key] === value;
@@ -252,11 +258,15 @@ export const ConfigMapsTable = ({
                   <MultiSelect
                     options={labelOptions}
                     placeholder="Filter by labels..."
-                    defaultValue={labelSelectorToArray(initialFilters.labelSelector)}
+                    defaultValue={labelSelectorToArray(
+                      initialFilters.labelSelector
+                    )}
                     onValueChange={(values) => {
                       const labelColumn = table.getColumn('labels');
                       if (labelColumn) {
-                        labelColumn.setFilterValue(arrayToLabelSelector(values));
+                        labelColumn.setFilterValue(
+                          arrayToLabelSelector(values)
+                        );
                       }
                     }}
                     className="max-w-xs"

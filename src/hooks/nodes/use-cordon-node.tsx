@@ -48,7 +48,8 @@ export const useCordonNode = ({
       toast({
         variant: 'destructive',
         title: 'Failed to cordon node',
-        description: error instanceof Error ? error.message : JSON.stringify(error),
+        description:
+          error instanceof Error ? error.message : JSON.stringify(error),
       });
     },
   });

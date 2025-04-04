@@ -1,7 +1,12 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { V1Deployment } from '@kubernetes/client-node';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { LabelsAnnotations } from '@/components/metadata/labels-annotations';
 import { StatusBadge } from '@/components/status-badge';
 import { ScrollAreaCode } from '@/components/scroll-area-code';
@@ -21,7 +26,15 @@ interface DeploymentViewProps {
   onOpenEvents: () => void;
 }
 
-export const DeploymentView = ({ deployment, onCopy, onScale, onDelete, onRestart, onLogs, onOpenEvents }: DeploymentViewProps) => {
+export const DeploymentView = ({
+  deployment,
+  onCopy,
+  onScale,
+  onDelete,
+  onRestart,
+  onLogs,
+  onOpenEvents,
+}: DeploymentViewProps) => {
   if (!deployment) return null;
 
   const { metadata, status, spec } = deployment;
@@ -38,7 +51,13 @@ export const DeploymentView = ({ deployment, onCopy, onScale, onDelete, onRestar
             Namespace: {metadata?.namespace}
           </div>
         </div>
-        <StatusBadge status={deployment.status?.availableReplicas === spec?.replicas ? 'Available' : 'Progressing'} />
+        <StatusBadge
+          status={
+            deployment.status?.availableReplicas === spec?.replicas
+              ? 'Available'
+              : 'Progressing'
+          }
+        />
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="overview">
@@ -51,16 +70,18 @@ export const DeploymentView = ({ deployment, onCopy, onScale, onDelete, onRestar
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
-            <Accordion type="multiple" defaultValue={["details", "labels"]} className="w-full">
+            <Accordion
+              type="multiple"
+              defaultValue={['details', 'labels']}
+              className="w-full"
+            >
               <AccordionItem value="details">
                 <AccordionTrigger>Deployment Details</AccordionTrigger>
                 <AccordionContent>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <h3 className="font-medium">Replicas</h3>
-                      <p>
-                        {status?.replicas || 0} total
-                      </p>
+                      <p>{status?.replicas || 0} total</p>
                     </div>
                     <div>
                       <h3 className="font-medium">Available</h3>
@@ -76,7 +97,11 @@ export const DeploymentView = ({ deployment, onCopy, onScale, onDelete, onRestar
                     </div>
                     <div>
                       <h3 className="font-medium">Selector</h3>
-                      <p>{Object.entries(spec?.selector?.matchLabels || {}).map(([k, v]) => `${k}=${v}`).join(', ') || 'N/A'}</p>
+                      <p>
+                        {Object.entries(spec?.selector?.matchLabels || {})
+                          .map(([k, v]) => `${k}=${v}`)
+                          .join(', ') || 'N/A'}
+                      </p>
                     </div>
                     <div>
                       {labelSelector && (
@@ -84,11 +109,14 @@ export const DeploymentView = ({ deployment, onCopy, onScale, onDelete, onRestar
                           <h3 className="font-medium">Pods</h3>
                           <p>
                             <Link
-                              className='text-blue-600 hover:underline dark:text-blue-500'
+                              className="text-blue-600 hover:underline dark:text-blue-500"
                               to={`/pods?labelSelector=${encodeURIComponent(labelSelector)}`}
-                            >View Pods →</Link>
+                            >
+                              View Pods →
+                            </Link>
                           </p>
-                        </>)}
+                        </>
+                      )}
                     </div>
                   </div>
                 </AccordionContent>
@@ -116,7 +144,9 @@ export const DeploymentView = ({ deployment, onCopy, onScale, onDelete, onRestar
                 {status?.conditions && status.conditions.length > 0 ? (
                   <StatusConditions conditions={status.conditions} />
                 ) : (
-                  <p className="text-center text-muted-foreground">No conditions found</p>
+                  <p className="text-center text-muted-foreground">
+                    No conditions found
+                  </p>
                 )}
               </CardContent>
             </Card>

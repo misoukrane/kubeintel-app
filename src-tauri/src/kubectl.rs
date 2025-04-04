@@ -5,7 +5,13 @@ pub fn run_kubectl_command(command: &str) -> Result<(), String> {
     #[cfg(target_os = "windows")]
     {
         Command::new("cmd")
-            .args(["/C", "start", "cmd", "/K", &cmd_string])
+            .args([
+                "/C",
+                "start",
+                "cmd",
+                "/K",
+                &format!("echo {} && {}", cmd_string, cmd_string),
+            ])
             .spawn()
             .map_err(|e| e.to_string())?;
     }

@@ -44,6 +44,6 @@ export const useNodeActions = ({
       uncordonNode,
       drainNode,
       debugNode,
-    }
+    },
   };
 };

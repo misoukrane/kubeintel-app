@@ -40,7 +40,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from '@/components/ui/select';
 import { arrayToLabelSelector, labelSelectorToArray } from '@/lib/labels';
 import { getAge } from '@/lib/time';
 
@@ -54,11 +54,16 @@ interface NodesTableProps {
 
 export const NodesTable = ({ nodes, initialFilters }: NodesTableProps) => {
   const initialColumnFilters: ColumnFiltersState = [
-    ...(initialFilters.name ? [{ id: 'name', value: initialFilters.name }] : []),
-    ...(initialFilters.labelSelector ? [{ id: 'labels', value: initialFilters.labelSelector }] : []),
+    ...(initialFilters.name
+      ? [{ id: 'name', value: initialFilters.name }]
+      : []),
+    ...(initialFilters.labelSelector
+      ? [{ id: 'labels', value: initialFilters.labelSelector }]
+      : []),
   ];
 
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(initialColumnFilters);
+  const [columnFilters, setColumnFilters] =
+    useState<ColumnFiltersState>(initialColumnFilters);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -70,13 +75,13 @@ export const NodesTable = ({ nodes, initialFilters }: NodesTableProps) => {
 
   const labelOptions = useMemo(() => {
     const labelSet = new Set<string>();
-    nodes.forEach(node => {
+    nodes.forEach((node) => {
       const labels = node.metadata?.labels || {};
       Object.entries(labels).forEach(([key, value]) => {
         labelSet.add(`${key}=${value}`);
       });
     });
-    return Array.from(labelSet).map(label => ({
+    return Array.from(labelSet).map((label) => ({
       label,
       value: label,
     }));
@@ -84,13 +89,13 @@ export const NodesTable = ({ nodes, initialFilters }: NodesTableProps) => {
 
   const statusOptions = useMemo(() => {
     const statusSet = new Set<string>();
-    nodes.forEach(node => {
+    nodes.forEach((node) => {
       const conditions = node.status?.conditions || [];
-      conditions.forEach(condition => {
+      conditions.forEach((condition) => {
         statusSet.add(`${condition.type}=${condition.status}`);
       });
     });
-    return Array.from(statusSet).map(status => ({
+    return Array.from(statusSet).map((status) => ({
       label: status,
       value: status,
     }));
@@ -118,7 +123,7 @@ export const NodesTable = ({ nodes, initialFilters }: NodesTableProps) => {
       header: ({ column }) => <SortableHeader column={column} title="Status" />,
       cell: ({ row }) => {
         const conditions = row.original.status?.conditions || [];
-        const readyCondition = conditions.find(c => c.type === 'Ready');
+        const readyCondition = conditions.find((c) => c.type === 'Ready');
         const status = readyCondition?.status === 'True' ? 'Ready' : 'NotReady';
         return <StatusBadge status={status} />;
       },
@@ -132,13 +137,14 @@ export const NodesTable = ({ nodes, initialFilters }: NodesTableProps) => {
 
         if (statusSelectors.length === 0) return true;
 
-        return statusSelectors.every(selector => {
+        return statusSelectors.every((selector) => {
           const [type, status] = selector.split('=');
           return conditions.some(
-            condition => condition.type === type && condition.status === status
+            (condition) =>
+              condition.type === type && condition.status === status
           );
         });
-      }
+      },
     },
     {
       id: 'roles',
@@ -147,7 +153,8 @@ export const NodesTable = ({ nodes, initialFilters }: NodesTableProps) => {
       cell: ({ row }) => {
         const labels = row.original.metadata?.labels || {};
         const roles = [];
-        if (labels['node-role.kubernetes.io/control-plane']) roles.push('Control Plane');
+        if (labels['node-role.kubernetes.io/control-plane'])
+          roles.push('Control Plane');
         if (labels['node-role.kubernetes.io/master']) roles.push('Master');
         if (labels['node-role.kubernetes.io/worker']) roles.push('Worker');
         return roles.join(', ') || 'Worker';
@@ -156,14 +163,17 @@ export const NodesTable = ({ nodes, initialFilters }: NodesTableProps) => {
     {
       id: 'version',
       accessorKey: 'status.nodeInfo.kubeletVersion',
-      header: ({ column }) => <SortableHeader column={column} title="Version" />,
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Version" />
+      ),
       cell: ({ row }) => row.original.status?.nodeInfo?.kubeletVersion,
     },
     {
       id: 'age',
       accessorKey: 'metadata.creationTimestamp',
       header: ({ column }) => <SortableHeader column={column} title="Age" />,
-      cell: ({ row }) => getAge(String(row.original.metadata?.creationTimestamp)),
+      cell: ({ row }) =>
+        getAge(String(row.original.metadata?.creationTimestamp)),
       sortingFn: (rowA, rowB) => {
         const dateA = String(rowA.original.metadata?.creationTimestamp || '');
         const dateB = String(rowB.original.metadata?.creationTimestamp || '');
@@ -200,9 +210,9 @@ export const NodesTable = ({ nodes, initialFilters }: NodesTableProps) => {
 
         if (labelSelectors.length === 0) return true;
 
-        return labelSelectors.every(selector => {
+        return labelSelectors.every((selector) => {
           if (!selector.includes('=')) return true;
-          const [key, value] = selector.split('=').map(s => s.trim());
+          const [key, value] = selector.split('=').map((s) => s.trim());
           if (!key || !value) return true;
           return labels[key] === value;
         });
@@ -217,7 +227,9 @@ export const NodesTable = ({ nodes, initialFilters }: NodesTableProps) => {
         if (taints.length > 0) return 'Tainted';
         return 'Enabled';
       },
-      header: ({ column }) => <SortableHeader column={column} title="Scheduling" />,
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Scheduling" />
+      ),
       cell: ({ row }) => {
         const value = row.getValue('scheduling') as string;
         return <StatusBadge status={value} />;
@@ -259,7 +271,10 @@ export const NodesTable = ({ nodes, initialFilters }: NodesTableProps) => {
                 <div>
                   <Input
                     placeholder="Filter name..."
-                    value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+                    value={
+                      (table.getColumn('name')?.getFilterValue() as string) ??
+                      ''
+                    }
                     onChange={(e) =>
                       table.getColumn('name')?.setFilterValue(e.target.value)
                     }
@@ -303,11 +318,15 @@ export const NodesTable = ({ nodes, initialFilters }: NodesTableProps) => {
                   <MultiSelect
                     options={labelOptions}
                     placeholder="Filter by labels..."
-                    defaultValue={labelSelectorToArray(initialFilters.labelSelector)}
+                    defaultValue={labelSelectorToArray(
+                      initialFilters.labelSelector
+                    )}
                     onValueChange={(values) => {
                       const labelColumn = table.getColumn('labels');
                       if (labelColumn) {
-                        labelColumn.setFilterValue(arrayToLabelSelector(values));
+                        labelColumn.setFilterValue(
+                          arrayToLabelSelector(values)
+                        );
                       }
                     }}
                     className="max-w-xs"

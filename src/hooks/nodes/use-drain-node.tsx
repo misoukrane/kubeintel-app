@@ -48,7 +48,8 @@ export const useDrainNode = ({
       toast({
         variant: 'destructive',
         title: 'Failed to drain node',
-        description: error instanceof Error ? error.message : JSON.stringify(error),
+        description:
+          error instanceof Error ? error.message : JSON.stringify(error),
       });
     },
   });

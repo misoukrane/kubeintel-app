@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 interface CodeBlockProps {
   node?: any;
@@ -7,13 +7,18 @@ interface CodeBlockProps {
   children?: React.ReactNode;
 }
 
-export const CodeBlock = ({ inline, className, children, ...props }: CodeBlockProps) => {
+export const CodeBlock = ({
+  inline,
+  className,
+  children,
+  ...props
+}: CodeBlockProps) => {
   const processContent = (content: React.ReactNode): string => {
     if (typeof content === 'string') {
       return content.replace(/^`{1,3}|`{1,3}$/g, '').trim();
     }
     if (Array.isArray(content)) {
-      return content.map(item => processContent(item)).join('');
+      return content.map((item) => processContent(item)).join('');
     }
     return '';
   };
@@ -45,7 +50,7 @@ export const CodeBlock = ({ inline, className, children, ...props }: CodeBlockPr
       <pre className="overflow-x-auto text-primary rounded-lg bg-black/10 dark:bg-white/10 p-2 my-2 w-full">
         <code
           className={cn(
-            "block min-w-full whitespace-pre text-sm",
+            'block min-w-full whitespace-pre text-sm',
             language && `language-${language}`
           )}
           {...props}

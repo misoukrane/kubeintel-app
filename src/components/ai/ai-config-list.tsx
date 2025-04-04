@@ -1,21 +1,21 @@
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { AIConfig } from "@/stores/use-ai-config-store"
-import { Check, Trash2, Link, Key } from "lucide-react"
-import { useState } from "react"
+} from '@/components/ui/card';
+import { AIConfig } from '@/stores/use-ai-config-store';
+import { Check, Trash2, Link, Key } from 'lucide-react';
+import { useState } from 'react';
 
 interface AIConfigListProps {
-  configs: AIConfig[]
-  selectedConfig?: number
-  onSelect: (index: number) => void
-  onDelete: (index: number) => Promise<void>
-  getAPIKey: (key: number) => Promise<string>
+  configs: AIConfig[];
+  selectedConfig?: number;
+  onSelect: (index: number) => void;
+  onDelete: (index: number) => Promise<void>;
+  getAPIKey: (key: number) => Promise<string>;
 }
 
 export function AIConfigList({
@@ -24,19 +24,20 @@ export function AIConfigList({
   onSelect,
   onDelete,
 }: AIConfigListProps) {
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null)
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
 
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {configs.map((config, index) => {
-        const isSelected = selectedConfig === index
-        const isHovered = hoveredCard === index
+        const isSelected = selectedConfig === index;
+        const isHovered = hoveredCard === index;
 
         return (
           <Card
             key={config.secretKey}
-            className={`group relative transition-all duration-200 ${isSelected ? "ring-2 ring-primary" : "hover:shadow-md"
-              }`}
+            className={`group relative transition-all duration-200 ${
+              isSelected ? 'ring-2 ring-primary' : 'hover:shadow-md'
+            }`}
             onMouseEnter={() => setHoveredCard(index)}
             onMouseLeave={() => setHoveredCard(null)}
           >
@@ -57,7 +58,6 @@ export function AIConfigList({
 
             <CardContent className="space-y-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-
                 {config.url.trim() && (
                   <>
                     <Link className="h-4 w-4" />
@@ -67,21 +67,21 @@ export function AIConfigList({
                 <Key className="h-4 w-4" /> <span>API Key: ••••••••</span>
               </div>
 
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground"></div>
 
-
-              </div>
-
-              <div className={`flex justify-end gap-2 transition-opacity duration-200 ${isHovered ? "opacity-100" : "opacity-0"
-                }`}>
+              <div
+                className={`flex justify-end gap-2 transition-opacity duration-200 ${
+                  isHovered ? 'opacity-100' : 'opacity-0'
+                }`}
+              >
                 <Button
-                  variant={isSelected ? "secondary" : "default"}
+                  variant={isSelected ? 'secondary' : 'default'}
                   size="sm"
                   onClick={() => onSelect(index)}
                   disabled={isSelected}
                   className="w-24"
                 >
-                  {isSelected ? "Selected" : "Select"}
+                  {isSelected ? 'Selected' : 'Select'}
                 </Button>
 
                 <Button
@@ -95,8 +95,8 @@ export function AIConfigList({
               </div>
             </CardContent>
           </Card>
-        )
+        );
       })}
     </div>
-  )
+  );
 }

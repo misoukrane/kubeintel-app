@@ -1,7 +1,12 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { V1DaemonSet } from '@kubernetes/client-node';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { LabelsAnnotations } from '@/components/metadata/labels-annotations';
 import { StatusBadge } from '@/components/status-badge';
 import { ScrollAreaCode } from '@/components/scroll-area-code';
@@ -63,7 +68,11 @@ export const DaemonSetView = ({
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
-            <Accordion type="multiple" defaultValue={["details", "labels"]} className="w-full">
+            <Accordion
+              type="multiple"
+              defaultValue={['details', 'labels']}
+              className="w-full"
+            >
               <AccordionItem value="details">
                 <AccordionTrigger>DaemonSet Details</AccordionTrigger>
                 <AccordionContent>
@@ -98,9 +107,11 @@ export const DaemonSetView = ({
                           <h3 className="font-medium">Pods</h3>
                           <p>
                             <Link
-                              className='text-blue-600 hover:underline dark:text-blue-500'
+                              className="text-blue-600 hover:underline dark:text-blue-500"
                               to={`/pods?labelSelector=${encodeURIComponent(labelSelector)}`}
-                            >View Pods →</Link>
+                            >
+                              View Pods →
+                            </Link>
                           </p>
                         </>
                       )}
@@ -131,7 +142,9 @@ export const DaemonSetView = ({
                 {status?.conditions && status.conditions.length > 0 ? (
                   <StatusConditions conditions={status.conditions} />
                 ) : (
-                  <p className="text-center text-muted-foreground">No conditions found</p>
+                  <p className="text-center text-muted-foreground">
+                    No conditions found
+                  </p>
                 )}
               </CardContent>
             </Card>

@@ -1,7 +1,7 @@
 import { Attachment, Message } from 'ai';
-import { ScrollArea } from "../ui/scroll-area";
+import { ScrollArea } from '../ui/scroll-area';
 import { MemoizedMarkdown } from '../markdown/memoized-markdown';
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 import { Badge } from '../ui/badge';
 import { FileText } from 'lucide-react';
 import { Spinner } from '../spinner';
@@ -18,7 +18,13 @@ interface PodChatMessagesProps {
   status: string;
 }
 
-export function PodChatMessages({ messages, attachments, viewportRef, status, onCopy }: PodChatMessagesProps) {
+export function PodChatMessages({
+  messages,
+  attachments,
+  viewportRef,
+  status,
+  onCopy,
+}: PodChatMessagesProps) {
   const [openAttachementDialog, setOpenAttachementDialog] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogContent, setDialogContent] = useState('');
@@ -39,19 +45,19 @@ export function PodChatMessages({ messages, attachments, viewportRef, status, on
             <div
               key={index}
               className={cn(
-                "flex",
-                message.role === "user" ? "justify-end" : "justify-start"
+                'flex',
+                message.role === 'user' ? 'justify-end' : 'justify-start'
               )}
             >
               <div
                 className={cn(
-                  "rounded-lg px-4 py-2",
-                  message.role === "assistant"
-                    ? "bg-muted dark:bg-gray-900 text-primary prose dark:prose-invert min-w-full w-full"
-                    : "bg-primary text-primary-foreground"
+                  'rounded-lg px-4 py-2',
+                  message.role === 'assistant'
+                    ? 'bg-muted dark:bg-gray-900 text-primary prose dark:prose-invert min-w-full w-full'
+                    : 'bg-primary text-primary-foreground'
                 )}
               >
-                {message.role === "assistant" ? (
+                {message.role === 'assistant' ? (
                   <MemoizedMarkdown
                     content={message.content}
                     className="bg-muted dark:bg-gray-900 text-primary prose dark:prose-invert max-w-none"
@@ -68,16 +74,16 @@ export function PodChatMessages({ messages, attachments, viewportRef, status, on
               </div>
             </div>
           ))}
-          {status !== "" && (
+          {status !== '' && (
             <div className="flex justify-end">
               <div className="rounded-lg px-4 py-2 bg-primary text-primary-foreground">
-                <p className="text-sm"><Spinner className="bg-primary text-primary-foreground" /> {status}</p>
+                <p className="text-sm">
+                  <Spinner className="bg-primary text-primary-foreground" />{' '}
+                  {status}
+                </p>
               </div>
             </div>
           )}
-
-
-
         </div>
       </ScrollArea>
       <PodChatMessageAttachementDialog
@@ -91,15 +97,24 @@ export function PodChatMessages({ messages, attachments, viewportRef, status, on
   );
 }
 
-function PodChatMessageAttachements({ attachments, onClick }: { attachments?: Attachment[], onClick: (title: string, content: string) => void }) {
+function PodChatMessageAttachements({
+  attachments,
+  onClick,
+}: {
+  attachments?: Attachment[];
+  onClick: (title: string, content: string) => void;
+}) {
   if (!attachments || attachments.length === 0) return <></>;
 
   const handleClick = (attachment: Attachment) => {
     let content = attachment.url.startsWith('data:')
       ? atob(decodeURIComponent(attachment.url.split(',')[1]))
       : attachment.url;
-    if (attachment.name === ATTACHEMENT_NAMES.POD || attachment.name === ATTACHEMENT_NAMES.POD_EVENTS) {
-      console.log('parsing content')
+    if (
+      attachment.name === ATTACHEMENT_NAMES.POD ||
+      attachment.name === ATTACHEMENT_NAMES.POD_EVENTS
+    ) {
+      console.log('parsing content');
       const json = JSON.parse(content);
       console.log(json);
       content = JSON.stringify(json, null, 2);
@@ -115,10 +130,10 @@ function PodChatMessageAttachements({ attachments, onClick }: { attachments?: At
         <Badge
           key={index}
           variant="secondary"
-          className='text-xs inline-flex'
+          className="text-xs inline-flex"
           onClick={() => handleClick(attachment)}
         >
-          <FileText size={16} className='mr-1' /> {attachment.name}
+          <FileText size={16} className="mr-1" /> {attachment.name}
         </Badge>
       ))}
     </div>
@@ -133,16 +148,26 @@ interface PodChatMessageAttachementDialogProps {
   onCopy: (text: string) => void;
 }
 
-
-function PodChatMessageAttachementDialog({ open, onOpenChange, title, content, onCopy }: PodChatMessageAttachementDialogProps) {
+function PodChatMessageAttachementDialog({
+  open,
+  onOpenChange,
+  title,
+  content,
+  onCopy,
+}: PodChatMessageAttachementDialogProps) {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange} >
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="min-w-[400px] max-w-[800px] h-[500px]">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
         <div className="min-w-[400px] max-w-[800px] h-[450px]">
-          <ScrollAreaCode height="h-[400px]" content={content} onCopy={onCopy} skipSerialization={true} />
+          <ScrollAreaCode
+            height="h-[400px]"
+            content={content}
+            onCopy={onCopy}
+            skipSerialization={true}
+          />
         </div>
       </DialogContent>
     </Dialog>

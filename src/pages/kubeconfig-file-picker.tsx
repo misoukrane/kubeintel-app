@@ -26,12 +26,6 @@ export const KubeconfigFilePicker = () => {
         multiple: false,
         directory: false,
         defaultPath: kubePath,
-        filters: [
-          {
-            name: 'All Files',
-            extensions: ['*.yaml', '*.yml'],
-          },
-        ],
       });
 
       if (selected) {

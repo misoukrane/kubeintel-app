@@ -48,7 +48,8 @@ export const useUncordonNode = ({
       toast({
         variant: 'destructive',
         title: 'Failed to uncordon node',
-        description: error instanceof Error ? error.message : JSON.stringify(error),
+        description:
+          error instanceof Error ? error.message : JSON.stringify(error),
       });
     },
   });

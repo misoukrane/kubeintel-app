@@ -1,7 +1,12 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { V1Pod } from '@kubernetes/client-node';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { ContainersStatusTable } from '@/components/pods/containers-status-table';
 import { LabelsAnnotations } from '@/components/metadata/labels-annotations';
 import { StatusBadge } from '@/components/status-badge';
@@ -15,8 +20,6 @@ import { PodChatbot } from './pod-chatbot';
 import { ListEventsResult } from '@/lib/types';
 import { PodLogsResult } from '@/lib/pods';
 
-
-
 interface PodViewProps {
   pod?: V1Pod;
   onCopy: (text: string) => void;
@@ -27,10 +30,25 @@ interface PodViewProps {
   onOpenEvents: () => void;
   onAddNewAIConfig: () => void;
   listResourceEvents: () => Promise<ListEventsResult>;
-  getContainerLogs: (containerName: string, tailLines?: number, limitBytes?: number) => Promise<PodLogsResult>;
+  getContainerLogs: (
+    containerName: string,
+    tailLines?: number,
+    limitBytes?: number
+  ) => Promise<PodLogsResult>;
 }
 
-export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebug, onOpenEvents, onAddNewAIConfig, listResourceEvents, getContainerLogs }: PodViewProps) => {
+export const PodView = ({
+  pod,
+  onCopy,
+  onOpenShell,
+  onOpenLogs,
+  onDelete,
+  onDebug,
+  onOpenEvents,
+  onAddNewAIConfig,
+  listResourceEvents,
+  getContainerLogs,
+}: PodViewProps) => {
   if (!pod) return null;
 
   const { metadata, status, spec } = pod;
@@ -55,12 +73,18 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebu
             <TabsTrigger value="volumes">Volumes</TabsTrigger>
             <TabsTrigger value="actions">Actions</TabsTrigger>
             <TabsTrigger value="source">source</TabsTrigger>
-            <TabsTrigger value="investigator"><Sparkles /></TabsTrigger>
+            <TabsTrigger value="investigator">
+              <Sparkles />
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
-            <Accordion type="multiple" defaultValue={["details", "labels"]} className="w-full">
-              <AccordionItem value="details" >
+            <Accordion
+              type="multiple"
+              defaultValue={['details', 'labels']}
+              className="w-full"
+            >
+              <AccordionItem value="details">
                 <AccordionTrigger>Pod Details</AccordionTrigger>
                 <AccordionContent>
                   <div className="grid grid-cols-2 gap-4">
@@ -73,8 +97,11 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebu
                       <p>
                         {spec?.nodeName ? (
                           <Link
-                            className='text-blue-600 hover:underline dark:text-blue-500'
-                            to={`/nodes/${spec.nodeName}`}>{spec.nodeName} </Link>
+                            className="text-blue-600 hover:underline dark:text-blue-500"
+                            to={`/nodes/${spec.nodeName}`}
+                          >
+                            {spec.nodeName}{' '}
+                          </Link>
                         ) : (
                           'N/A'
                         )}
@@ -125,7 +152,9 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebu
                 {status?.conditions && status.conditions.length > 0 ? (
                   <StatusConditions conditions={status.conditions} />
                 ) : (
-                  <p className="text-center text-muted-foreground">No conditions found</p>
+                  <p className="text-center text-muted-foreground">
+                    No conditions found
+                  </p>
                 )}
               </CardContent>
             </Card>
@@ -140,17 +169,15 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebu
                 {spec?.volumes && spec.volumes.length > 0 ? (
                   <VolumesTable volumes={spec.volumes} onCopy={onCopy} />
                 ) : (
-                  <p className="text-center text-muted-foreground">No volumes found</p>
+                  <p className="text-center text-muted-foreground">
+                    No volumes found
+                  </p>
                 )}
               </CardContent>
             </Card>
           </TabsContent>
           <TabsContent value="source">
-            <ScrollAreaCode
-              height="h-screen"
-              content={pod}
-              onCopy={onCopy}
-            />
+            <ScrollAreaCode height="h-screen" content={pod} onCopy={onCopy} />
           </TabsContent>
 
           <TabsContent value="actions" className="">
@@ -175,6 +202,6 @@ export const PodView = ({ pod, onCopy, onOpenShell, onOpenLogs, onDelete, onDebu
           </TabsContent>
         </Tabs>
       </CardContent>
-    </Card >
+    </Card>
   );
 };
