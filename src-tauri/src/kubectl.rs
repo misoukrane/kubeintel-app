@@ -39,54 +39,20 @@ pub fn run_kubectl_command(command: &str) -> Result<(), String> {
     #[cfg(target_os = "linux")]
     {
         // List of common terminal emulators in order of preference
+        let gnome_command = format!("bash -c 'echo \"{}\" && {} && read -p \"Press Enter to exit...\"'", cmd_string, cmd_string);
+        let konsole_command = format!("bash -c 'echo \"{}\" && {} && read -p \"Press Enter to exit...\"'", cmd_string, cmd_string);
+        let xfce_command = format!("bash -c 'echo \"{}\" && {} && read -p \"Press Enter to exit...\"'", cmd_string, cmd_string);
+        let xterm_command = format!("bash -c 'echo \"{}\" && {} && read -p \"Press Enter to exit...\"'", cmd_string, cmd_string);
+        let terminator_command = format!("bash -c 'echo \"{}\" && {} && read -p \"Press Enter to exit...\"'", cmd_string, cmd_string);
+        let alacritty_command = format!("bash -c 'echo \"{}\" && {} && read -p \"Press Enter to exit...\"'", cmd_string, cmd_string);
+
         let terminals = [
-            (
-                "gnome-terminal",
-                vec![
-                    "--",
-                    "bash",
-                    "-c",
-                    &format!("{}; echo 'Press Enter to continue...'; read", cmd_string),
-                ],
-            ),
-            (
-                "konsole",
-                vec![
-                    "--noclose",
-                    "-e",
-                    &format!(
-                        "bash -c '{} && echo \"Press Enter to continue...\" && read'",
-                        cmd_string
-                    ),
-                ],
-            ),
-            (
-                "xfce4-terminal",
-                vec!["--hold", "-e", &format!("{}", cmd_string)],
-            ),
-            (
-                "xterm",
-                vec![
-                    "-e",
-                    &format!("{}; read -p 'Press Enter to continue...'", cmd_string),
-                ],
-            ),
-            (
-                "terminator",
-                vec![
-                    "-e",
-                    &format!("{}; read -p 'Press Enter to continue...'", cmd_string),
-                ],
-            ),
-            (
-                "alacritty",
-                vec![
-                    "-e",
-                    "bash",
-                    "-c",
-                    &format!("{}; read -p 'Press Enter to continue...'", cmd_string),
-                ],
-            ),
+            ("gnome-terminal", vec!["--", "bash", "-c", &gnome_command]),
+            ("konsole", vec!["--noclose", "-e", &konsole_command]),
+            ("xfce4-terminal", vec!["--hold", "-e", &xfce_command]),
+            ("xterm", vec!["-e", &xterm_command]),
+            ("terminator", vec!["-e", &terminator_command]),
+            ("alacritty", vec!["-e", "bash", "-c", &alacritty_command]),
         ];
 
         // Try each terminal in order
@@ -108,5 +74,4 @@ pub fn run_kubectl_command(command: &str) -> Result<(), String> {
         // If we get here, none of the terminals worked
         return Err("No supported terminal emulator found".to_string());
     }
-    Ok(())
 }
