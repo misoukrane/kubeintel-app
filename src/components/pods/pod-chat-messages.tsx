@@ -38,7 +38,7 @@ export function PodChatMessages({
     <>
       <ScrollArea
         viewportRef={viewportRef}
-        className="h-[600px] w-full mt-4 border rounded-md bg-white dark:bg-black"
+        className="h-[600px] w-full mt-4 rounded-md bg-white dark:bg-black border-2 border-primary shadow-md shadow-primary"
       >
         <div className="flex flex-col gap-4 p-4 w-full">
           {messages.map((message, index) => (

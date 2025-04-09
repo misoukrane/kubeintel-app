@@ -41,7 +41,7 @@ export function PodChatInput({
   const noAiConfigs = aiConfigs.length === 0;
 
   return (
-    <div className="max-w-[80%] flex flex-col gap-2 rounded-3xl border p-4 mx-auto bg-white dark:bg-black">
+    <div className="max-w-[80%] flex flex-col gap-2 rounded-3xl border-2 border-primary shadow-md shadow-primary  p-4 mx-auto bg-white dark:bg-black">
       <textarea
         name="prompt"
         value={input}
