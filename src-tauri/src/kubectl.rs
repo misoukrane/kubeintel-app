@@ -14,6 +14,7 @@ pub fn run_kubectl_command(command: &str) -> Result<(), String> {
             ])
             .spawn()
             .map_err(|e| e.to_string())?;
+        return Ok(());
     }
 
     #[cfg(target_os = "macos")]
@@ -34,17 +35,36 @@ pub fn run_kubectl_command(command: &str) -> Result<(), String> {
             ])
             .spawn()
             .map_err(|e| e.to_string())?;
+        return Ok(());
     }
 
     #[cfg(target_os = "linux")]
     {
         // List of common terminal emulators in order of preference
-        let gnome_command = format!("bash -c 'echo \"{}\" && {} && read -p \"Press Enter to exit...\"'", cmd_string, cmd_string);
-        let konsole_command = format!("bash -c 'echo \"{}\" && {} && read -p \"Press Enter to exit...\"'", cmd_string, cmd_string);
-        let xfce_command = format!("bash -c 'echo \"{}\" && {} && read -p \"Press Enter to exit...\"'", cmd_string, cmd_string);
-        let xterm_command = format!("bash -c 'echo \"{}\" && {} && read -p \"Press Enter to exit...\"'", cmd_string, cmd_string);
-        let terminator_command = format!("bash -c 'echo \"{}\" && {} && read -p \"Press Enter to exit...\"'", cmd_string, cmd_string);
-        let alacritty_command = format!("bash -c 'echo \"{}\" && {} && read -p \"Press Enter to exit...\"'", cmd_string, cmd_string);
+        let gnome_command = format!(
+            "bash -c 'echo \"{}\" && {} && read -p \"Press Enter to exit...\"'",
+            cmd_string, cmd_string
+        );
+        let konsole_command = format!(
+            "bash -c 'echo \"{}\" && {} && read -p \"Press Enter to exit...\"'",
+            cmd_string, cmd_string
+        );
+        let xfce_command = format!(
+            "bash -c 'echo \"{}\" && {} && read -p \"Press Enter to exit...\"'",
+            cmd_string, cmd_string
+        );
+        let xterm_command = format!(
+            "bash -c 'echo \"{}\" && {} && read -p \"Press Enter to exit...\"'",
+            cmd_string, cmd_string
+        );
+        let terminator_command = format!(
+            "bash -c 'echo \"{}\" && {} && read -p \"Press Enter to exit...\"'",
+            cmd_string, cmd_string
+        );
+        let alacritty_command = format!(
+            "bash -c 'echo \"{}\" && {} && read -p \"Press Enter to exit...\"'",
+            cmd_string, cmd_string
+        );
 
         let terminals = [
             ("gnome-terminal", vec!["--", "bash", "-c", &gnome_command]),
