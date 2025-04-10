@@ -2,7 +2,7 @@
 
 A modern desktop application for Kubernetes cluster management built with Tauri, Rust, React, TypeScript, Shadcn UI, and Tailwind CSS.
 
-![KubeIntel Screenshot](kubeintel.png)
+<img src="kubeintel.png" alt="KubeIntel Screenshot" width="100%" height="auto" style="max-width: 200px;" />
 
 ## Overview
 
