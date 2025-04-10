@@ -11,8 +11,9 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { ErrorAlert } from '@/components/error-alert';
-import { TerminalIcon } from 'lucide-react';
+import { ArrowLeftIcon, SparklesIcon, TerminalSquareIcon } from 'lucide-react';
 import { useOpenClusterInfo } from '@/hooks/use-open-cluster-info';
+import { ROUTES } from '@/lib/routes';
 
 export const Cluster = () => {
   const { selectedKubeconfig, currentContext } = useConfigStore();
@@ -36,6 +37,7 @@ export const Cluster = () => {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <Button variant="outline" onClick={() => navigate('/')}>
+          <ArrowLeftIcon />
           Back to config
         </Button>
       </div>
@@ -45,13 +47,20 @@ export const Cluster = () => {
         context={currentContext ?? ''}
       />
 
-      {isLoading && <Spinner />}
+      {isLoading && (
+        <div className="flex flex-col items-center justify-center space-y-2">
+          <Spinner />
+          <p className="text-sm text-gray-600">
+            Loading cluster information...
+          </p>
+        </div>
+      )}
       {error && (
         <div className="space-y-4">
           <ErrorAlert error={error} />
           <div className="flex justify-center space-x-2">
-            <Button variant="outline" onClick={() => openClusterInfo()}>
-              kubectl cluster-info <TerminalIcon />
+            <Button onClick={() => openClusterInfo()}>
+              <TerminalSquareIcon /> kubectl cluster-info
             </Button>
             <Button variant="secondary" onClick={() => navigate('/')}>
               Back to config
@@ -59,7 +68,23 @@ export const Cluster = () => {
           </div>
         </div>
       )}
-      {!isLoading && !error && content && <ClusterContent content={content} />}
+      {!isLoading && !error && content && (
+        <>
+          <ClusterContent content={content} />
+          <div className="flex flex-col items-center mt-4">
+            <Button
+              onClick={() => navigate(ROUTES.AI_CONFIG)}
+              className="bg-blue-600 text-white hover:bg-blue-700"
+            >
+              Configure AI <SparklesIcon className="ml-2" />
+            </Button>
+            <p className="text-center text-sm mt-2 text-gray-500 dark:text-gray-400">
+              Configuring the AI helps troubleshoot pods & containers
+              effortlessly.
+            </p>
+          </div>
+        </>
+      )}
     </div>
   );
 };
@@ -87,20 +112,28 @@ const ConfigurationCard = ({
   kubeconfigPath,
   context,
 }: ConfigurationCardProps) => (
-  <Card className="max-w-xl mx-auto">
+  <Card className="max-w-xl mx-auto bg-gray-50 border border-gray-200 shadow-md">
     <CardHeader>
-      <CardTitle>Current Configuration</CardTitle>
-      <CardDescription>Your active Kubernetes configuration.</CardDescription>
+      <CardTitle className="text-lg font-semibold">
+        Current Configuration
+      </CardTitle>
+      <CardDescription className="text-sm text-gray-600">
+        Your active Kubernetes configuration.
+      </CardDescription>
     </CardHeader>
     <CardContent>
-      <div className="space-y-2">
-        <div className="grid grid-cols-3 gap-1">
-          <div className="font-medium">Kubeconfig:</div>
-          <div className="col-span-2 text-xs font-bold">{kubeconfigPath}</div>
+      <div className="space-y-4">
+        <div className="flex items-center">
+          <span className="font-medium text-gray-700">Kubeconfig:</span>
+          <span className="ml-2 text-xs font-bold text-gray-900 truncate">
+            {kubeconfigPath}
+          </span>
         </div>
-        <div className="grid grid-cols-3 gap-1">
-          <div className="font-medium">Context:</div>
-          <div className="col-span-2 text-xs font-bold">{context}</div>
+        <div className="flex items-center">
+          <span className="font-medium text-gray-700">Context:</span>
+          <span className="ml-2 text-xs font-bold text-gray-900 truncate">
+            {context}
+          </span>
         </div>
       </div>
     </CardContent>

@@ -8,7 +8,6 @@ import {
 } from '@/components/ui/card';
 import { AIConfig } from '@/stores/use-ai-config-store';
 import { Check, Trash2, Link, Key } from 'lucide-react';
-import { useState } from 'react';
 
 interface AIConfigListProps {
   configs: AIConfig[];
@@ -24,22 +23,17 @@ export function AIConfigList({
   onSelect,
   onDelete,
 }: AIConfigListProps) {
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
-
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {configs.map((config, index) => {
         const isSelected = selectedConfig === index;
-        const isHovered = hoveredCard === index;
 
         return (
           <Card
             key={config.secretKey}
-            className={`group relative transition-all duration-200 ${
-              isSelected ? 'ring-2 ring-primary' : 'hover:shadow-md'
-            }`}
-            onMouseEnter={() => setHoveredCard(index)}
-            onMouseLeave={() => setHoveredCard(null)}
+            className={`group relative transition-all duration-200 ring-1 ring-primary shadow-md shadow-primary
+               ${isSelected ? 'ring-4 ring-primary' : 'hover:ring-4'
+              }`}
           >
             {isSelected && (
               <div className="absolute -top-2 -right-2 rounded-full bg-primary p-1">
@@ -69,11 +63,7 @@ export function AIConfigList({
 
               <div className="flex items-center gap-2 text-sm text-muted-foreground"></div>
 
-              <div
-                className={`flex justify-end gap-2 transition-opacity duration-200 ${
-                  isHovered ? 'opacity-100' : 'opacity-0'
-                }`}
-              >
+              <div className="flex justify-end gap-2">
                 <Button
                   variant={isSelected ? 'secondary' : 'default'}
                   size="sm"
@@ -85,9 +75,9 @@ export function AIConfigList({
                 </Button>
 
                 <Button
-                  variant="ghost"
+                  variant="destructive"
                   size="sm"
-                  className="text-destructive hover:bg-destructive/10"
+                  className="hover:bg-destructive/10"
                   onClick={() => onDelete(index)}
                 >
                   <Trash2 className="h-4 w-4" />
