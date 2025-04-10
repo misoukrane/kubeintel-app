@@ -1,3 +1,4 @@
+use crate::kubectl::run_kubectl_command;
 use kube::{config::KubeConfigOptions, config::Kubeconfig, Client, Config};
 use std::path::Path;
 
@@ -35,4 +36,18 @@ pub async fn cluster_info(kubeconfig_path: String, context: String) -> Result<St
         " Kubernetes control plane with version {:?} is Runing at: {:?}",
         version.git_version, cluster_url
     ))
+}
+
+#[tauri::command]
+pub async fn open_cluster_info_on_terminal(
+    kubeconfig_path: String,
+    context: String,
+) -> Result<(), String> {
+    // generate a kubectl command for cluster-version
+    let cmd_string = format!(
+        "--kubeconfig={} --context={} cluster-info",
+        kubeconfig_path, context
+    );
+    run_kubectl_command(&cmd_string)?;
+    Ok(())
 }

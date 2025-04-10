@@ -11,6 +11,8 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { ErrorAlert } from '@/components/error-alert';
+import { TerminalIcon } from 'lucide-react';
+import { useOpenClusterInfo } from '@/hooks/use-open-cluster-info';
 
 export const Cluster = () => {
   const { selectedKubeconfig, currentContext } = useConfigStore();
@@ -21,6 +23,11 @@ export const Cluster = () => {
     isLoading,
     error,
   } = useClusterInfo({
+    kubeconfigPath: selectedKubeconfig,
+    context: currentContext,
+  });
+
+  const { mutate: openClusterInfo } = useOpenClusterInfo({
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
   });
@@ -39,7 +46,19 @@ export const Cluster = () => {
       />
 
       {isLoading && <Spinner />}
-      {error && <ErrorAlert error={error} />}
+      {error && (
+        <div className="space-y-4">
+          <ErrorAlert error={error} />
+          <div className="flex justify-center space-x-2">
+            <Button variant="outline" onClick={() => openClusterInfo()}>
+              kubectl cluster-info <TerminalIcon />
+            </Button>
+            <Button variant="secondary" onClick={() => navigate('/')}>
+              Back to config
+            </Button>
+          </div>
+        </div>
+      )}
       {!isLoading && !error && content && <ClusterContent content={content} />}
     </div>
   );

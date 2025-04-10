@@ -21,6 +21,7 @@ pub fn run() {
             credentials::remove_secret,
             k8s_config::read_kubeconfig,
             k8s_config::cluster_info,
+            k8s_config::open_cluster_info_on_terminal,
             namespaces::list_namespaces,
             nodes::list_pods_on_node,
             nodes::debug_node,
