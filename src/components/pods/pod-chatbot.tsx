@@ -102,7 +102,6 @@ export function PodChatbot({
           })
         );
 
-        console.log(logs);
 
         logs.forEach(({ containerName, logs }) => {
           const logsDataUrl = `data:text/plain;base64,${btoa(logs)}`;
@@ -187,10 +186,6 @@ export function PodChatbot({
     }
   }, [error]);
 
-  useEffect(() => {
-    console.log(messages);
-  }, [messages]);
-
   return (
     <div className="bg-neutral-50 dark:bg-muted rounded-md">
       <PodChatMessages
@@ -199,6 +194,7 @@ export function PodChatbot({
         status={loadingStatus}
         viewportRef={messagesEndRef}
         onCopy={onCopy}
+        chatStatus={chatStatus}
       />
       <form onSubmit={onSubmit} className="mt-2 p-4">
         <PodChatInput

@@ -6,7 +6,7 @@ import { Badge } from '../ui/badge';
 import { FileText } from 'lucide-react';
 import { Spinner } from '../spinner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ScrollAreaCode } from '../scroll-area-code';
 import { ATTACHEMENT_NAMES } from '@/lib/types';
 
@@ -16,6 +16,7 @@ interface PodChatMessagesProps {
   viewportRef: React.RefObject<HTMLDivElement>;
   onCopy: (text: string) => void;
   status: string;
+  chatStatus: string;
 }
 
 export function PodChatMessages({
@@ -23,6 +24,7 @@ export function PodChatMessages({
   attachments,
   viewportRef,
   status,
+  chatStatus,
   onCopy,
 }: PodChatMessagesProps) {
   const [openAttachementDialog, setOpenAttachementDialog] = useState(false);
@@ -38,7 +40,7 @@ export function PodChatMessages({
     <>
       <ScrollArea
         viewportRef={viewportRef}
-        className="h-[600px] w-full mt-4 rounded-md bg-white dark:bg-black border-2 border-primary shadow-md shadow-primary"
+        className="h-[600px] w-full mt-4 rounded-md bg-white dark:bg-black border-2 border-blue-700 shadow-md shadow-blue-700"
       >
         <div className="flex flex-col gap-4 p-4 w-full">
           {messages.map((message, index) => (
@@ -53,14 +55,14 @@ export function PodChatMessages({
                 className={cn(
                   'rounded-lg px-4 py-2',
                   message.role === 'assistant'
-                    ? 'bg-muted dark:bg-gray-900 text-primary prose dark:prose-invert min-w-full w-full'
-                    : 'bg-primary text-primary-foreground'
+                    ? 'bg-secondary'
+                    : 'bg-primary text-secondary'
                 )}
               >
                 {message.role === 'assistant' ? (
                   <MemoizedMarkdown
                     content={message.content}
-                    className="bg-muted dark:bg-gray-900 text-primary prose dark:prose-invert max-w-none"
+                    className="bg-secondary text-primary prose prose-sm dark:prose-invert  max-w-none"
                   />
                 ) : (
                   <>
@@ -76,12 +78,17 @@ export function PodChatMessages({
           ))}
           {status !== '' && (
             <div className="flex justify-end">
-              <div className="rounded-lg px-4 py-2 bg-primary text-primary-foreground">
+              <div className="rounded-lg px-4 py-2 bg-secondary">
                 <p className="text-sm">
-                  <Spinner className="bg-primary text-primary-foreground" />{' '}
+                  <Spinner />
                   {status}
                 </p>
               </div>
+            </div>
+          )}
+          {chatStatus !== 'ready' && (
+            <div className="flex justify-center">
+              <Spinner />
             </div>
           )}
         </div>
@@ -130,7 +137,7 @@ function PodChatMessageAttachements({
         <Badge
           key={index}
           variant="secondary"
-          className="text-xs inline-flex"
+          className="text-xs inline-flex cursor-pointer"
           onClick={() => handleClick(attachment)}
         >
           <FileText size={16} className="mr-1" /> {attachment.name}
