@@ -86,7 +86,7 @@ export function PodChatMessages({
               </div>
             </div>
           )}
-          {chatStatus !== 'ready' && (
+          {chatStatus === 'submitted' && (
             <div className="flex justify-center">
               <Spinner />
             </div>
