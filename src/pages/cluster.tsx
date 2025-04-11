@@ -74,7 +74,7 @@ export const Cluster = () => {
           <div className="flex flex-col items-center mt-4">
             <Button
               onClick={() => navigate(ROUTES.AI_CONFIG)}
-              className="bg-blue-600 text-white hover:bg-blue-700"
+              className="bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-700"
             >
               Configure AI <SparklesIcon className="ml-2" />
             </Button>

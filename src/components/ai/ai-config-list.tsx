@@ -24,15 +24,15 @@ export function AIConfigList({
   onDelete,
 }: AIConfigListProps) {
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 px-1">
       {configs.map((config, index) => {
         const isSelected = selectedConfig === index;
 
         return (
           <Card
             key={config.secretKey}
-            className={`group relative transition-all duration-200 ring-1 ring-primary shadow-md shadow-primary
-               ${isSelected ? 'ring-4 ring-primary' : 'hover:ring-4'
+            className={`group relative transition-all duration-200 ring-1 ring-blue-700 shadow-md shadow-blue-700
+               ${isSelected ? 'ring-4 ring-blue-700' : 'hover:ring-4'
               }`}
           >
             {isSelected && (

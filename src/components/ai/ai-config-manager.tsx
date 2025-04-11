@@ -45,7 +45,9 @@ export function AIConfigManager({
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold tracking-tight">AI Configurations</h2>
         {!isAdding && (
-          <Button onClick={() => setIsAdding(true)}>
+          <Button
+            className='bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-700'
+            onClick={() => setIsAdding(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Add Configuration
           </Button>
