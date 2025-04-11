@@ -6,7 +6,7 @@ import { Badge } from '../ui/badge';
 import { FileText } from 'lucide-react';
 import { Spinner } from '../spinner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ScrollAreaCode } from '../scroll-area-code';
 import { ATTACHEMENT_NAMES } from '@/lib/types';
 

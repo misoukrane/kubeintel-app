@@ -2,10 +2,13 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { MultiSelect } from '../ui/multi-select';
 import { Button } from '../ui/button';
-import { CircleStop, SendIcon } from 'lucide-react';
+import { AlertCircle, CircleStop, SendIcon } from 'lucide-react';
 import { AIConfigCombobox } from '../ai/ai-config-combobox';
 import { V1Container } from '@kubernetes/client-node';
 import { AIConfig } from '@/stores/use-ai-config-store';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Link } from 'react-router';
+import { ROUTES } from '@/lib/routes';
 
 interface PodChatInputProps {
   input: string;
@@ -42,6 +45,16 @@ export function PodChatInput({
 
   return (
     <div className="max-w-[80%] flex flex-col gap-2 rounded-3xl border-2 border-blue-700 shadow-md shadow-blue-700 p-4 mx-auto bg-white dark:bg-black">
+      {noAiConfigs && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
+            No AI configurations available. Click&nbsp;
+            <Link className='text-blue-700 underline' to={ROUTES.AI_CONFIG_ADD_NEW}>here</Link> add an AI configuration
+          </AlertDescription>
+        </Alert>
+      )}
       <textarea
         name="prompt"
         value={input}
@@ -64,6 +77,7 @@ export function PodChatInput({
               id="attach-events"
               checked={attachEvents}
               onCheckedChange={setAttachEvents}
+              disabled={noAiConfigs}
             />
             <Label
               htmlFor="attach-events"
@@ -84,6 +98,7 @@ export function PodChatInput({
             placeholder="include logs"
             title="Include container logs in the prompt"
             className="text-xs"
+            disabled={noAiConfigs}
           />
         </div>
         <div className="flex flex-row gap-2">
