@@ -51,7 +51,13 @@ export function PodChatInput({
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>
             No AI configurations available. Click&nbsp;
-            <Link className='text-blue-700 underline' to={ROUTES.AI_CONFIG_ADD_NEW}>here</Link> add an AI configuration
+            <Link
+              className="text-blue-700 underline"
+              to={ROUTES.AI_CONFIG_ADD_NEW}
+            >
+              here
+            </Link>{' '}
+            add an AI configuration
           </AlertDescription>
         </Alert>
       )}

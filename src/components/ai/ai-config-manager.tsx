@@ -46,8 +46,9 @@ export function AIConfigManager({
         <h2 className="text-3xl font-bold tracking-tight">AI Configurations</h2>
         {!isAdding && (
           <Button
-            className='bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-700'
-            onClick={() => setIsAdding(true)}>
+            className="bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-700"
+            onClick={() => setIsAdding(true)}
+          >
             <Plus className="mr-2 h-4 w-4" />
             Add Configuration
           </Button>

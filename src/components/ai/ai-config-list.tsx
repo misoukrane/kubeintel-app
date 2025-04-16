@@ -32,8 +32,7 @@ export function AIConfigList({
           <Card
             key={config.secretKey}
             className={`group relative transition-all duration-200 ring-1 ring-blue-700 shadow-md shadow-blue-700
-               ${isSelected ? 'ring-4 ring-blue-700' : 'hover:ring-4'
-              }`}
+               ${isSelected ? 'ring-4 ring-blue-700' : 'hover:ring-4'}`}
           >
             {isSelected && (
               <div className="absolute -top-2 -right-2 rounded-full bg-primary p-1">

@@ -112,28 +112,26 @@ const ConfigurationCard = ({
   kubeconfigPath,
   context,
 }: ConfigurationCardProps) => (
-  <Card className="max-w-xl mx-auto bg-gray-50 border border-gray-200 shadow-md">
+  <Card className="max-w-xl mx-auto border border-gray-200 shadow-md">
     <CardHeader>
       <CardTitle className="text-lg font-semibold">
         Current Configuration
       </CardTitle>
-      <CardDescription className="text-sm text-gray-600">
+      <CardDescription className="text-sm">
         Your active Kubernetes configuration.
       </CardDescription>
     </CardHeader>
     <CardContent>
       <div className="space-y-4">
         <div className="flex items-center">
-          <span className="font-medium text-gray-700">Kubeconfig:</span>
-          <span className="ml-2 text-xs font-bold text-gray-900 truncate">
+          <span className="font-medium text-gray-400">Kubeconfig:</span>
+          <span className="ml-2 text-xs font-bold truncate">
             {kubeconfigPath}
           </span>
         </div>
         <div className="flex items-center">
-          <span className="font-medium text-gray-700">Context:</span>
-          <span className="ml-2 text-xs font-bold text-gray-900 truncate">
-            {context}
-          </span>
+          <span className="font-medium text-gray-400">Context:</span>
+          <span className="ml-2 text-xs font-bold truncate">{context}</span>
         </div>
       </div>
     </CardContent>

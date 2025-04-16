@@ -102,7 +102,6 @@ export function PodChatbot({
           })
         );
 
-
         logs.forEach(({ containerName, logs }) => {
           const logsDataUrl = `data:text/plain;base64,${btoa(logs)}`;
 
