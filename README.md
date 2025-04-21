@@ -25,8 +25,6 @@ Ready to try KubeIntel? Download the latest version for your operating system:
 > ```bash
 > sudo xattr -r -d com.apple.quarantine /Applications/Kubeintel.app
 > ```
-#### Windows
-
 
 <a href="https://github.com/misoukrane/kubeintel-app/releases" target="_blank">
     <img src="https://img.shields.io/github/v/release/misoukrane/kubeintel-app?label=Download%20Latest%20Release&style=for-the-badge" alt="Download KubeIntel" />
