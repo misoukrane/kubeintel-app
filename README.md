@@ -23,7 +23,7 @@ Ready to try KubeIntel? Download the latest version for your operating system:
 > You may need to allow the app in **System Preferences → Security & Privacy → General**.  
 > Alternatively, run:
 > ```bash
-> sudo xattr -r -d com.apple.quarantine /Applications/KubeIntel.app
+> sudo xattr -r -d com.apple.quarantine /Applications/Kubeintel.app
 > ```
 #### Windows
 
