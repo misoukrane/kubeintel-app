@@ -40,6 +40,13 @@ export function NamespaceSwitcher({
   const [open, setOpen] = React.useState(false);
   const { isMobile, open: isExpanded } = useSidebar();
 
+  // check if the current namespace is empty and we don't have an empty list of namespaces, then make sure the first is Selected.
+  React.useEffect(() => {
+    if (!currentNamespace && namespaces.length > 0) {
+      onNamespaceChange(namespaces[0]);
+    }
+  }, [currentNamespace, namespaces, onNamespaceChange]);
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -53,7 +60,10 @@ export function NamespaceSwitcher({
             >
               {isExpanded && (
                 <span className="truncate font-semibold">
-                  {currentNamespace || 'Select namespace...'}
+                  {currentNamespace ||
+                    (namespaces && namespaces.length > 0
+                      ? namespaces[0]
+                      : 'Select namespace...')}
                 </span>
               )}
               <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
