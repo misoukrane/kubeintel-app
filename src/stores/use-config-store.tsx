@@ -5,7 +5,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { V1Namespace } from '@kubernetes/client-node';
 
 interface Kubeconfig {
-  contexts: { name: string; context: { namespace: string } }[];
+  contexts: { name: string; context: { namespace?: string } }[]; // Ensure namespace is optional
   'current-context'?: string;
 }
 
@@ -20,7 +20,7 @@ interface ConfigState {
   addKubeconfig: (filePath: string) => void;
   removeKubeconfig: (filePath: string) => void;
   setSelectedKubeconfig: (filePath: string) => void;
-  setCurrentContext: (context: string) => void;
+  setCurrentContext: (context: string) => Promise<void>; // Make async
   setCurrentNamespace: (namespace: string) => void;
   loadKubeconfig: (path: string) => Promise<void>;
   loadNamespaces: (path?: string, context?: string) => Promise<void>;
@@ -43,7 +43,7 @@ const storage = {
 
 export const useConfigStore = create<ConfigState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       kubeconfigs: [],
       selectedKubeconfig: undefined,
       currentContext: undefined,
@@ -81,18 +81,58 @@ export const useConfigStore = create<ConfigState>()(
           selectedKubeconfig: filePath,
           contexts: [],
           currentContext: undefined, // Reset context when changing kubeconfig
+          currentNamespace: undefined, // Also reset namespace
         })),
       setCurrentNamespace: (namespace) =>
         set(() => ({
           currentNamespace: namespace,
         })),
-      setCurrentContext: (context) =>
-        set(() => ({
-          currentContext: context,
-        })),
+      setCurrentContext: async (context) => {
+        const { selectedKubeconfig } = get(); // Get current selected kubeconfig path
+
+        if (!selectedKubeconfig) {
+          set({ currentContext: context, currentNamespace: undefined });
+          return;
+        }
+
+        let newNamespace: string | undefined = undefined;
+        try {
+          // Read the kubeconfig again to find the namespace for the new context
+          const config = await invoke<Kubeconfig>('read_kubeconfig', {
+            kubeconfigPath: selectedKubeconfig,
+          });
+
+          // Find the namespace associated with the *new* context
+          newNamespace = config.contexts.find((ctx) => ctx.name === context)
+            ?.context.namespace;
+
+          set({
+            currentContext: context,
+            currentNamespace: newNamespace, // Set namespace or undefined if not found
+            error: null,
+          });
+        } catch (error) {
+          console.error(
+            'Error reading kubeconfig while setting context:',
+            error
+          );
+          set({
+            currentContext: context, // Still set the context
+            currentNamespace: undefined, // Reset namespace on error
+            error:
+              error instanceof Error
+                ? error
+                : new Error('Failed to read kubeconfig while setting context'),
+          });
+        }
+      },
       loadKubeconfig: async (path) => {
         if (!path) {
-          set({ contexts: [], currentContext: undefined });
+          set({
+            contexts: [],
+            currentContext: undefined,
+            currentNamespace: undefined,
+          }); // Reset namespace too
           return;
         }
 
@@ -100,18 +140,18 @@ export const useConfigStore = create<ConfigState>()(
           const config = await invoke<Kubeconfig>('read_kubeconfig', {
             kubeconfigPath: path,
           });
+          const currentContextName = config['current-context'];
           const currentNamespace = config.contexts.find(
-            (ctx) => ctx.name === config['current-context']
+            (ctx) => ctx.name === currentContextName
           )?.context.namespace;
-          if (currentNamespace) {
-            set({ currentNamespace });
-          }
+
           const contexts = config.contexts.map(
             (ctx: { name: string }) => ctx.name
           );
           set({
             contexts: contexts,
-            currentContext: config['current-context'] || contexts[0],
+            currentContext: currentContextName || contexts[0],
+            currentNamespace: currentNamespace, // Set namespace based on current-context
             error: null,
           });
         } catch (error) {
@@ -121,6 +161,8 @@ export const useConfigStore = create<ConfigState>()(
                 ? error
                 : new Error('Failed to load kubeconfig'),
             contexts: [],
+            currentContext: undefined,
+            currentNamespace: undefined,
           });
           throw error;
         }
