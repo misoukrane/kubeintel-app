@@ -42,11 +42,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { AuthInfo } from '@/lib/types';
 
 // Define a type for the details we want to store for each kubeconfig
 type KubeconfigDetails = {
   contexts: string[];
   currentContext?: string;
+  authConfig?: AuthInfo;
   error: Error | null;
 };
 
@@ -54,7 +56,6 @@ type KubeconfigDetails = {
 const ContextCombobox = ({
   contexts,
   currentContext,
-  configPath,
   onContextChange,
 }: {
   contexts: string[];
@@ -160,7 +161,12 @@ export const KubeconfigFilePicker = () => {
     }
     cfgState.setSelectedKubeconfig(selectedFile);
     cfgState.setCurrentContext(selectedContext);
-    navigate('/cluster');
+    if (kubeconfigDetails[selectedFile]?.authConfig?.exec?.interactiveMode) {
+      console.log('interactive mode: ', kubeconfigDetails[selectedFile].authConfig.exec?.interactiveMode);
+      navigate('/auth');
+      return;
+    }
+    navigate('/auth');
   };
 
   const handleContextChange = async (

@@ -18,6 +18,34 @@
       ]
     },
     "process:default",
-    "clipboard-manager:allow-write-text"
+    "clipboard-manager:allow-write-text",
+    "shell:default",
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "name": "kubectl",
+          "cmd": "kubectl"
+        }
+      ]
+    },
+    {
+      "identifier": "shell:allow-spawn",
+      "allow": [
+        {
+          "name": "kubectl",
+          "cmd": "kubectl",
+          "args": [
+            "cluster-info",
+            {
+              "validator": "\\S+"
+            },
+            {
+              "validator": "\\S+"
+            }
+          ]
+        }
+      ]
+    }
   ]
 }

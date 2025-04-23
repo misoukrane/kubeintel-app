@@ -1,5 +1,6 @@
 export const ROUTES = {
   HOME: '/',
+  AUTH: '/auth',
   CLUSTER: '/cluster',
   PODS: '/pods',
   DEPLOYMENTS: '/deployments',

@@ -33,6 +33,7 @@ import { Secrets } from './pages/secrets';
 import { Secret } from './pages/secret';
 import { Services } from './pages/services';
 import { Service } from './pages/service';
+import { Auth } from './pages/auth';
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,11 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <KubeconfigFilePicker />,
+    errorElement: <ErrorBoundary />,
+  },
+  {
+    path: '/auth',
+    element: <Auth />,
     errorElement: <ErrorBoundary />,
   },
   {

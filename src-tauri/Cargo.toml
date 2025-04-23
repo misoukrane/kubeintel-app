@@ -30,4 +30,5 @@ tauri-plugin-process = "2"
 tauri-plugin-clipboard-manager = "2.2.1"
 keyring = { version = "3", features = ["apple-native", "windows-native", "sync-secret-service", "vendored" ] }
 fix-path-env = { git = "https://github.com/tauri-apps/fix-path-env-rs" }
+tauri-plugin-shell = "2"
 
