@@ -279,6 +279,9 @@ export const NodesTable = ({ nodes, initialFilters }: NodesTableProps) => {
                       table.getColumn('name')?.setFilterValue(e.target.value)
                     }
                     className="max-w-xs"
+                    autoComplete='off'
+                    autoCorrect="off"
+                    autoCapitalize="off"
                   />
                 </div>
                 <div>

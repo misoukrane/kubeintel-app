@@ -289,6 +289,9 @@ export const PodsTable = ({
                         <Input
                           placeholder={`Filter ${column.id.split('.').pop()}...`}
                           value={(column.getFilterValue() as string) ?? ''}
+                          autoComplete='off'
+                          autoCorrect="off"
+                          autoCapitalize="off"
                           onChange={(e) =>
                             column.setFilterValue(e.target.value)
                           }
