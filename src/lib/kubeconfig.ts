@@ -15,12 +15,13 @@ export const loadKubeconfig = async (
     const config = await invoke<Kubeconfig>('read_kubeconfig', {
       kubeconfigPath: path,
     });
-    const currentContextName = config['current-context'];
+    const currentContextName =
+      config['current-context'] || config.contexts[0]?.name;
     const contexts = config.contexts.map((ctx: { name: string }) => ctx.name);
 
-    const authConfig = await invoke<AuthInfo>('read_kubeconfig_auth', {
+    const authConfig = await invoke<AuthInfo>('cluster_config_auth', {
       kubeconfigPath: path,
-      currentContextName,
+      context: currentContextName,
     });
 
     return {
@@ -49,6 +50,7 @@ export const loadContextAuthConfig = async (
     });
     return authConfig;
   } catch (error) {
+    console.error('Error loading context auth config:', error);
     throw error instanceof Error ? error : new Error(String(error));
   }
 };

@@ -99,13 +99,9 @@ const ContextCombobox = ({
                   key={ctx.value}
                   value={ctx.value}
                   onSelect={(currentValue) => {
-                    const newValue = currentValue === value ? '' : currentValue;
-                    setValue(newValue);
+                    setValue(currentValue);
                     setOpen(false);
-                    onContextChange(newValue);
-                    console.log(
-                      `Selected context for ${configPath}: ${newValue}`
-                    );
+                    onContextChange(currentValue);
                   }}
                   className="text-xs"
                 >
@@ -158,8 +154,6 @@ export const KubeconfigFilePicker = () => {
     selectedFile: string,
     selectedContext: string | undefined
   ) => {
-    console.log('Selected file:', selectedFile);
-    console.log('Selected context:', selectedContext);
     if (!selectedContext) {
       console.error('No context selected for', selectedFile);
       return;
@@ -169,7 +163,13 @@ export const KubeconfigFilePicker = () => {
     navigate('/cluster');
   };
 
-  const handleContextChange = (configPath: string, newContext: string) => {
+  const handleContextChange = async (
+    configPath: string,
+    newContext: string
+  ) => {
+    if (newContext === '') {
+      return;
+    }
     try {
       setKubeconfigDetails((prev) => ({
         ...prev,
@@ -178,7 +178,8 @@ export const KubeconfigFilePicker = () => {
           currentContext: newContext,
         },
       }));
-      const authConfig = loadContextAuthConfig(configPath, newContext);
+      const authConfig = await loadContextAuthConfig(configPath, newContext);
+      console.log('interactive mode', authConfig?.exec?.interactiveMode);
       setKubeconfigDetails((prev) => ({
         ...prev,
         [configPath]: {
@@ -356,9 +357,9 @@ export const KubeconfigFilePicker = () => {
                     File: {errorFile}
                   </h2>
                   <br />
-                  <pre className="text-xs text-red-500 break-words whitespace-pre-wrap max-w-full overflow-x-auto">
+                  <span className="text-xs text-red-500 break-words whitespace-pre-wrap max-w-full overflow-x-auto">
                     {errorMessage}
-                  </pre>
+                  </span>
                 </DialogDescription>
               </DialogHeader>
             </DialogContent>
