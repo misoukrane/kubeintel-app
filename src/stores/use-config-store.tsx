@@ -3,11 +3,7 @@ import { persist } from 'zustand/middleware';
 import superjson from 'superjson';
 import { invoke } from '@tauri-apps/api/core';
 import { V1Namespace } from '@kubernetes/client-node';
-
-interface Kubeconfig {
-  contexts: { name: string; context: { namespace?: string } }[]; // Ensure namespace is optional
-  'current-context'?: string;
-}
+import { Kubeconfig } from '@/lib/types';
 
 interface ConfigState {
   kubeconfigs: string[];
@@ -22,7 +18,7 @@ interface ConfigState {
   setSelectedKubeconfig: (filePath: string) => void;
   setCurrentContext: (context: string) => Promise<void>; // Make async
   setCurrentNamespace: (namespace: string) => void;
-  loadKubeconfig: (path: string) => Promise<void>;
+  loadKubeconfig: (path: string, currentContext?: string) => Promise<void>;
   loadNamespaces: (path?: string, context?: string) => Promise<void>;
 }
 
@@ -126,7 +122,7 @@ export const useConfigStore = create<ConfigState>()(
           });
         }
       },
-      loadKubeconfig: async (path) => {
+      loadKubeconfig: async (path, currentContext) => {
         if (!path) {
           set({
             contexts: [],
@@ -140,7 +136,8 @@ export const useConfigStore = create<ConfigState>()(
           const config = await invoke<Kubeconfig>('read_kubeconfig', {
             kubeconfigPath: path,
           });
-          const currentContextName = config['current-context'];
+          const currentContextName =
+            currentContext || config['current-context'];
           const currentNamespace = config.contexts.find(
             (ctx) => ctx.name === currentContextName
           )?.context.namespace;

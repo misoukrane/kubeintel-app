@@ -20,6 +20,7 @@ pub fn run() {
             credentials::get_secret,
             credentials::remove_secret,
             k8s_config::read_kubeconfig,
+            k8s_config::cluster_config_auth,
             k8s_config::cluster_info,
             k8s_config::open_cluster_info_on_terminal,
             namespaces::list_namespaces,

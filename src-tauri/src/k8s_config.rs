@@ -1,5 +1,8 @@
 use crate::kubectl::run_kubectl_command;
-use kube::{config::KubeConfigOptions, config::Kubeconfig, Client, Config};
+use kube::{
+    config::{AuthInfo, KubeConfigOptions, Kubeconfig},
+    Client, Config,
+};
 use std::path::Path;
 
 #[tauri::command]
@@ -7,6 +10,28 @@ pub fn read_kubeconfig(kubeconfig_path: &str) -> Result<Kubeconfig, String> {
     let kubeconfig =
         Kubeconfig::read_from(Path::new(kubeconfig_path)).map_err(|e| e.to_string())?;
     Ok(kubeconfig)
+}
+
+#[tauri::command]
+pub async fn cluster_config_auth(
+    kubeconfig_path: String,
+    context: String,
+) -> Result<AuthInfo, String> {
+    // Load the kubeconfig file
+    let kubeconfig: Kubeconfig =
+        Kubeconfig::read_from(Path::new(&kubeconfig_path)).map_err(|e| e.to_string())?;
+
+    // Create a client using the config
+    let options = KubeConfigOptions {
+        context: Some(context),
+        ..Default::default()
+    };
+    let config = Config::from_custom_kubeconfig(kubeconfig, &options)
+        .await
+        .map_err(|e| e.to_string())?;
+
+    // Extract the authentication information
+    Ok(config.auth_info)
 }
 
 #[tauri::command]

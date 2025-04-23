@@ -30,7 +30,7 @@ export default function Layout() {
     const load = async () => {
       if (!selectedKubeconfig) return;
       try {
-        await loadKubeconfig(selectedKubeconfig);
+        await loadKubeconfig(selectedKubeconfig, currentContext);
       } catch (error) {
         toast({
           variant: 'destructive',
