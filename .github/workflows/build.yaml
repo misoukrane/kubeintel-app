@@ -24,6 +24,9 @@ jobs:
             args: ''
 
     runs-on: ${{ matrix.platform }}
+    env: # Add env block for secrets, conditionally applied later if needed
+      APPLE_ID: ${{ secrets.APPLE_ID }}
+      APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
 
@@ -62,9 +65,49 @@ jobs:
         # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
         run: pnpm install # change this to npm or pnpm depending on which one you use.
 
+      - name: Import Apple Developer Certificate
+        if: matrix.platform == 'macos-latest'
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }} # Make sure to add this secret
+        run: |
+          echo $APPLE_CERTIFICATE | base64 --decode > certificate.p12
+          security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security import certificate.p12 -k build.keychain -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" build.keychain
+          # The following line is commented out as find-identity might list multiple identities.
+          # security find-identity -v -p codesigning build.keychain
+
+      # The Verify Certificate step from the example might be too specific if multiple identities exist.
+      # The tauri-action can often find the correct identity automatically if only one suitable one is imported.
+      # If you need to specify an identity, use APPLE_SIGNING_IDENTITY env var in the tauri-action step below.
+      # You might need to adjust the grep pattern or logic if you uncomment and use the Verify step.
+      - name: Verify Certificate and Set Identity (Optional - uncomment if needed)
+        if: matrix.platform == 'macos-latest'
+        run: |
+          # Adjust the grep pattern if your certificate name is different
+          CERT_INFO=$(security find-identity -v -p codesigning build.keychain | grep "Mohamed Isoukrane" | head -n 1)
+          CERT_ID=$(echo "$CERT_INFO" | awk -F'"' '{print $2}')
+          if [ -z "$CERT_ID" ]; then
+            echo "Error: Could not find signing certificate identity."
+            security find-identity -v -p codesigning build.keychain # Print available identities for debugging
+            exit 1
+          fi
+          echo "Found Certificate ID: $CERT_ID"
+          echo "CERT_ID=$CERT_ID" >> $GITHUB_ENV
+          echo "Certificate imported and verified."
+
+
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Conditionally set Apple signing env vars only for macOS
+          APPLE_CERTIFICATE: ${{ matrix.platform == 'macos-latest' && secrets.APPLE_CERTIFICATE || '' }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ matrix.platform == 'macos-latest' && secrets.APPLE_CERTIFICATE_PASSWORD || '' }}
+          APPLE_SIGNING_IDENTITY: ${{ matrix.platform == 'macos-latest' && env.CERT_ID || '' }}
         with:
           tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: 'Kubeintel v__VERSION__'
