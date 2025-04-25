@@ -72,7 +72,7 @@ export const PodView = ({
             <TabsTrigger value="conditions">Conditions</TabsTrigger>
             <TabsTrigger value="volumes">Volumes</TabsTrigger>
             <TabsTrigger value="actions">Actions</TabsTrigger>
-            <TabsTrigger value="source">source</TabsTrigger>
+            <TabsTrigger value="source">Source</TabsTrigger>
             <TabsTrigger value="investigator">
               <Sparkles />
             </TabsTrigger>
