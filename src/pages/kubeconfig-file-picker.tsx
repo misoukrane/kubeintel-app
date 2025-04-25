@@ -151,7 +151,7 @@ export const KubeconfigFilePicker = () => {
     }
   };
 
-  const onContinue = (
+  const onContinue = async (
     selectedFile: string,
     selectedContext: string | undefined
   ) => {
@@ -159,10 +159,13 @@ export const KubeconfigFilePicker = () => {
       console.error('No context selected for', selectedFile);
       return;
     }
-    cfgState.setSelectedKubeconfig(selectedFile);
-    cfgState.setCurrentContext(selectedContext);
+    await cfgState.setSelectedKubeconfig(selectedFile);
+    await cfgState.setCurrentContext(selectedContext);
     if (kubeconfigDetails[selectedFile]?.authConfig?.exec?.interactiveMode) {
-      console.log('interactive mode: ', kubeconfigDetails[selectedFile].authConfig.exec?.interactiveMode);
+      console.log(
+        'interactive mode: ',
+        kubeconfigDetails[selectedFile].authConfig.exec?.interactiveMode
+      );
       navigate('/auth');
       return;
     }
@@ -336,8 +339,8 @@ export const KubeconfigFilePicker = () => {
                               !!details.error || !details.currentContext
                             }
                             title="Connect to Cluster"
-                            onClick={() =>
-                              onContinue(config, details.currentContext)
+                            onClick={async () =>
+                              await onContinue(config, details.currentContext)
                             }
                           >
                             <ArrowRight className="h-4 w-4" />

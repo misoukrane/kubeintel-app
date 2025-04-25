@@ -224,7 +224,7 @@ export const StatefulSetsTable = ({
                         value={(column.getFilterValue() as string) ?? ''}
                         onChange={(e) => column.setFilterValue(e.target.value)}
                         className="max-w-xs"
-                        autoComplete='off'
+                        autoComplete="off"
                         autoCorrect="off"
                         autoCapitalize="off"
                       />

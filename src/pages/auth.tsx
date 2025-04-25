@@ -12,7 +12,7 @@ import { ROUTES } from '@/lib/routes';
 import { useConfigStore } from '@/stores/use-config-store';
 import { Command } from '@tauri-apps/plugin-shell';
 import { AlertCircle } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router';
 
 // authenticate the cluster
@@ -32,6 +32,7 @@ export const Auth = () => {
     `--kubeconfig=${kubeconfig}`,
     `--context=${context}`,
   ];
+  const hasRun = useRef(false);
 
   const runCommand = async () => {
     setExecuting(true);
@@ -65,10 +66,12 @@ export const Auth = () => {
   };
 
   useEffect(() => {
-    if (kubeconfig && context) {
+    if (kubeconfig && context && !hasRun.current) {
+      hasRun.current = true;
+      console.log('Running command:', cmdArgs);
       runCommand();
     }
-  }, []);
+  }, [kubeconfig, context]);
 
   useEffect(() => {
     if (code === 0 && !executing && error == null) {

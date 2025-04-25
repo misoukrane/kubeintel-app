@@ -288,7 +288,7 @@ export const SecretsTable = ({
                       table.getColumn('name')?.setFilterValue(e.target.value)
                     }
                     className="max-w-xs"
-                    autoComplete='off'
+                    autoComplete="off"
                     autoCorrect="off"
                     autoCapitalize="off"
                   />
