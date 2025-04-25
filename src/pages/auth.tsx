@@ -14,6 +14,7 @@ import { Command } from '@tauri-apps/plugin-shell';
 import { AlertCircle } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router';
+import { invoke } from '@tauri-apps/api/core';
 
 // authenticate the cluster
 export const Auth = () => {
@@ -24,6 +25,8 @@ export const Auth = () => {
   const [executing, setExecuting] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [openAuthenticatedDialog, setOpenAuthenticatedDialog] =
+    useState<boolean>(false);
+  const [openMissingKubectlDialog, setOpenMissingKubectlDialog] =
     useState<boolean>(false);
   const kubeconfig = selectedKubeconfig ?? '';
   const context = currentContext ?? '';
@@ -79,6 +82,21 @@ export const Auth = () => {
     }
   }, [code, executing, error]);
 
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const status = await invoke<boolean>('is_kubectl_installed');
+        if (!status) {
+          setOpenMissingKubectlDialog(true);
+        }
+      } catch (error) {
+        console.error('Error checking kubectl installation:', error);
+        setOpenMissingKubectlDialog(true);
+      }
+    })();
+  }, []);
+
   return (
     <div className="w-full max-w-7xl mx-auto p-1">
       {error && (
@@ -103,6 +121,13 @@ export const Auth = () => {
         <pre className="p-4 rounded-md text-sm text-gray-500">
           {`kubectl ${cmdArgs.join(' ')}`}
         </pre>
+        <Alert className="bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-800">
+          <AlertCircle className="h-4 w-4 text-amber-500 dark:text-amber-400" />
+          <AlertTitle className="text-amber-800 dark:text-amber-400">Required</AlertTitle>
+          <AlertDescription className="text-amber-700 dark:text-amber-300">
+            kubectl is required to be installed and configured on your system.
+          </AlertDescription>
+        </Alert>
       </div>
       <div className="space-y-1">
         <p className="text-lg">Output:</p>
@@ -151,6 +176,30 @@ export const Auth = () => {
               }}
             >
               Go to Cluster
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog
+        open={openMissingKubectlDialog}
+        onOpenChange={setOpenMissingKubectlDialog}
+      >
+        <DialogContent className="sm:max-w-[425px] border-red-500 dark:border-red-600">
+          <DialogHeader>
+            <DialogTitle className="text-red-600 dark:text-red-500">Missing Kubectl</DialogTitle>
+            <DialogDescription className="text-red-500/80 dark:text-red-400/80">
+              Kubectl is not installed or not found in the system path. Please
+              install kubectl and try again.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                navigate(ROUTES.HOME);
+              }}
+            >
+              Back to Config
             </Button>
           </DialogFooter>
         </DialogContent>

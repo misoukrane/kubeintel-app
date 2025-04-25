@@ -20,6 +20,7 @@ pub fn run() {
             credentials::set_secret,
             credentials::get_secret,
             credentials::remove_secret,
+            kubectl::is_kubectl_installed,
             k8s_config::read_kubeconfig,
             k8s_config::cluster_config_auth,
             k8s_config::cluster_info,

@@ -95,3 +95,14 @@ pub fn run_kubectl_command(command: &str) -> Result<(), String> {
         return Err("No supported terminal emulator found".to_string());
     }
 }
+
+// check if kubectl is installed
+#[tauri::command]
+pub async fn is_kubectl_installed() -> Result<bool, String> {
+    Command::new("kubectl")
+        .arg("version")
+        .arg("--client")
+        .output()
+        .map(|output| output.status.success())
+        .map_err(|e| e.to_string())
+}
