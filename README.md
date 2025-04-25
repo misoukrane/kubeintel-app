@@ -15,17 +15,6 @@ KubeIntel provides a powerful, user-friendly interface for browsing Kubernetes r
 Available for Windows, macOS, and Linux.
 Ready to try KubeIntel? Download the latest version for your operating system:
 
-> ⚠️ **Important: App Signing Notice**
->
-> KubeIntel is currently **not signed**. You may see a warning when running the app for the first time—this is normal for unsigned apps.
->
-> **macOS Users:**  
-> You may need to allow the app in **System Preferences → Security & Privacy → General**.  
-> Alternatively, run:
-> ```bash
-> sudo xattr -r -d com.apple.quarantine /Applications/Kubeintel.app
-> ```
-
 <a href="https://github.com/misoukrane/kubeintel-app/releases" target="_blank">
     <img src="https://img.shields.io/github/v/release/misoukrane/kubeintel-app?label=Download%20Latest%20Release&style=for-the-badge" alt="Download KubeIntel" />
 </a>
