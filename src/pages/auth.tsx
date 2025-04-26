@@ -82,7 +82,6 @@ export const Auth = () => {
     }
   }, [code, executing, error]);
 
-
   useEffect(() => {
     (async () => {
       try {
@@ -123,7 +122,9 @@ export const Auth = () => {
         </pre>
         <Alert className="bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-800">
           <AlertCircle className="h-4 w-4 text-amber-500 dark:text-amber-400" />
-          <AlertTitle className="text-amber-800 dark:text-amber-400">Required</AlertTitle>
+          <AlertTitle className="text-amber-800 dark:text-amber-400">
+            Required
+          </AlertTitle>
           <AlertDescription className="text-amber-700 dark:text-amber-300">
             kubectl is required to be installed and configured on your system.
           </AlertDescription>
@@ -186,7 +187,9 @@ export const Auth = () => {
       >
         <DialogContent className="sm:max-w-[425px] border-red-500 dark:border-red-600">
           <DialogHeader>
-            <DialogTitle className="text-red-600 dark:text-red-500">Missing Kubectl</DialogTitle>
+            <DialogTitle className="text-red-600 dark:text-red-500">
+              Missing Kubectl
+            </DialogTitle>
             <DialogDescription className="text-red-500/80 dark:text-red-400/80">
               Kubectl is not installed or not found in the system path. Please
               install kubectl and try again.

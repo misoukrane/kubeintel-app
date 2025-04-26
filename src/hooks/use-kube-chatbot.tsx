@@ -4,13 +4,18 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createOpenAI } from '@ai-sdk/openai';
 import { streamText } from 'ai';
 import { useAIConfigStore } from '@/stores/use-ai-config-store';
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react'; // Import useRef
 
 export function useKubeChatbot() {
   const { getAPIKey, selectedConfig, aiConfigs } = useAIConfigStore();
+  // Ref to store the specific error from the stream's onError
+  const streamErrorRef = useRef<Error | null>(null);
 
   const fetchAIResponse = useCallback(
     async (messages: any[]) => {
+      // Clear previous stream error at the start of a new request
+      streamErrorRef.current = null;
+
       if (selectedConfig === undefined || !aiConfigs[selectedConfig]) {
         throw new Error('No AI configuration selected');
       }
@@ -62,12 +67,29 @@ export function useKubeChatbot() {
           system:
             'You are a helpful kubernetes assistant. Always answer in valid markdown. do no start you response with "markdown" or "```markdown".',
           messages,
+          onError: (errorObj) => {
+            // Store the specific error in the ref
+            console.error(
+              'Error captured in streaming response onError:',
+              errorObj
+            );
+            // Extract the error from the object or create a new Error if it's not available
+            const actualError =
+              errorObj.error instanceof Error
+                ? errorObj.error
+                : new Error(
+                    String(errorObj.error || 'Unknown streaming error')
+                  );
+            streamErrorRef.current = actualError;
+          },
         });
 
         return result.toDataStreamResponse();
-      } catch (error) {
-        console.error('Failed to stream response:', error);
-        throw new Error('Failed to get AI response');
+      } catch (error: any) {
+        console.error('Failed to initiate stream response:', error);
+        // Clear ref if setup fails
+        streamErrorRef.current = null;
+        throw error;
       }
     },
     [selectedConfig, aiConfigs, getAPIKey]
@@ -81,16 +103,39 @@ export function useKubeChatbot() {
 
       try {
         const { messages } = JSON.parse(init.body as string);
-        return await fetchAIResponse(messages);
+        const resp = await fetchAIResponse(messages);
+        console.log('Initial Response Status:', resp.status, resp.statusText);
+
+        if (!resp.ok) {
+          const errorText = await resp.text();
+          console.error('Error response from AI service:', errorText);
+          const error = new Error(
+            `AI API Error: ${resp.status} ${resp.statusText}`
+          );
+          // Try to parse the error text as JSON for more details
+          try {
+            error.cause = JSON.parse(errorText);
+          } catch {
+            error.cause = errorText; // Assign raw text if not JSON
+          }
+          streamErrorRef.current = null; // Clear ref on non-ok response
+          throw error;
+        }
+        return resp;
       } catch (error) {
-        console.error('Chat error:', error);
-        throw error;
+        console.error('Error in useChat fetch:', error);
+        // If a stream error was captured just before this, prioritize it
+        if (streamErrorRef.current) {
+          throw streamErrorRef.current;
+        }
+        throw error; // Re-throw so useChat sets its error state
       }
     },
   });
 
   return {
     ...chat,
+    streamError: streamErrorRef,
     isConfigured: selectedConfig !== undefined && aiConfigs.length > 0,
   };
 }

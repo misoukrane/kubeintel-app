@@ -10,6 +10,7 @@ import { PodLogsResult } from '@/lib/pods';
 import { PodChatMessages } from './pod-chat-messages';
 import { PodChatInput } from './pod-chat-input';
 import { getAttachemntLogName } from '@/lib/strings';
+import { ErrorDialog } from "@/components/ui/error-dialog";
 
 interface PodChatbotProps {
   pod: V1Pod;
@@ -37,7 +38,8 @@ export function PodChatbot({
     handleInputChange,
     status: chatStatus,
     stop,
-    error,
+    error, // Generic error state from useChat
+    streamError, // Ref containing specific error from onError
   } = useKubeChatbot();
   const { aiConfigs, setSelectedConfig, selectedConfig } = useAIConfigStore();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -48,6 +50,9 @@ export function PodChatbot({
     new Map()
   );
   const [loadingStatus, setLoadingStatus] = useState<string>('');
+  const [errorDetails, setErrorDetails] = useState<any>(null);
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const processedErrorRef = useRef(false); // Prevent double processing
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -168,22 +173,96 @@ export function PodChatbot({
   }, [throttledScroll]);
 
   useEffect(() => {
-    if (error) {
+    // Check if there's an error state from useChat OR a specific stream error
+    const specificError = streamError.current;
+    const genericError = error;
+
+    if ((genericError || specificError) && !processedErrorRef.current) {
+      processedErrorRef.current = true; // Mark as processing
+      const errorToProcess = specificError || genericError; // Prioritize specific error
+
+      console.error('Handling Chat Error:', errorToProcess);
       console.error('Chat Error Details:', {
-        name: error.name,
-        message: error.message,
-        stack: error.stack,
-        cause: error.cause,
-        fullError: error,
+        name: errorToProcess?.name,
+        message: errorToProcess?.message,
+        stack: errorToProcess?.stack,
+        cause: (errorToProcess as any)?.cause,
+        isSpecific: !!specificError,
+        fullError: errorToProcess,
       });
-      // use a toast or notification to show the error
+
+      let errorInfo: {
+        message: string;
+        type?: string;
+        code?: string;
+        param?: string;
+        rawCause?: any;
+      } = {
+        message: errorToProcess?.message || 'Unknown error occurred',
+        rawCause: (errorToProcess as any)?.cause,
+      };
+
+      // Attempt to extract details if the error looks like an AI SDK error structure
+      // The specific error from streamErrorRef might already be structured
+      const cause = (errorToProcess as any)?.cause;
+      let errorData = (errorToProcess as any)?.error || (typeof cause === 'object' && cause !== null ? cause.error : null);
+
+      // Sometimes the error object itself might have the details (common in streamText onError)
+      if (!errorData && typeof errorToProcess === 'object' && errorToProcess !== null && (errorToProcess as any).type && (errorToProcess as any).message) {
+        errorData = errorToProcess;
+      }
+
+
+      if (errorData && typeof errorData === 'object') {
+        errorInfo = {
+          message: errorData.message || errorInfo.message,
+          type: errorData.type,
+          code: errorData.code,
+          param: errorData.param,
+          rawCause: errorInfo.rawCause, // Keep original cause if needed
+        };
+      } else if (typeof cause === 'string') {
+        // If cause is a string, try parsing or use directly
+        try {
+          const parsedCause = JSON.parse(cause);
+          if (parsedCause.error && parsedCause.error.message) {
+            errorInfo.message = parsedCause.error.message;
+            errorInfo.type = parsedCause.error.type;
+            errorInfo.code = parsedCause.error.code;
+          } else if (parsedCause.message) {
+            errorInfo.message = parsedCause.message;
+          }
+        } catch (e) {
+          // Use string cause if it provides more info than the main message
+          if (errorInfo.message === 'Unknown error occurred' || errorInfo.message === 'An error occurred.') {
+            errorInfo.message = cause;
+          }
+        }
+      }
+
+
+      // Set error details for the dialog
+      setErrorDetails(errorInfo);
+      console.log('Error details for dialog:', errorInfo);
+      console.log('Error details for dialog2:', error);
+      setShowErrorDialog(true);
+
+      // Show toast for immediate notification
       toast({
-        title: 'Error',
-        description: error.message,
+        title: errorInfo.type || 'Error',
+        description: errorInfo.code
+          ? `${errorInfo.message} (Code: ${errorInfo.code})`
+          : errorInfo.message,
         variant: 'destructive',
       });
+
+      // Reset the specific error ref after handling
+      streamError.current = null;
+    } else if (!genericError && !specificError) {
+      // Reset processing flag if errors are cleared
+      processedErrorRef.current = false;
     }
-  }, [error]);
+  }, [error, streamError]); // Depend on both error and the ref wrapper
 
   return (
     <div className="bg-neutral-50 dark:bg-muted rounded-md">
@@ -212,6 +291,17 @@ export function PodChatbot({
           onStop={stop}
         />
       </form>
+
+      {/* Error Dialog */}
+      <ErrorDialog
+        open={showErrorDialog}
+        onClose={() => {
+          setShowErrorDialog(false);
+          processedErrorRef.current = false; // Allow processing next error
+          streamError.current = null; // Ensure ref is clear on close
+        }}
+        error={errorDetails}
+      />
     </div>
   );
 }
