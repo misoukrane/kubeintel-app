@@ -10,6 +10,7 @@ export const SortableHeader = ({
 }) => (
   <Button
     variant="ghost"
+    size="tableheader"
     onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
   >
     {title}
