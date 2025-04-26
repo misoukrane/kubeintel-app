@@ -196,7 +196,7 @@ export function AIConfigForm({ onSubmit, onCancel }: AIConfigFormProps) {
           )}
         />
 
-        <Accordion type="single" collapsible>
+        <Accordion type="single" collapsible className='hidden'>
           <AccordionItem value="advanced">
             <AccordionTrigger>Advanced Settings</AccordionTrigger>
             <AccordionContent>
