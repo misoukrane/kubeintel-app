@@ -99,7 +99,7 @@ pnpm tauri build
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT + Commons Clause License. See the [LICENSE](LICENSE) file for details.
 
 ## Contributing
 
