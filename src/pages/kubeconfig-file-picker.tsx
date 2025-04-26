@@ -80,6 +80,9 @@ const ContextCombobox = ({
           role="combobox"
           aria-expanded={open}
           className="w-[250px] justify-between text-xs h-8"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
         >
           <span className="truncate">
             {value
@@ -281,7 +284,12 @@ export const KubeconfigFilePicker = () => {
                   return (
                     <div
                       key={config}
-                      className="flex items-center justify-between rounded-lg p-2 hover:bg-muted"
+                      className="flex items-center justify-between rounded-lg p-2 hover:bg-muted cursor-pointer"
+                      onClick={async () => {
+                        if (!details.error && details.currentContext) {
+                          await onContinue(config, details.currentContext);
+                        }
+                      }}
                     >
                       <div className="flex-1 mr-2 overflow-hidden">
                         <span
@@ -306,7 +314,8 @@ export const KubeconfigFilePicker = () => {
                         <Button
                           variant="destructive"
                           size="icon"
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.stopPropagation();
                             cfgState.removeKubeconfig(config);
                             setKubeconfigDetails((prev) => {
                               const newState = { ...prev };
@@ -322,7 +331,8 @@ export const KubeconfigFilePicker = () => {
                           <Button
                             variant="secondary"
                             size="icon"
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation();
                               setErrorMessage(details.error!.message);
                               setErrorFile(config);
                               setOpenErrorDialog(true);
@@ -339,9 +349,10 @@ export const KubeconfigFilePicker = () => {
                               !!details.error || !details.currentContext
                             }
                             title="Connect to Cluster"
-                            onClick={async () =>
-                              await onContinue(config, details.currentContext)
-                            }
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              await onContinue(config, details.currentContext);
+                            }}
                           >
                             <ArrowRight className="h-4 w-4" />
                           </Button>
