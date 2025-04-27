@@ -33,6 +33,8 @@ import { Secrets } from './pages/secrets';
 import { Secret } from './pages/secret';
 import { Services } from './pages/services';
 import { Service } from './pages/service';
+import { ServiceAccounts } from './pages/serviceaccounts';
+import { ServiceAccount } from './pages/serviceaccount';
 import { Auth } from './pages/auth';
 
 const queryClient = new QueryClient();
@@ -145,6 +147,14 @@ const router = createBrowserRouter([
       {
         path: ROUTES.SERVICE,
         element: <Service />,
+      },
+      {
+        path: ROUTES.SERVICEACCOUNTS,
+        element: <ServiceAccounts />,
+      },
+      {
+        path: ROUTES.SERVICEACCOUNT,
+        element: <ServiceAccount />,
       },
     ],
   },

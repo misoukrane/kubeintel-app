@@ -26,4 +26,5 @@ export enum ResourceTypes {
   ConfigMap = 'ConfigMap',
   Secret = 'Secret',
   Service = 'Service',
+  ServiceAccount = 'ServiceAccount',
 }

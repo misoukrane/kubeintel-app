@@ -25,4 +25,6 @@ export const ROUTES = {
   SECRET: '/secrets/:secretName',
   SERVICES: '/services',
   SERVICE: '/services/:serviceName',
+  SERVICEACCOUNTS: '/serviceaccounts',
+  SERVICEACCOUNT: '/serviceaccounts/:serviceAccountName',
 } as const;
