@@ -3,6 +3,7 @@ use crate::kubectl::run_kubectl_command;
 use k8s_openapi::api::apps::v1::{DaemonSet, Deployment, StatefulSet};
 use k8s_openapi::api::batch::v1::{CronJob, Job};
 use k8s_openapi::api::core::v1::{ConfigMap, Event, Node, Pod, Secret, Service, ServiceAccount};
+use k8s_openapi::api::rbac::v1::Role;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -19,6 +20,7 @@ pub enum KubeResource {
     Secret(Secret),
     Service(Service),
     ServiceAccount(ServiceAccount),
+    Role(Role),
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -35,6 +37,7 @@ pub enum ResourceType {
     ConfigMap,
     Secret,
     ServiceAccount,
+    Role,
 }
 
 impl ResourceType {
@@ -51,6 +54,7 @@ impl ResourceType {
             ResourceType::ConfigMap => "configmap",
             ResourceType::Secret => "secret",
             ResourceType::ServiceAccount => "serviceaccount",
+            ResourceType::Role => "role",
         }
     }
 
@@ -67,6 +71,7 @@ impl ResourceType {
             ResourceType::ConfigMap => "ConfigMap",
             ResourceType::Secret => "Secret",
             ResourceType::ServiceAccount => "ServiceAccount",
+            ResourceType::Role => "Role",
         }
     }
 }
@@ -109,6 +114,9 @@ pub async fn delete_resource(
         }
         ResourceType::ServiceAccount => {
             k8s_client::delete_resource::<ServiceAccount>(client, &namespace, &name).await
+        }
+        ResourceType::Role => {
+            k8s_client::delete_resource::<Role>(client, &namespace, &name).await
         }
     }
 }
@@ -237,6 +245,10 @@ pub async fn get_resource(
             let resource = k8s_client::get_resource::<ServiceAccount>(client, &namespace, &name).await?;
             Ok(KubeResource::ServiceAccount(resource))
         }
+        ResourceType::Role => {
+            let resource = k8s_client::get_resource::<Role>(client, &namespace, &name).await?;
+            Ok(KubeResource::Role(resource))
+        }
     }
 }
 
@@ -298,6 +310,10 @@ pub async fn list_resource(
         ResourceType::ServiceAccount => {
             let resources = k8s_client::list_resources::<ServiceAccount>(client, &namespace).await?;
             Ok(resources.into_iter().map(KubeResource::ServiceAccount).collect())
+        }
+        ResourceType::Role => {
+            let resources = k8s_client::list_resources::<Role>(client, &namespace).await?;
+            Ok(resources.into_iter().map(KubeResource::Role).collect())
         }
     }
 }
@@ -415,6 +431,10 @@ pub async fn list_resource_events(
         }
         ResourceType::ServiceAccount => {
             let events = k8s_client::list_events::<ServiceAccount>(client, &namespace, &name).await?;
+            Ok(events)
+        }
+        ResourceType::Role => {
+            let events = k8s_client::list_events::<Role>(client, &namespace, &name).await?;
             Ok(events)
         }
         _ => Err(format!("Unsupported resource type: {:?}", resource_type)),

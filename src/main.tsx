@@ -36,6 +36,8 @@ import { Service } from './pages/service';
 import { ServiceAccounts } from './pages/serviceaccounts';
 import { ServiceAccount } from './pages/serviceaccount';
 import { Auth } from './pages/auth';
+import { Roles } from './pages/roles';
+import { Role } from './pages/role';
 
 const queryClient = new QueryClient();
 
@@ -155,6 +157,14 @@ const router = createBrowserRouter([
       {
         path: ROUTES.SERVICEACCOUNT,
         element: <ServiceAccount />,
+      },
+      {
+        path: ROUTES.ROLES,
+        element: <Roles />,
+      },
+      {
+        path: ROUTES.ROLE,
+        element: <Role />,
       },
     ],
   },

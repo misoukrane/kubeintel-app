@@ -27,4 +27,5 @@ export enum ResourceTypes {
   Secret = 'Secret',
   Service = 'Service',
   ServiceAccount = 'ServiceAccount',
+  Role = 'Role',
 }

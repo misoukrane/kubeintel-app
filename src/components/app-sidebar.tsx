@@ -27,6 +27,7 @@ import { CmLogo } from '@/assets/cm';
 import { SecretLogo } from '@/assets/secret';
 import { CronJobLogo } from '@/assets/cron-job';
 import { ServiceAccountLogo } from '@/assets/service-account';
+import { RoleLogo } from '@/assets/role';
 import { ROUTES } from '@/lib/routes';
 
 // Menu items using ROUTES constants
@@ -90,6 +91,11 @@ const items = [
     title: 'ServiceAccounts',
     url: ROUTES.SERVICEACCOUNTS,
     icon: ServiceAccountLogo,
+  },
+  {
+    title: 'Roles',
+    url: ROUTES.ROLES,
+    icon: RoleLogo,
   },
 ];
 
