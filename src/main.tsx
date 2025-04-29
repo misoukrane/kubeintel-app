@@ -38,6 +38,8 @@ import { ServiceAccount } from './pages/serviceaccount';
 import { Auth } from './pages/auth';
 import { Roles } from './pages/roles';
 import { Role } from './pages/role';
+import { RoleBindings } from './pages/rolebindings';
+import { RoleBinding } from './pages/rolebinding';
 
 const queryClient = new QueryClient();
 
@@ -165,6 +167,14 @@ const router = createBrowserRouter([
       {
         path: ROUTES.ROLE,
         element: <Role />,
+      },
+      {
+        path: ROUTES.ROLEBINDINGS,
+        element: <RoleBindings />,
+      },
+      {
+        path: ROUTES.ROLEBINDING,
+        element: <RoleBinding />,
       },
     ],
   },

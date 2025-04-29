@@ -28,4 +28,5 @@ export enum ResourceTypes {
   Service = 'Service',
   ServiceAccount = 'ServiceAccount',
   Role = 'Role',
+  RoleBinding = 'RoleBinding',
 }

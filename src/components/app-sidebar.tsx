@@ -28,6 +28,7 @@ import { SecretLogo } from '@/assets/secret';
 import { CronJobLogo } from '@/assets/cron-job';
 import { ServiceAccountLogo } from '@/assets/service-account';
 import { RoleLogo } from '@/assets/role';
+import { RoleBindingLogo } from '@/assets/role-binding';
 import { ROUTES } from '@/lib/routes';
 
 // Menu items using ROUTES constants
@@ -96,6 +97,11 @@ const items = [
     title: 'Roles',
     url: ROUTES.ROLES,
     icon: RoleLogo,
+  },
+  {
+    title: 'RoleBindings',
+    url: ROUTES.ROLEBINDINGS,
+    icon: RoleBindingLogo,
   },
 ];
 

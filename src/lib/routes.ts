@@ -29,4 +29,6 @@ export const ROUTES = {
   SERVICEACCOUNT: '/serviceaccounts/:serviceAccountName',
   ROLES: '/roles',
   ROLE: '/roles/:roleName',
+  ROLEBINDINGS: '/rolebindings',
+  ROLEBINDING: '/rolebindings/:roleBindingName',
 } as const;

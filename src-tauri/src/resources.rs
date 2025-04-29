@@ -3,7 +3,7 @@ use crate::kubectl::run_kubectl_command;
 use k8s_openapi::api::apps::v1::{DaemonSet, Deployment, StatefulSet};
 use k8s_openapi::api::batch::v1::{CronJob, Job};
 use k8s_openapi::api::core::v1::{ConfigMap, Event, Node, Pod, Secret, Service, ServiceAccount};
-use k8s_openapi::api::rbac::v1::Role;
+use k8s_openapi::api::rbac::v1::{Role, RoleBinding};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -21,6 +21,7 @@ pub enum KubeResource {
     Service(Service),
     ServiceAccount(ServiceAccount),
     Role(Role),
+    RoleBinding(RoleBinding),
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -38,6 +39,7 @@ pub enum ResourceType {
     Secret,
     ServiceAccount,
     Role,
+    RoleBinding,
 }
 
 impl ResourceType {
@@ -55,6 +57,7 @@ impl ResourceType {
             ResourceType::Secret => "secret",
             ResourceType::ServiceAccount => "serviceaccount",
             ResourceType::Role => "role",
+            ResourceType::RoleBinding => "rolebinding",
         }
     }
 
@@ -72,6 +75,7 @@ impl ResourceType {
             ResourceType::Secret => "Secret",
             ResourceType::ServiceAccount => "ServiceAccount",
             ResourceType::Role => "Role",
+            ResourceType::RoleBinding => "RoleBinding",
         }
     }
 }
@@ -117,6 +121,9 @@ pub async fn delete_resource(
         }
         ResourceType::Role => {
             k8s_client::delete_resource::<Role>(client, &namespace, &name).await
+        }
+        ResourceType::RoleBinding => {
+            k8s_client::delete_resource::<RoleBinding>(client, &namespace, &name).await
         }
     }
 }
@@ -249,6 +256,10 @@ pub async fn get_resource(
             let resource = k8s_client::get_resource::<Role>(client, &namespace, &name).await?;
             Ok(KubeResource::Role(resource))
         }
+        ResourceType::RoleBinding => {
+            let resource = k8s_client::get_resource::<RoleBinding>(client, &namespace, &name).await?;
+            Ok(KubeResource::RoleBinding(resource))
+        }
     }
 }
 
@@ -314,6 +325,10 @@ pub async fn list_resource(
         ResourceType::Role => {
             let resources = k8s_client::list_resources::<Role>(client, &namespace).await?;
             Ok(resources.into_iter().map(KubeResource::Role).collect())
+        }
+        ResourceType::RoleBinding => {
+            let resources = k8s_client::list_resources::<RoleBinding>(client, &namespace).await?;
+            Ok(resources.into_iter().map(KubeResource::RoleBinding).collect())
         }
     }
 }
@@ -435,6 +450,10 @@ pub async fn list_resource_events(
         }
         ResourceType::Role => {
             let events = k8s_client::list_events::<Role>(client, &namespace, &name).await?;
+            Ok(events)
+        }
+        ResourceType::RoleBinding => {
+            let events = k8s_client::list_events::<RoleBinding>(client, &namespace, &name).await?;
             Ok(events)
         }
         _ => Err(format!("Unsupported resource type: {:?}", resource_type)),
