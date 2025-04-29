@@ -42,4 +42,4 @@ export const Role = () => {
   );
 };
 
-export default Role; 
+export default Role;

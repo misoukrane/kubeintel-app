@@ -65,6 +65,10 @@ export function PodChatInput({
         name="prompt"
         value={input}
         dir="auto"
+        autoComplete='off'
+        autoCorrect="off"
+        spellCheck="false"
+        autoCapitalize="none"
         onChange={onInputChange}
         disabled={chatStatus === 'submitted' || noAiConfigs}
         placeholder={

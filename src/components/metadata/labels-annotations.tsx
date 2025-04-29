@@ -3,6 +3,12 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Copy } from 'lucide-react';
 import { truncate } from '@/lib/strings';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 interface LabelsAnnotationsProps {
   labels?: { [key: string]: string };
@@ -21,17 +27,31 @@ const KeyValueBadge = ({
   variant?: 'secondary' | 'outline';
   onCopy: (text: string) => void;
 }) => (
-  <div className="group relative flex items-center gap-1">
-    <Badge variant={variant}>{truncate(`${keyName}: ${value}`)}</Badge>
-    <Button
-      variant="ghost"
-      size="icon"
-      className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-      onClick={() => onCopy(`${keyName}: ${value}`)}
-    >
-      <Copy className="h-3 w-3" />
-    </Button>
-  </div>
+  <TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div
+          onClick={() => onCopy(`${keyName}: ${value}`)}
+          className="group relative flex items-center gap-1 cursor-pointer"
+        >
+          <Badge variant={variant}>{truncate(`${keyName}: ${value}`)}</Badge>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={() => onCopy(`${keyName}: ${value}`)}
+          >
+            <Copy className="h-3 w-3" />
+          </Button>
+        </div>
+      </TooltipTrigger>
+      <TooltipContent>
+        <p className="text-sm max-w-xs break-words">
+          {keyName}: {value}
+        </p>
+      </TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
 );
 
 export const LabelsAnnotations = ({
