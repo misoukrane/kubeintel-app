@@ -140,6 +140,9 @@ importers:
       tauri-plugin-clipboard-api:
         specifier: ^2.1.11
         version: 2.1.11(typescript@5.6.3)
+      yaml:
+        specifier: ^2.7.1
+        version: 2.7.1
       zod:
         specifier: ^3.24.1
         version: 3.24.1
@@ -164,7 +167,7 @@ importers:
         version: 18.3.5(@types/react@18.3.18)
       '@vitejs/plugin-react':
         specifier: ^4.3.4
-        version: 4.3.4(vite@6.0.7(@types/node@22.10.7)(jiti@1.21.7)(yaml@2.7.0))
+        version: 4.3.4(vite@6.0.7(@types/node@22.10.7)(jiti@1.21.7)(yaml@2.7.1))
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.5.1)
@@ -194,7 +197,7 @@ importers:
         version: 5.6.3
       vite:
         specifier: ^6.0.3
-        version: 6.0.7(@types/node@22.10.7)(jiti@1.21.7)(yaml@2.7.0)
+        version: 6.0.7(@types/node@22.10.7)(jiti@1.21.7)(yaml@2.7.1)
 
 packages:
 
@@ -3425,8 +3428,8 @@ packages:
     resolution: {integrity: sha512-YgvUTfwqyc7UXVMrB+SImsVYSmTS8X/tSrtdNZMImM+n7+QTriRXyXim0mBrTXNeqzVF0KWGgHPeiyViFFrNDw==}
     engines: {node: '>=18'}
 
-  yaml@2.7.0:
-    resolution: {integrity: sha512-+hSoy/QHluxmC9kCIJyL/uyFmLmc+e5CFR5Wa+bpIhIj85LVb9ZH2nVnqrHoSvKogwODv0ClqZkmiSSaIH5LTA==}
+  yaml@2.7.1:
+    resolution: {integrity: sha512-10ULxpnOCQXxJvBgxsn9ptjq6uviG/htZKk9veJGhlqn3w/DxQ631zFF+nlQXLwmImeS5amR2dl2U8sg6U9jsQ==}
     engines: {node: '>= 14'}
     hasBin: true
 
@@ -4822,14 +4825,14 @@ snapshots:
 
   '@ungap/structured-clone@1.3.0': {}
 
-  '@vitejs/plugin-react@4.3.4(vite@6.0.7(@types/node@22.10.7)(jiti@1.21.7)(yaml@2.7.0))':
+  '@vitejs/plugin-react@4.3.4(vite@6.0.7(@types/node@22.10.7)(jiti@1.21.7)(yaml@2.7.1))':
     dependencies:
       '@babel/core': 7.26.0
       '@babel/plugin-transform-react-jsx-self': 7.25.9(@babel/core@7.26.0)
       '@babel/plugin-transform-react-jsx-source': 7.25.9(@babel/core@7.26.0)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 6.0.7(@types/node@22.10.7)(jiti@1.21.7)(yaml@2.7.0)
+      vite: 6.0.7(@types/node@22.10.7)(jiti@1.21.7)(yaml@2.7.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -6347,7 +6350,7 @@ snapshots:
   postcss-load-config@4.0.2(postcss@8.5.1):
     dependencies:
       lilconfig: 3.1.3
-      yaml: 2.7.0
+      yaml: 2.7.1
     optionalDependencies:
       postcss: 8.5.1
 
@@ -7010,7 +7013,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.2
 
-  vite@6.0.7(@types/node@22.10.7)(jiti@1.21.7)(yaml@2.7.0):
+  vite@6.0.7(@types/node@22.10.7)(jiti@1.21.7)(yaml@2.7.1):
     dependencies:
       esbuild: 0.24.2
       postcss: 8.5.1
@@ -7019,7 +7022,7 @@ snapshots:
       '@types/node': 22.10.7
       fsevents: 2.3.3
       jiti: 1.21.7
-      yaml: 2.7.0
+      yaml: 2.7.1
 
   webidl-conversions@3.0.1: {}
 
@@ -7092,7 +7095,7 @@ snapshots:
 
   yallist@5.0.0: {}
 
-  yaml@2.7.0: {}
+  yaml@2.7.1: {}
 
   yocto-queue@0.1.0: {}
 
