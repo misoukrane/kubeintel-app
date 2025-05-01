@@ -50,7 +50,10 @@ export const Pods = () => {
           }}
           pods={resources ?? []}
           initialFilters={initialFilters}
-          columnVisibility={{ labels: false, namespace: false }}
+          columnVisibility={{
+            labels: false,
+            namespace: currentNamespace === 'all' ? true : false,
+          }}
         />
       )}
     </div>

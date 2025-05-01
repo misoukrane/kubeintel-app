@@ -5,10 +5,16 @@ import { ErrorAlert } from '@/components/error-alert';
 import { V1DaemonSet } from '@kubernetes/client-node';
 import { useListKubeResource } from '@/hooks/kube-resource/use-list-kube-resource';
 import { ResourceTypes } from '@/lib/strings';
+import { useNavigate } from 'react-router';
 
 export const DaemonSets = () => {
-  const { selectedKubeconfig, currentContext, currentNamespace } =
-    useConfigStore();
+  const navigate = useNavigate();
+  const {
+    selectedKubeconfig,
+    currentContext,
+    currentNamespace,
+    setCurrentNamespace,
+  } = useConfigStore();
 
   const {
     data: daemonsets,
@@ -26,7 +32,18 @@ export const DaemonSets = () => {
       {isLoading && <Spinner />}
       {error && <ErrorAlert error={error} />}
       {!isLoading && !error && (
-        <DaemonSetsTable daemonsets={daemonsets ?? []} />
+        <DaemonSetsTable
+          daemonsets={daemonsets ?? []}
+          columnVisibility={{
+            namespace: currentNamespace === 'all' ? true : false,
+          }}
+          navigateToDaemonSet={(namespace: string, name: string) => {
+            if (namespace !== currentNamespace) {
+              setCurrentNamespace(namespace);
+            }
+            navigate(`/daemonsets/${name}`);
+          }}
+        />
       )}
     </div>
   );

@@ -26,9 +26,10 @@ import {
   getSortedRowModel,
   PaginationState,
   getPaginationRowModel,
+  VisibilityState,
 } from '@tanstack/react-table';
 import { Input } from '@/components/ui/input';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { SortableHeader } from '@/components/table/sortable-header';
 import { DataTablePagination } from '@/components/table/data-table-pagination';
@@ -44,11 +45,15 @@ interface CronJobsTableProps {
     name: string;
     labelSelector: string;
   };
+  navigateToCronJob?: (namespace: string, name: string) => void;
+  columnVisibility?: VisibilityState;
 }
 
 export const CronJobsTable = ({
   cronjobs,
   initialFilters = { name: '', labelSelector: '' },
+  navigateToCronJob,
+  columnVisibility = {},
 }: CronJobsTableProps) => {
   // Create initial filters array
   const initialColumnFilters: ColumnFiltersState = [
@@ -67,6 +72,20 @@ export const CronJobsTable = ({
     pageIndex: 0,
     pageSize: 10,
   });
+
+  // Add visibility state
+  const [visibility, setVisibility] = useState<VisibilityState>({
+    labels: false,
+    ...columnVisibility,
+  });
+
+  // Add useEffect to update visibility when props change
+  useEffect(() => {
+    setVisibility(prev => ({
+      ...prev,
+      ...columnVisibility,
+    }));
+  }, [columnVisibility]);
 
   // Create unique label options from all cronjobs
   const labelOptions = useMemo(() => {
@@ -89,13 +108,19 @@ export const CronJobsTable = ({
       accessorKey: 'metadata.name',
       header: ({ column }) => <SortableHeader column={column} title="Name" />,
       cell: ({ row }) => {
-        const name = row.original.metadata?.name;
+        const name = row.original.metadata?.name || '';
+        const namespace = row.original.metadata?.namespace || '';
+
         return (
-          <Link to={`/cronjobs/${name}`}>
-            <Button variant="link" className="underline">
-              {name}
-            </Button>
-          </Link>
+          <Button
+            variant="link"
+            className="underline"
+            onClick={() =>
+              navigateToCronJob ? navigateToCronJob(namespace, name) : null
+            }
+          >
+            {name}
+          </Button>
         );
       },
     },
@@ -227,11 +252,12 @@ export const CronJobsTable = ({
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onPaginationChange: setPagination,
+    onColumnVisibilityChange: setVisibility,
     state: {
       columnFilters,
       sorting,
       pagination,
-      columnVisibility: { labels: false },
+      columnVisibility: visibility,
     },
   });
 

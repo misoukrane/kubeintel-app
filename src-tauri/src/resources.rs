@@ -273,32 +273,35 @@ pub async fn list_resource(
 ) -> Result<Vec<KubeResource>, String> {
     let client = k8s_client::create_k8s_client(kubeconfig_path, context).await?;
 
+    // Check if we need to list resources from all namespaces
+    let list_all_namespaces = namespace == "all";
+
     match resource_type {
         ResourceType::Pod => {
-            let resources = k8s_client::list_resources::<Pod>(client, &namespace).await?;
+            let resources = k8s_client::list_resources::<Pod>(client, &namespace, list_all_namespaces).await?;
             Ok(resources.into_iter().map(KubeResource::Pod).collect())
         }
         ResourceType::Deployment => {
-            let resources = k8s_client::list_resources::<Deployment>(client, &namespace).await?;
+            let resources = k8s_client::list_resources::<Deployment>(client, &namespace, list_all_namespaces).await?;
             Ok(resources.into_iter().map(KubeResource::Deployment).collect())
         }
         ResourceType::StatefulSet => {
-            let resources = k8s_client::list_resources::<StatefulSet>(client, &namespace).await?;
+            let resources = k8s_client::list_resources::<StatefulSet>(client, &namespace, list_all_namespaces).await?;
             Ok(resources
                 .into_iter()
                 .map(KubeResource::StatefulSet)
                 .collect())
         }
         ResourceType::DaemonSet => {
-            let resources = k8s_client::list_resources::<DaemonSet>(client, &namespace).await?;
+            let resources = k8s_client::list_resources::<DaemonSet>(client, &namespace, list_all_namespaces).await?;
             Ok(resources.into_iter().map(KubeResource::DaemonSet).collect())
         }
         ResourceType::Job => {
-            let resources = k8s_client::list_resources::<Job>(client, &namespace).await?;
+            let resources = k8s_client::list_resources::<Job>(client, &namespace, list_all_namespaces).await?;
             Ok(resources.into_iter().map(KubeResource::Job).collect())
         }
         ResourceType::CronJob => {
-            let resources = k8s_client::list_resources::<CronJob>(client, &namespace).await?;
+            let resources = k8s_client::list_resources::<CronJob>(client, &namespace, list_all_namespaces).await?;
             Ok(resources.into_iter().map(KubeResource::CronJob).collect())
         }
         ResourceType::Node => {
@@ -307,27 +310,27 @@ pub async fn list_resource(
             Ok(resources.into_iter().map(KubeResource::Node).collect())
         }
         ResourceType::ConfigMap => {
-            let resources = k8s_client::list_resources::<ConfigMap>(client, &namespace).await?;
+            let resources = k8s_client::list_resources::<ConfigMap>(client, &namespace, list_all_namespaces).await?;
             Ok(resources.into_iter().map(KubeResource::ConfigMap).collect())
         }
         ResourceType::Secret => {
-            let resources = k8s_client::list_resources::<Secret>(client, &namespace).await?;
+            let resources = k8s_client::list_resources::<Secret>(client, &namespace, list_all_namespaces).await?;
             Ok(resources.into_iter().map(KubeResource::Secret).collect())
         }
         ResourceType::Service => {
-            let resources = k8s_client::list_resources::<Service>(client, &namespace).await?;
+            let resources = k8s_client::list_resources::<Service>(client, &namespace, list_all_namespaces).await?;
             Ok(resources.into_iter().map(KubeResource::Service).collect())
         }
         ResourceType::ServiceAccount => {
-            let resources = k8s_client::list_resources::<ServiceAccount>(client, &namespace).await?;
+            let resources = k8s_client::list_resources::<ServiceAccount>(client, &namespace, list_all_namespaces).await?;
             Ok(resources.into_iter().map(KubeResource::ServiceAccount).collect())
         }
         ResourceType::Role => {
-            let resources = k8s_client::list_resources::<Role>(client, &namespace).await?;
+            let resources = k8s_client::list_resources::<Role>(client, &namespace, list_all_namespaces).await?;
             Ok(resources.into_iter().map(KubeResource::Role).collect())
         }
         ResourceType::RoleBinding => {
-            let resources = k8s_client::list_resources::<RoleBinding>(client, &namespace).await?;
+            let resources = k8s_client::list_resources::<RoleBinding>(client, &namespace, list_all_namespaces).await?;
             Ok(resources.into_iter().map(KubeResource::RoleBinding).collect())
         }
     }
@@ -406,6 +409,12 @@ pub async fn list_resource_events(
     name: String,
 ) -> Result<Vec<Event>, String> {
     let client = k8s_client::create_k8s_client(kubeconfig_path, context).await?;
+    
+    // If namespace is "all", we can't list events for a specific resource across all namespaces
+    // Events are namespace-scoped, so we need a specific namespace
+    if namespace == "all" {
+        return Err("Cannot list events for a resource without specifying a namespace".to_string());
+    }
 
     match resource_type {
         ResourceType::Pod => {

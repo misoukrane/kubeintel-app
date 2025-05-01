@@ -28,7 +28,7 @@ import {
   VisibilityState,
 } from '@tanstack/react-table';
 import { Input } from '@/components/ui/input';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { SortableHeader } from '@/components/table/sortable-header';
 import { DataTablePagination } from '@/components/table/data-table-pagination';
@@ -75,6 +75,14 @@ export const ConfigMapsTable = ({
     labels: false,
     ...columnVisibility,
   });
+
+  // Update visibility when props change
+  useEffect(() => {
+    setVisibility({
+      labels: false,
+      ...columnVisibility,
+    });
+  }, [columnVisibility]);
 
   // Create unique label options from all configmaps
   const labelOptions = useMemo(() => {

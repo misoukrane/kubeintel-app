@@ -5,10 +5,16 @@ import { ErrorAlert } from '@/components/error-alert';
 import { V1StatefulSet } from '@kubernetes/client-node';
 import { useListKubeResource } from '@/hooks/kube-resource/use-list-kube-resource';
 import { ResourceTypes } from '@/lib/strings';
+import { useNavigate } from 'react-router';
 
 export const StatefulSets = () => {
-  const { selectedKubeconfig, currentContext, currentNamespace } =
-    useConfigStore();
+  const navigate = useNavigate();
+  const {
+    selectedKubeconfig,
+    currentContext,
+    currentNamespace,
+    setCurrentNamespace,
+  } = useConfigStore();
 
   const {
     data: statefulsets,
@@ -26,7 +32,18 @@ export const StatefulSets = () => {
       {isLoading && <Spinner />}
       {error && <ErrorAlert error={error} />}
       {!isLoading && !error && (
-        <StatefulSetsTable statefulsets={statefulsets ?? []} />
+        <StatefulSetsTable
+          statefulsets={statefulsets ?? []}
+          columnVisibility={{
+            namespace: currentNamespace === 'all' ? true : false,
+          }}
+          navigateToStatefulSet={(namespace: string, name: string) => {
+            if (namespace !== currentNamespace) {
+              setCurrentNamespace(namespace);
+            }
+            navigate(`/statefulsets/${name}`);
+          }}
+        />
       )}
     </div>
   );

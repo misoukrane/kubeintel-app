@@ -28,7 +28,7 @@ import {
   PaginationState,
 } from '@tanstack/react-table';
 import { Input } from '@/components/ui/input';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { SortableHeader } from '@/components/table/sortable-header';
 import { DataTablePagination } from '@/components/table/data-table-pagination';
@@ -91,6 +91,11 @@ export const PodsTable = ({
   const [colVisibility, setColVisibility] = useState<{
     [key: string]: boolean;
   }>(columnVisibility || {});
+
+  // Update column visibility when props change
+  useEffect(() => {
+    setColVisibility(columnVisibility || {});
+  }, [columnVisibility]);
 
   // Create unique label options from all pods
   const labelOptions = useMemo(() => {
@@ -300,29 +305,6 @@ export const PodsTable = ({
                       </div>
                     );
                   })}
-                {namespaces.length > 1 && (
-                  <div>
-                    <Select
-                      onValueChange={(value) => {
-                        const namespaceColumn = table.getColumn('namespace');
-                        if (namespaceColumn) {
-                          namespaceColumn.setFilterValue(value || undefined);
-                        }
-                      }}
-                    >
-                      <SelectTrigger className="max-w-xs">
-                        <SelectValue placeholder="Filter namespace..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {namespaces.map((namespace) => (
-                          <SelectItem key={namespace} value={namespace}>
-                            {namespace}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
                 <div>
                   <MultiSelect
                     options={labelOptions}

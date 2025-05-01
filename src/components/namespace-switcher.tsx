@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Check, ChevronsUpDown, ListRestart } from 'lucide-react';
+import { Check, ChevronsUpDown, Layers, ListRestart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -60,10 +60,12 @@ export function NamespaceSwitcher({
             >
               {isExpanded && (
                 <span className="truncate font-semibold">
-                  {currentNamespace ||
-                    (namespaces && namespaces.length > 0
-                      ? namespaces[0]
-                      : 'Select namespace...')}
+                  {currentNamespace === 'all'
+                    ? 'All Namespaces'
+                    : currentNamespace ||
+                      (namespaces && namespaces.length > 0
+                        ? namespaces[0]
+                        : 'Select namespace...')}
                 </span>
               )}
               <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
@@ -88,6 +90,25 @@ export function NamespaceSwitcher({
               <CommandInput placeholder="Search namespace..." />
               <CommandList>
                 <CommandEmpty>No namespace found.</CommandEmpty>
+                <CommandGroup heading="Options">
+                  <CommandItem
+                    value="all"
+                    onSelect={() => {
+                      onNamespaceChange('all');
+                      setOpen(false);
+                    }}
+                  >
+                    <Layers className="mr-2 h-4 w-4" />
+                    All Namespaces
+                    <Check
+                      className={cn(
+                        'ml-auto h-4 w-4',
+                        currentNamespace === 'all' ? 'opacity-100' : 'opacity-0'
+                      )}
+                    />
+                  </CommandItem>
+                </CommandGroup>
+                <CommandSeparator />
                 <CommandGroup heading="Namespaces">
                   {namespaces.map((namespace) => (
                     <CommandItem

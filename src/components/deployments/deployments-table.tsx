@@ -28,7 +28,7 @@ import {
   getPaginationRowModel,
 } from '@tanstack/react-table';
 import { Input } from '@/components/ui/input';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { SortableHeader } from '@/components/table/sortable-header';
 import { DataTablePagination } from '@/components/table/data-table-pagination';
@@ -42,11 +42,18 @@ interface DeploymentsTableProps {
     name: string;
     labelSelector: string;
   };
+  columnVisibility?: {
+    namespace?: boolean;
+    labels?: boolean;
+  };
+  navigateToDeployment?: (namespace: string, name: string) => void;
 }
 
 export const DeploymentsTable = ({
   deployments,
   initialFilters = { name: '', labelSelector: '' },
+  columnVisibility,
+  navigateToDeployment,
 }: DeploymentsTableProps) => {
   // Create initial filters array
   const initialColumnFilters: ColumnFiltersState = [
@@ -65,6 +72,21 @@ export const DeploymentsTable = ({
     pageIndex: 0,
     pageSize: 10,
   });
+  
+  // Initialize column visibility state based on props
+  const [columnVisibilityState, setColumnVisibilityState] = useState({
+    namespace: columnVisibility?.namespace ?? true,
+    labels: columnVisibility?.labels ?? false,
+  });
+
+  // Update column visibility when props change
+  useEffect(() => {
+    setColumnVisibilityState(prev => ({
+      ...prev,
+      namespace: columnVisibility?.namespace ?? true,
+      labels: columnVisibility?.labels ?? false,
+    }));
+  }, [columnVisibility]);
 
   // Create unique label options from all deployments
   const labelOptions = useMemo(() => {
@@ -88,12 +110,19 @@ export const DeploymentsTable = ({
       header: ({ column }) => <SortableHeader column={column} title="Name" />,
       cell: ({ row }) => {
         const name = row.original.metadata?.name;
+        const namespace = row.original.metadata?.namespace;
         return (
-          <Link to={`/deployments/${name}`}>
-            <Button variant="link" className="underline">
-              {name}
-            </Button>
-          </Link>
+          <Button 
+            variant="link" 
+            className="underline"
+            onClick={() => {
+              if (navigateToDeployment && name && namespace) {
+                navigateToDeployment(namespace, name);
+              }
+            }}
+          >
+            {name}
+          </Button>
         );
       },
     },
@@ -199,7 +228,7 @@ export const DeploymentsTable = ({
       columnFilters,
       sorting,
       pagination,
-      columnVisibility: { labels: false },
+      columnVisibility: columnVisibilityState,
     },
   });
 

@@ -22,7 +22,7 @@ import {
   VisibilityState,
 } from '@tanstack/react-table';
 import { Input } from '@/components/ui/input';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { SortableHeader } from '@/components/table/sortable-header';
 import { DataTablePagination } from '@/components/table/data-table-pagination';
@@ -71,6 +71,14 @@ export const RoleBindingsTable = ({
     labels: false,
     ...columnVisibility,
   });
+
+  // Add useEffect to update visibility when props change
+  useEffect(() => {
+    setVisibility(prev => ({
+      ...prev,
+      ...columnVisibility,
+    }));
+  }, [columnVisibility]);
 
   // Create unique label options from all roleBindings
   const labelOptions = useMemo(() => {

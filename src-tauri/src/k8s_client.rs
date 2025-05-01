@@ -23,7 +23,7 @@ pub async fn create_k8s_client(kubeconfig_path: String, context: String) -> Resu
     Client::try_from(config).map_err(|e| e.to_string())
 }
 
-pub async fn list_resources<T>(client: Client, namespace: &str) -> Result<Vec<T>, String>
+pub async fn list_resources<T>(client: Client, namespace: &str, list_all_namespaces: bool) -> Result<Vec<T>, String>
 where
     T: Resource<Scope = kube::core::NamespaceResourceScope>
         + Clone
@@ -31,12 +31,21 @@ where
         + k8s_openapi::Metadata<Ty = k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta>
         + serde::de::DeserializeOwned,
 {
-    let api = Api::namespaced(client, namespace);
-    let list = api
-        .list(&ListParams::default())
-        .await
-        .map_err(|e| e.to_string())?;
-    Ok(list.items)
+    if list_all_namespaces {
+        let api = Api::all(client);
+        let list = api
+            .list(&ListParams::default())
+            .await
+            .map_err(|e| e.to_string())?;
+        Ok(list.items)
+    } else {
+        let api = Api::namespaced(client, namespace);
+        let list = api
+            .list(&ListParams::default())
+            .await
+            .map_err(|e| e.to_string())?;
+        Ok(list.items)
+    }
 }
 
 pub async fn list_cluster_resources<K>(client: Client) -> Result<Vec<K>, String>

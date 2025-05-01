@@ -5,10 +5,16 @@ import { ErrorAlert } from '@/components/error-alert';
 import { V1Deployment } from '@kubernetes/client-node';
 import { useListKubeResource } from '@/hooks/kube-resource/use-list-kube-resource';
 import { ResourceTypes } from '@/lib/strings';
+import { useNavigate } from 'react-router';
 
 export const Deployments = () => {
-  const { selectedKubeconfig, currentContext, currentNamespace } =
-    useConfigStore();
+  const navigate = useNavigate();
+  const {
+    selectedKubeconfig,
+    currentContext,
+    currentNamespace,
+    setCurrentNamespace,
+  } = useConfigStore();
 
   const {
     data: deployments,
@@ -26,7 +32,18 @@ export const Deployments = () => {
       {isLoading && <Spinner />}
       {error && <ErrorAlert error={error} />}
       {!isLoading && !error && (
-        <DeploymentsTable deployments={deployments ?? []} />
+        <DeploymentsTable
+          deployments={deployments ?? []}
+          columnVisibility={{
+            namespace: currentNamespace === 'all' ? true : false,
+          }}
+          navigateToDeployment={(namespace: string, name: string) => {
+            if (namespace !== currentNamespace) {
+              setCurrentNamespace(namespace);
+            }
+            navigate(`/deployments/${name}`);
+          }}
+        />
       )}
     </div>
   );
