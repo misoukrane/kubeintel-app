@@ -1,4 +1,3 @@
-import { Link } from 'react-router';
 import { V1CronJob } from '@kubernetes/client-node';
 import { Card, CardContent } from '@/components/ui/card';
 import {

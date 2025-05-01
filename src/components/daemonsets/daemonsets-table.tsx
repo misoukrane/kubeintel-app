@@ -1,4 +1,3 @@
-import { Link } from 'react-router';
 import { V1DaemonSet } from '@kubernetes/client-node';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -72,7 +71,7 @@ export const DaemonSetsTable = ({
     pageIndex: 0,
     pageSize: 10,
   });
-  
+
   // Initialize column visibility state based on props
   const [columnVisibilityState, setColumnVisibilityState] = useState({
     namespace: columnVisibility?.namespace ?? true,
@@ -112,8 +111,8 @@ export const DaemonSetsTable = ({
         const name = row.original.metadata?.name;
         const namespace = row.original.metadata?.namespace;
         return (
-          <Button 
-            variant="link" 
+          <Button
+            variant="link"
             className="underline"
             onClick={() => {
               if (navigateToDaemonSet && name && namespace) {

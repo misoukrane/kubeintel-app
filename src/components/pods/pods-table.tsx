@@ -33,13 +33,6 @@ import { Button } from '@/components/ui/button';
 import { SortableHeader } from '@/components/table/sortable-header';
 import { DataTablePagination } from '@/components/table/data-table-pagination';
 import { MultiSelect } from '@/components/ui/multi-select';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { arrayToLabelSelector, labelSelectorToArray } from '@/lib/labels';
 import { getAge } from '@/lib/time';
 
@@ -110,17 +103,6 @@ export const PodsTable = ({
       label,
       value: label,
     }));
-  }, [pods]);
-
-  // Get unique namespaces
-  const namespaces = useMemo(() => {
-    const namespaceSet = new Set<string>();
-    pods.forEach((pod) => {
-      if (pod.metadata?.namespace) {
-        namespaceSet.add(pod.metadata.namespace);
-      }
-    });
-    return Array.from(namespaceSet);
   }, [pods]);
 
   const columns: ColumnDef<V1Pod>[] = [

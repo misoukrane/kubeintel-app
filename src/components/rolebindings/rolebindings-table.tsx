@@ -137,13 +137,12 @@ export const RoleBindingsTable = ({
         const subjects = row.original.subjects || [];
         return subjects.length > 0
           ? subjects
-              .map(
-                (subject) =>
-                  `${subject.kind}/${subject.name}${
-                    subject.namespace ? ` (${subject.namespace})` : ''
-                  }`
-              )
-              .join(', ')
+            .map(
+              (subject) =>
+                `${subject.kind}/${subject.name}${subject.namespace ? ` (${subject.namespace})` : ''
+                }`
+            )
+            .join(', ')
           : 'None';
       },
     },
@@ -160,10 +159,8 @@ export const RoleBindingsTable = ({
     {
       id: 'age',
       header: ({ column }) => <SortableHeader column={column} title="Age" />,
-      cell: ({ row }) => {
-        const creationTimestamp = row.original.metadata?.creationTimestamp;
-        return creationTimestamp ? getAge(new Date(creationTimestamp)) : 'N/A';
-      },
+      cell: ({ row }) =>
+        getAge(String(row.original.metadata?.creationTimestamp)),
       sortingFn: (rowA, rowB) => {
         const dateA = rowA.original.metadata?.creationTimestamp
           ? new Date(rowA.original.metadata.creationTimestamp).getTime()
@@ -183,13 +180,13 @@ export const RoleBindingsTable = ({
         const labels = row.original.metadata?.labels || {};
         return Object.entries(labels).length > 0
           ? Object.entries(labels).map(([key, value]) => (
-              <Badge key={key} variant="outline" className="mr-1 mb-1">
-                {key}={value}
-              </Badge>
-            ))
+            <Badge key={key} variant="outline" className="mr-1 mb-1">
+              {key}={value}
+            </Badge>
+          ))
           : 'None';
       },
-      filterFn: (row, id, filterValue) => {
+      filterFn: (row, _, filterValue) => {
         if (!filterValue || filterValue.length === 0) return true;
         const labels = row.original.metadata?.labels || {};
 
@@ -197,8 +194,8 @@ export const RoleBindingsTable = ({
         const filterLabels = Array.isArray(filterValue)
           ? filterValue
           : typeof filterValue === 'string'
-          ? labelSelectorToArray(filterValue)
-          : [];
+            ? labelSelectorToArray(filterValue)
+            : [];
 
         // Check if all filter labels are present in the row's labels
         return filterLabels.every((filter) => {
@@ -243,20 +240,18 @@ export const RoleBindingsTable = ({
             />
             {labelOptions.length > 0 && (
               <MultiSelect
-                placeholder="Filter by labels..."
-                selected={
-                  typeof table.getColumn('labels')?.getFilterValue() === 'string'
-                    ? labelSelectorToArray(
-                        table.getColumn('labels')?.getFilterValue() as string
-                      )
-                    : (table.getColumn('labels')?.getFilterValue() as string[]) || []
-                }
                 options={labelOptions}
-                onChange={(selected) => {
-                  // Apply the selected labels as filters
-                  table
-                    .getColumn('labels')
-                    ?.setFilterValue(arrayToLabelSelector(selected));
+                placeholder="Filter by labels..."
+                defaultValue={labelSelectorToArray(
+                  initialFilters.labelSelector
+                )}
+                onValueChange={(values) => {
+                  const labelColumn = table.getColumn('labels');
+                  if (labelColumn) {
+                    labelColumn.setFilterValue(
+                      arrayToLabelSelector(values)
+                    );
+                  }
                 }}
                 className="max-w-xs"
               />
@@ -284,9 +279,9 @@ export const RoleBindingsTable = ({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   ))}
                 </TableRow>

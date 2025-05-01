@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
-import { stringify, parse } from 'yaml';
+import { stringify } from 'yaml';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface ScrollAreaCodeProps {
