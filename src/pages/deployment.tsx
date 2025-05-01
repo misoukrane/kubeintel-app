@@ -3,17 +3,31 @@ import { Spinner } from '@/components/spinner';
 import { DeploymentView } from '@/components/deployments/deployment-view';
 import { ErrorAlert } from '@/components/error-alert';
 import { V1Deployment } from '@kubernetes/client-node';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams, useSearchParams } from 'react-router';
 import { useClipboard } from '@/hooks/use-clipboard';
 import { useKubeResource } from '@/hooks/kube-resource/use-kube-resource';
 import { ResourceTypes } from '@/lib/strings';
+import { useState, useRef } from 'react';
 
 export const Deployment = () => {
   const { deploymentName } = useParams();
+  const [searchParams] = useSearchParams();
+  const deploymentNamespace = searchParams.get('namespace');
+
   const navigate = useNavigate();
+  const { copyToClipboard } = useClipboard();
   const { selectedKubeconfig, currentContext, currentNamespace } =
     useConfigStore();
-  const { copyToClipboard } = useClipboard();
+
+  // Store the namespace from when the component first mounted
+  // But prioritize the namespace from URL if it exists
+  const initialNamespaceRef = useRef(
+    deploymentNamespace ||
+      (currentNamespace && currentNamespace !== 'all' ? currentNamespace : '')
+  );
+
+  // Local namespace state used for API calls
+  const [resourceNamespace] = useState<string>(initialNamespaceRef.current);
 
   const {
     resource: deployment,
@@ -27,7 +41,7 @@ export const Deployment = () => {
   } = useKubeResource<V1Deployment>({
     kubeconfigPath: selectedKubeconfig,
     context: currentContext,
-    namespace: currentNamespace,
+    namespace: resourceNamespace,
     resourceType: ResourceTypes.Deployment,
     name: deploymentName,
     onDeleteSuccess: () => navigate('/deployments'),

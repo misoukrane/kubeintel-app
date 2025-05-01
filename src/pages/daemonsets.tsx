@@ -38,10 +38,9 @@ export const DaemonSets = () => {
             namespace: currentNamespace === 'all' ? true : false,
           }}
           navigateToDaemonSet={(namespace: string, name: string) => {
-            if (namespace !== currentNamespace) {
-              setCurrentNamespace(namespace);
-            }
-            navigate(`/daemonsets/${name}`);
+            navigate(
+              `/daemonsets/${name}?namespace=${encodeURIComponent(namespace)}`
+            );
           }}
         />
       )}

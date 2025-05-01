@@ -44,10 +44,9 @@ export const CronJobs = () => {
           cronjobs={cronjobs ?? []}
           initialFilters={initialFilters}
           navigateToCronJob={(namespace: string, name: string) => {
-            if (namespace !== currentNamespace) {
-              setCurrentNamespace(namespace);
-            }
-            navigate(`${ROUTES.CRONJOBS}/${name}`);
+            navigate(
+              `${ROUTES.CRONJOBS}/${name}?namespace=${encodeURIComponent(namespace)}`
+            );
           }}
           columnVisibility={{
             labels: false,

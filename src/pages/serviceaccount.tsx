@@ -3,24 +3,38 @@ import { Spinner } from '@/components/spinner';
 import { ServiceAccountView } from '@/components/serviceaccounts/serviceaccount-view';
 import { ErrorAlert } from '@/components/error-alert';
 import { V1ServiceAccount } from '@kubernetes/client-node';
-import { useParams, useNavigate } from 'react-router';
+import { useParams, useNavigate, useSearchParams } from 'react-router';
 import { useClipboard } from '@/hooks/use-clipboard';
 import { useKubeResource } from '@/hooks/kube-resource/use-kube-resource';
 import { ResourceTypes } from '@/lib/strings';
 import { ROUTES } from '@/lib/routes';
+import { useState, useRef } from 'react';
 
 export const ServiceAccount = () => {
   const { serviceAccountName } = useParams();
+  const [searchParams] = useSearchParams();
+  const serviceAccountNamespace = searchParams.get('namespace');
+
   const navigate = useNavigate();
   const { copyToClipboard } = useClipboard();
   const { selectedKubeconfig, currentContext, currentNamespace } =
     useConfigStore();
 
+  // Store the namespace from when the component first mounted
+  // But prioritize the namespace from URL if it exists
+  const initialNamespaceRef = useRef(
+    serviceAccountNamespace ||
+      (currentNamespace && currentNamespace !== 'all' ? currentNamespace : '')
+  );
+
+  // Local namespace state used for API calls
+  const [resourceNamespace] = useState<string>(initialNamespaceRef.current);
+
   const { resource, isLoading, error, deleteResource, openEvents } =
     useKubeResource<V1ServiceAccount>({
       kubeconfigPath: selectedKubeconfig,
       context: currentContext,
-      namespace: currentNamespace,
+      namespace: resourceNamespace,
       resourceType: ResourceTypes.ServiceAccount,
       name: serviceAccountName,
       onDeleteSuccess: () => navigate(ROUTES.SERVICEACCOUNTS),

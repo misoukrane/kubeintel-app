@@ -44,10 +44,9 @@ export const ServiceAccounts = () => {
           serviceAccounts={serviceAccounts ?? []}
           initialFilters={initialFilters}
           navigateToServiceAccount={(namespace: string, name: string) => {
-            if (namespace !== currentNamespace) {
-              setCurrentNamespace(namespace);
-            }
-            navigate(`${ROUTES.SERVICEACCOUNTS}/${name}`);
+            navigate(
+              `${ROUTES.SERVICEACCOUNTS}/${name}?namespace=${encodeURIComponent(namespace)}`
+            );
           }}
           columnVisibility={{
             labels: false,

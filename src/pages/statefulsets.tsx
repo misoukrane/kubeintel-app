@@ -38,10 +38,9 @@ export const StatefulSets = () => {
             namespace: currentNamespace === 'all' ? true : false,
           }}
           navigateToStatefulSet={(namespace: string, name: string) => {
-            if (namespace !== currentNamespace) {
-              setCurrentNamespace(namespace);
-            }
-            navigate(`/statefulsets/${name}`);
+            navigate(
+              `/statefulsets/${name}?namespace=${encodeURIComponent(namespace)}`
+            );
           }}
         />
       )}

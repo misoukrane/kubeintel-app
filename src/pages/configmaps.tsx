@@ -44,10 +44,9 @@ export const ConfigMaps = () => {
           configmaps={configmaps ?? []}
           initialFilters={initialFilters}
           navigateToConfigMap={(namespace: string, name: string) => {
-            if (namespace !== currentNamespace) {
-              setCurrentNamespace(namespace);
-            }
-            navigate(`${ROUTES.CONFIGMAPS}/${name}`);
+            navigate(
+              `${ROUTES.CONFIGMAPS}/${name}?namespace=${encodeURIComponent(namespace)}`
+            );
           }}
           columnVisibility={{
             labels: false,

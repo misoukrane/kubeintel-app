@@ -43,10 +43,9 @@ export const Pods = () => {
       {!isLoading && !error && (
         <PodsTable
           navigateToPod={(namespace: string, name: string) => {
-            if (namespace !== currentNamespace) {
-              setCurrentNamespace(namespace);
-            }
-            navigate(`/pods/${name}`);
+            navigate(
+              `/pods/${name}?namespace=${encodeURIComponent(namespace)}`
+            );
           }}
           pods={resources ?? []}
           initialFilters={initialFilters}

@@ -38,10 +38,9 @@ export const Deployments = () => {
             namespace: currentNamespace === 'all' ? true : false,
           }}
           navigateToDeployment={(namespace: string, name: string) => {
-            if (namespace !== currentNamespace) {
-              setCurrentNamespace(namespace);
-            }
-            navigate(`/deployments/${name}`);
+            navigate(
+              `/deployments/${name}?namespace=${encodeURIComponent(namespace)}`
+            );
           }}
         />
       )}

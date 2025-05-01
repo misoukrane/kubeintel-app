@@ -45,10 +45,9 @@ export const Services = () => {
           services={services ?? []}
           initialFilters={initialFilters}
           navigateToService={(namespace: string, name: string) => {
-            if (namespace !== currentNamespace) {
-              setCurrentNamespace(namespace);
-            }
-            navigate(`${ROUTES.SERVICES}/${name}`);
+            navigate(
+              `${ROUTES.SERVICES}/${name}?namespace=${encodeURIComponent(namespace)}`
+            );
           }}
           columnVisibility={{
             labels: false,

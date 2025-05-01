@@ -45,10 +45,9 @@ export const Jobs = () => {
           jobs={jobs ?? []}
           initialFilters={initialFilters}
           navigateToJob={(namespace: string, name: string) => {
-            if (namespace !== currentNamespace) {
-              setCurrentNamespace(namespace);
-            }
-            navigate(`${ROUTES.JOBS}/${name}`);
+            navigate(
+              `${ROUTES.JOBS}/${name}?namespace=${encodeURIComponent(namespace)}`
+            );
           }}
           columnVisibility={{ labels: false, namespace: false }}
         />
