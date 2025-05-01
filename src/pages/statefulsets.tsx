@@ -9,12 +9,8 @@ import { useNavigate } from 'react-router';
 
 export const StatefulSets = () => {
   const navigate = useNavigate();
-  const {
-    selectedKubeconfig,
-    currentContext,
-    currentNamespace,
-    setCurrentNamespace,
-  } = useConfigStore();
+  const { selectedKubeconfig, currentContext, currentNamespace } =
+    useConfigStore();
 
   const {
     data: statefulsets,

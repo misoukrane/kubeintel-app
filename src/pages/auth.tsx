@@ -15,17 +15,17 @@ import { AlertCircle } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { invoke } from '@tauri-apps/api/core';
+import { useToast } from '@/hooks/use-toast';
 
 // authenticate the cluster
 export const Auth = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { selectedKubeconfig, currentContext } = useConfigStore();
   const [cmdOutput, setCmdOutput] = useState<Array<string>>([]);
   const [code, setCode] = useState<number>(-1);
   const [executing, setExecuting] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [openAuthenticatedDialog, setOpenAuthenticatedDialog] =
-    useState<boolean>(false);
   const [openMissingKubectlDialog, setOpenMissingKubectlDialog] =
     useState<boolean>(false);
   const kubeconfig = selectedKubeconfig ?? '';
@@ -78,7 +78,14 @@ export const Auth = () => {
 
   useEffect(() => {
     if (code === 0 && !executing && error == null) {
-      setOpenAuthenticatedDialog(true);
+      // toast auth success
+      toast({
+        title: 'Cluster authenticated',
+        className: 'bg-green-500 text-white dark:bg-green-700',
+        description: 'Cluster authenticated successfully.',
+        variant: 'default',
+      });
+      navigate(ROUTES.CLUSTER);
     }
   }, [code, executing, error]);
 
@@ -98,17 +105,6 @@ export const Auth = () => {
 
   return (
     <div className="w-full max-w-7xl mx-auto p-1">
-      {error && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>
-            {error
-              ? error
-              : 'Failed to authenticate the cluster. Please check your kubeconfig file and try again.'}
-          </AlertDescription>
-        </Alert>
-      )}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold pt-2">Authenticate Cluster</h1>
       </div>
@@ -132,6 +128,63 @@ export const Auth = () => {
       </div>
       <div className="space-y-1">
         <p className="text-lg">Output:</p>
+        {error && (
+          <div
+            className="animate-fade-in-shake"
+            key={error} // ensures animation on error change
+          >
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>
+                <p>
+                  {error}
+                  <br />
+                  Failed to authenticate the cluster. Please check your
+                  kubeconfig file and try again.
+                  <br />
+                  Check the logs below for more details.
+                </p>
+              </AlertDescription>
+            </Alert>
+          </div>
+        )}
+        <style>{`
+          @keyframes fadeIn {
+            0% {
+              opacity: 0;
+              transform: translateY(20px);
+            }
+            100% {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          @keyframes shake {
+            0%,
+            100% {
+              transform: translateX(0);
+            }
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+              transform: translateX(-8px);
+            }
+            20%,
+            40%,
+            60%,
+            80% {
+              transform: translateX(8px);
+            }
+          }
+          .animate-fade-in-shake {
+            animation:
+              fadeIn 0.7s cubic-bezier(0.39, 0.575, 0.565, 1) forwards,
+              shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) 0.7s 1;
+          }
+        `}</style>
         <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
           <pre className="p-3 rounded-md text-xs text-prima ry overflow-x-auto">
             {/* Strip ANSI escape codes before joining and displaying */}
@@ -150,37 +203,6 @@ export const Auth = () => {
           Back to config
         </Button>
       </div>
-      <Dialog
-        open={openAuthenticatedDialog}
-        onOpenChange={setOpenAuthenticatedDialog}
-      >
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Cluster Aurthenticated!</DialogTitle>
-            <DialogDescription>
-              Cluster Authenticated Successfully!
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => {
-                navigate(ROUTES.HOME);
-              }}
-            >
-              Back to Config
-            </Button>
-            <Button
-              variant="default"
-              onClick={() => {
-                navigate(ROUTES.CLUSTER);
-              }}
-            >
-              Go to Cluster
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
       <Dialog
         open={openMissingKubectlDialog}
         onOpenChange={setOpenMissingKubectlDialog}

@@ -10,12 +10,8 @@ import { ResourceTypes } from '@/lib/strings';
 export const Pods = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const {
-    selectedKubeconfig,
-    currentContext,
-    currentNamespace,
-    setCurrentNamespace,
-  } = useConfigStore();
+  const { selectedKubeconfig, currentContext, currentNamespace } =
+    useConfigStore();
 
   const {
     data: resources,

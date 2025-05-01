@@ -11,12 +11,8 @@ import { ROUTES } from '@/lib/routes';
 export const Services = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const {
-    selectedKubeconfig,
-    currentContext,
-    currentNamespace,
-    setCurrentNamespace,
-  } = useConfigStore();
+  const { selectedKubeconfig, currentContext, currentNamespace } =
+    useConfigStore();
 
   const {
     data: services,
