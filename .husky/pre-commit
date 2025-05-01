@@ -1,0 +1,3 @@
+pnpm lint-staged
+pnpm build
+exit 1
