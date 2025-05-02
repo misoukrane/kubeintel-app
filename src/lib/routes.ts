@@ -31,4 +31,8 @@ export const ROUTES = {
   ROLE: '/roles/:roleName',
   ROLEBINDINGS: '/rolebindings',
   ROLEBINDING: '/rolebindings/:roleBindingName',
+  CLUSTER_ROLES: '/clusterroles',
+  CLUSTER_ROLE: '/clusterroles/:clusterRoleName',
+  CLUSTER_ROLE_BINDINGS: '/clusterrolebindings',
+  CLUSTER_ROLE_BINDING: '/clusterrolebindings/:clusterRoleBindingName',
 } as const;

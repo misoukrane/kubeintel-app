@@ -29,6 +29,8 @@ import { CronJobLogo } from '@/assets/cron-job';
 import { ServiceAccountLogo } from '@/assets/service-account';
 import { RoleLogo } from '@/assets/role';
 import { RoleBindingLogo } from '@/assets/role-binding';
+import { ClusterRoleLogo } from '@/assets/cluster-role';
+import { ClusterRoleBindingLogo } from '@/assets/cluster-role-binding';
 import { ROUTES } from '@/lib/routes';
 
 // Menu items using ROUTES constants
@@ -102,6 +104,16 @@ const items = [
     title: 'RoleBindings',
     url: ROUTES.ROLEBINDINGS,
     icon: RoleBindingLogo,
+  },
+  {
+    title: 'ClusterRoles',
+    url: ROUTES.CLUSTER_ROLES,
+    icon: ClusterRoleLogo,
+  },
+  {
+    title: 'ClusterRoleBindings',
+    url: ROUTES.CLUSTER_ROLE_BINDINGS,
+    icon: ClusterRoleBindingLogo,
   },
 ];
 

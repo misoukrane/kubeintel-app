@@ -40,6 +40,10 @@ import { Roles } from './pages/roles';
 import { Role } from './pages/role';
 import { RoleBindings } from './pages/rolebindings';
 import { RoleBinding } from './pages/rolebinding';
+import { ClusterRoles } from './pages/cluster-roles';
+import { ClusterRole } from './pages/cluster-role';
+import { ClusterRoleBindings } from './pages/cluster-role-bindings';
+import { ClusterRoleBinding } from './pages/cluster-role-binding';
 
 const queryClient = new QueryClient();
 
@@ -175,6 +179,22 @@ const router = createBrowserRouter([
       {
         path: ROUTES.ROLEBINDING,
         element: <RoleBinding />,
+      },
+      {
+        path: ROUTES.CLUSTER_ROLES,
+        element: <ClusterRoles />,
+      },
+      {
+        path: ROUTES.CLUSTER_ROLE,
+        element: <ClusterRole />,
+      },
+      {
+        path: ROUTES.CLUSTER_ROLE_BINDINGS,
+        element: <ClusterRoleBindings />,
+      },
+      {
+        path: ROUTES.CLUSTER_ROLE_BINDING,
+        element: <ClusterRoleBinding />,
       },
     ],
   },

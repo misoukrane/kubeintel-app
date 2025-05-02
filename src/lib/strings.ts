@@ -29,4 +29,6 @@ export enum ResourceTypes {
   ServiceAccount = 'ServiceAccount',
   Role = 'Role',
   RoleBinding = 'RoleBinding',
+  ClusterRole = 'ClusterRole',
+  ClusterRoleBinding = 'ClusterRoleBinding',
 }

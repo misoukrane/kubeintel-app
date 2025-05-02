@@ -3,7 +3,7 @@ use crate::kubectl::run_kubectl_command;
 use k8s_openapi::api::apps::v1::{DaemonSet, Deployment, StatefulSet};
 use k8s_openapi::api::batch::v1::{CronJob, Job};
 use k8s_openapi::api::core::v1::{ConfigMap, Event, Node, Pod, Secret, Service, ServiceAccount};
-use k8s_openapi::api::rbac::v1::{Role, RoleBinding};
+use k8s_openapi::api::rbac::v1::{ClusterRole, ClusterRoleBinding, Role, RoleBinding};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -22,6 +22,8 @@ pub enum KubeResource {
     ServiceAccount(ServiceAccount),
     Role(Role),
     RoleBinding(RoleBinding),
+    ClusterRole(ClusterRole),
+    ClusterRoleBinding(ClusterRoleBinding),
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -40,6 +42,8 @@ pub enum ResourceType {
     ServiceAccount,
     Role,
     RoleBinding,
+    ClusterRole,
+    ClusterRoleBinding,
 }
 
 impl ResourceType {
@@ -58,24 +62,28 @@ impl ResourceType {
             ResourceType::ServiceAccount => "serviceaccount",
             ResourceType::Role => "role",
             ResourceType::RoleBinding => "rolebinding",
+            ResourceType::ClusterRole => "clusterrole",
+            ResourceType::ClusterRoleBinding => "clusterrolebinding",
         }
     }
 
-    fn kind(&self) -> &'static str {
+    fn kind(&self) -> String {
         match self {
-            ResourceType::Pod => "Pod",
-            ResourceType::Deployment => "Deployment",
-            ResourceType::DaemonSet => "DaemonSet",
-            ResourceType::StatefulSet => "StatefulSet",
-            ResourceType::Job => "Job",
-            ResourceType::CronJob => "CronJob",
-            ResourceType::Service => "Service",
-            ResourceType::Node => "Node",
-            ResourceType::ConfigMap => "ConfigMap",
-            ResourceType::Secret => "Secret",
-            ResourceType::ServiceAccount => "ServiceAccount",
-            ResourceType::Role => "Role",
-            ResourceType::RoleBinding => "RoleBinding",
+            ResourceType::Pod => "Pod".to_string(),
+            ResourceType::Deployment => "Deployment".to_string(),
+            ResourceType::StatefulSet => "StatefulSet".to_string(),
+            ResourceType::DaemonSet => "DaemonSet".to_string(),
+            ResourceType::Job => "Job".to_string(),
+            ResourceType::CronJob => "CronJob".to_string(),
+            ResourceType::Service => "Service".to_string(),
+            ResourceType::Node => "Node".to_string(),
+            ResourceType::ConfigMap => "ConfigMap".to_string(),
+            ResourceType::Secret => "Secret".to_string(),
+            ResourceType::ServiceAccount => "ServiceAccount".to_string(),
+            ResourceType::Role => "Role".to_string(),
+            ResourceType::RoleBinding => "RoleBinding".to_string(),
+            ResourceType::ClusterRole => "ClusterRole".to_string(),
+            ResourceType::ClusterRoleBinding => "ClusterRoleBinding".to_string(),
         }
     }
 }
@@ -124,6 +132,12 @@ pub async fn delete_resource(
         }
         ResourceType::RoleBinding => {
             k8s_client::delete_resource::<RoleBinding>(client, &namespace, &name).await
+        }
+        ResourceType::ClusterRole => {
+            k8s_client::delete_cluster_resource::<ClusterRole>(client, &name).await
+        }
+        ResourceType::ClusterRoleBinding => {
+            k8s_client::delete_cluster_resource::<ClusterRoleBinding>(client, &name).await
         }
     }
 }
@@ -260,6 +274,14 @@ pub async fn get_resource(
             let resource = k8s_client::get_resource::<RoleBinding>(client, &namespace, &name).await?;
             Ok(KubeResource::RoleBinding(resource))
         }
+        ResourceType::ClusterRole => {
+            let resource = k8s_client::get_cluster_resource::<ClusterRole>(client, &name).await?;
+            Ok(KubeResource::ClusterRole(resource))
+        }
+        ResourceType::ClusterRoleBinding => {
+            let resource = k8s_client::get_cluster_resource::<ClusterRoleBinding>(client, &name).await?;
+            Ok(KubeResource::ClusterRoleBinding(resource))
+        }
     }
 }
 
@@ -332,6 +354,16 @@ pub async fn list_resource(
         ResourceType::RoleBinding => {
             let resources = k8s_client::list_resources::<RoleBinding>(client, &namespace, list_all_namespaces).await?;
             Ok(resources.into_iter().map(KubeResource::RoleBinding).collect())
+        }
+        ResourceType::ClusterRole => {
+            // For ClusterRoles, we ignore the namespace parameter since they are cluster-scoped
+            let resources = k8s_client::list_cluster_resources::<ClusterRole>(client).await?;
+            Ok(resources.into_iter().map(KubeResource::ClusterRole).collect())
+        }
+        ResourceType::ClusterRoleBinding => {
+            // For ClusterRoleBindings, we ignore the namespace parameter since they are cluster-scoped
+            let resources = k8s_client::list_cluster_resources::<ClusterRoleBinding>(client).await?;
+            Ok(resources.into_iter().map(KubeResource::ClusterRoleBinding).collect())
         }
     }
 }
@@ -463,6 +495,16 @@ pub async fn list_resource_events(
         }
         ResourceType::RoleBinding => {
             let events = k8s_client::list_events::<RoleBinding>(client, &namespace, &name).await?;
+            Ok(events)
+        }
+        ResourceType::ClusterRole => {
+            // ClusterRole events would be in "" namespace
+            let events = k8s_client::list_events::<ClusterRole>(client, "", &name).await?;
+            Ok(events)
+        }
+        ResourceType::ClusterRoleBinding => {
+            // ClusterRoleBinding events would be in "" namespace
+            let events = k8s_client::list_events::<ClusterRoleBinding>(client, "", &name).await?;
             Ok(events)
         }
         _ => Err(format!("Unsupported resource type: {:?}", resource_type)),
