@@ -2,16 +2,19 @@ import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/app-sidebar';
 import { useNavigate, Outlet, useLocation } from 'react-router';
 import { useConfigStore } from '@/stores/use-config-store';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ROUTES } from '@/lib/routes';
 import { quitApp, relaunchApp } from '@/lib/app-actions';
 import { useToast } from '@/hooks/use-toast';
 import { MainNavigation } from '@/components/upper-navigation';
+import { Button } from '@/components/ui/button';
+import { RefreshCw } from 'lucide-react';
 
 export default function Layout() {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
+  const [refreshKey, setRefreshKey] = useState(0);
   const {
     selectedKubeconfig,
     contexts,
@@ -63,7 +66,16 @@ export default function Layout() {
 
   useEffect(() => {
     loadNs(selectedKubeconfig, currentContext);
-  }, [selectedKubeconfig, currentContext, loadNamespaces, toast]);
+  }, [selectedKubeconfig, currentContext]);
+
+  // Function to handle refresh action
+  const handleRefresh = () => {
+    setRefreshKey((prevKey) => prevKey + 1);
+    toast({
+      title: 'Refreshing...',
+      description: 'Data is being refreshed.',
+    });
+  };
 
   return (
     <SidebarProvider>
@@ -94,8 +106,17 @@ export default function Layout() {
             className="shrink-0 bg-border w-[1px] mr-2 h-4"
           ></div>
           <MainNavigation location={location.pathname} />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleRefresh}
+            className="ml-auto"
+            title="Refresh Data"
+          >
+            <RefreshCw className="h-4 w-4" />
+          </Button>
         </div>
-        <Outlet />
+        <Outlet key={refreshKey} />
       </main>
     </SidebarProvider>
   );
