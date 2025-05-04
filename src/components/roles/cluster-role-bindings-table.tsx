@@ -35,7 +35,6 @@ import { DataTablePagination } from '@/components/table/data-table-pagination';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { getAge } from '@/lib/time';
 import { arrayToLabelSelector, labelSelectorToArray } from '@/lib/labels';
-import { ShieldCheck } from 'lucide-react';
 
 interface ClusterRoleBindingsTableProps {
   clusterRoleBindings: Array<V1ClusterRoleBinding>;
@@ -90,21 +89,31 @@ export const ClusterRoleBindingsTable = ({
   }, [clusterRoleBindings]);
 
   // Get subjects string
-  const getSubjectsString = (clusterRoleBinding: V1ClusterRoleBinding): string => {
-    if (!clusterRoleBinding.subjects || clusterRoleBinding.subjects.length === 0) return 'None';
-    
-    return clusterRoleBinding.subjects.map(subject => {
-      const kind = subject.kind || '';
-      const name = subject.name || '';
-      const namespace = subject.namespace ? `(${subject.namespace})` : '';
-      return `${kind}/${name}${namespace}`;
-    }).join(', ');
+  const getSubjectsString = (
+    clusterRoleBinding: V1ClusterRoleBinding
+  ): string => {
+    if (
+      !clusterRoleBinding.subjects ||
+      clusterRoleBinding.subjects.length === 0
+    )
+      return 'None';
+
+    return clusterRoleBinding.subjects
+      .map((subject) => {
+        const kind = subject.kind || '';
+        const name = subject.name || '';
+        const namespace = subject.namespace ? `(${subject.namespace})` : '';
+        return `${kind}/${name}${namespace}`;
+      })
+      .join(', ');
   };
 
   // Get role ref string
-  const getRoleRefString = (clusterRoleBinding: V1ClusterRoleBinding): string => {
+  const getRoleRefString = (
+    clusterRoleBinding: V1ClusterRoleBinding
+  ): string => {
     if (!clusterRoleBinding.roleRef) return 'None';
-    
+
     const kind = clusterRoleBinding.roleRef.kind || '';
     const name = clusterRoleBinding.roleRef.name || '';
     return `${kind}/${name}`;
@@ -120,12 +129,13 @@ export const ClusterRoleBindingsTable = ({
 
         return (
           <div className="flex items-center">
-            <ShieldCheck className="h-4 w-4 mr-2 text-purple-500" />
             <Button
               variant="link"
               className="underline"
               onClick={() =>
-                navigateToClusterRoleBinding ? navigateToClusterRoleBinding(name) : null
+                navigateToClusterRoleBinding
+                  ? navigateToClusterRoleBinding(name)
+                  : null
               }
             >
               {name}
@@ -324,4 +334,4 @@ export const ClusterRoleBindingsTable = ({
       </CardContent>
     </Card>
   );
-}; 
+};

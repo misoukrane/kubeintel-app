@@ -35,7 +35,6 @@ import { DataTablePagination } from '@/components/table/data-table-pagination';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { getAge } from '@/lib/time';
 import { arrayToLabelSelector, labelSelectorToArray } from '@/lib/labels';
-import { ShieldCheck } from 'lucide-react';
 
 interface ClusterRolesTableProps {
   clusterRoles: Array<V1ClusterRole>;
@@ -92,14 +91,14 @@ export const ClusterRolesTable = ({
   // Get resources string
   const getResourcesString = (clusterRole: V1ClusterRole): string => {
     if (!clusterRole.rules || clusterRole.rules.length === 0) return 'None';
-    
+
     const resources = new Set<string>();
     clusterRole.rules.forEach((rule) => {
       if (rule.resources) {
         rule.resources.forEach((resource) => resources.add(resource));
       }
     });
-    
+
     if (resources.size === 0) return 'None';
     return Array.from(resources).join(', ');
   };
@@ -114,7 +113,6 @@ export const ClusterRolesTable = ({
 
         return (
           <div className="flex items-center">
-            <ShieldCheck className="h-4 w-4 mr-2 text-blue-500" />
             <Button
               variant="link"
               className="underline"
@@ -310,4 +308,4 @@ export const ClusterRolesTable = ({
       </CardContent>
     </Card>
   );
-}; 
+};

@@ -11,7 +11,6 @@ import { LabelsAnnotations } from '@/components/metadata/labels-annotations';
 import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { ResourceActions } from '@/components/resources/resource-actions';
 import { Badge } from '@/components/ui/badge';
-import { Key } from 'lucide-react';
 import { Link } from 'react-router';
 import { ROUTES } from '@/lib/routes';
 import {
@@ -45,7 +44,6 @@ export const ServiceAccountView = ({
     <Card className="max-w-6xl mx-auto">
       <CardHeader className="flex flex-row items-center justify-between">
         <div className="flex items-center">
-          <Key className="h-5 w-5 mr-2 text-yellow-500" />
           <div>
             <CardTitle className="text-2xl">{metadata?.name}</CardTitle>
             <div className="text-sm text-muted-foreground">
@@ -115,7 +113,9 @@ export const ServiceAccountView = ({
                 <div className="space-y-6">
                   {secrets && secrets.length > 0 ? (
                     <div>
-                      <h3 className="text-lg font-medium mb-3">Mounted Secrets</h3>
+                      <h3 className="text-lg font-medium mb-3">
+                        Mounted Secrets
+                      </h3>
                       <Table>
                         <TableHeader>
                           <TableRow>
@@ -127,7 +127,7 @@ export const ServiceAccountView = ({
                             <TableRow key={idx}>
                               <TableCell>
                                 {secret.name && (
-                                  <Link 
+                                  <Link
                                     to={`${ROUTES.SECRETS}/${secret.name}?namespace=${metadata?.namespace}`}
                                     className="text-blue-500 hover:underline"
                                   >
@@ -142,13 +142,17 @@ export const ServiceAccountView = ({
                     </div>
                   ) : (
                     <div className="text-center py-4">
-                      <p className="text-muted-foreground">No secrets attached to this service account</p>
+                      <p className="text-muted-foreground">
+                        No secrets attached to this service account
+                      </p>
                     </div>
                   )}
 
                   {imagePullSecrets && imagePullSecrets.length > 0 ? (
                     <div>
-                      <h3 className="text-lg font-medium mb-3">Image Pull Secrets</h3>
+                      <h3 className="text-lg font-medium mb-3">
+                        Image Pull Secrets
+                      </h3>
                       <Table>
                         <TableHeader>
                           <TableRow>
@@ -160,7 +164,7 @@ export const ServiceAccountView = ({
                             <TableRow key={idx}>
                               <TableCell>
                                 {secret.name && (
-                                  <Link 
+                                  <Link
                                     to={`${ROUTES.SECRETS}/${secret.name}?namespace=${metadata?.namespace}`}
                                     className="text-blue-500 hover:underline"
                                   >
@@ -175,7 +179,9 @@ export const ServiceAccountView = ({
                     </div>
                   ) : (
                     <div className="text-center py-4">
-                      <p className="text-muted-foreground">No image pull secrets attached to this service account</p>
+                      <p className="text-muted-foreground">
+                        No image pull secrets attached to this service account
+                      </p>
                     </div>
                   )}
                 </div>

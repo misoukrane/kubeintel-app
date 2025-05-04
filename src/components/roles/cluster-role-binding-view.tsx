@@ -11,7 +11,6 @@ import { LabelsAnnotations } from '@/components/metadata/labels-annotations';
 import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { ResourceActions } from '@/components/resources/resource-actions';
 import { Badge } from '@/components/ui/badge';
-import { ShieldCheck } from 'lucide-react';
 import { ResourceTypes } from '@/lib/strings';
 
 interface ClusterRoleBindingViewProps {
@@ -35,7 +34,6 @@ export const ClusterRoleBindingView = ({
     <Card className="max-w-6xl mx-auto">
       <CardHeader className="flex flex-row items-center justify-between">
         <div className="flex items-center">
-          <ShieldCheck className="h-5 w-5 mr-2 text-purple-500" />
           <div>
             <CardTitle className="text-2xl">{metadata?.name}</CardTitle>
             <div className="text-sm text-muted-foreground">
@@ -100,7 +98,7 @@ export const ClusterRoleBindingView = ({
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <h4 className="text-sm font-medium">Kind</h4>
-                        <Badge 
+                        <Badge
                           variant="outline"
                           className="bg-blue-50 text-blue-700 dark:bg-blue-900 dark:text-blue-300 mt-1"
                         >
@@ -109,7 +107,7 @@ export const ClusterRoleBindingView = ({
                       </div>
                       <div>
                         <h4 className="text-sm font-medium">Name</h4>
-                        <Badge 
+                        <Badge
                           variant="outline"
                           className="bg-green-50 text-green-700 dark:bg-green-900 dark:text-green-300 mt-1"
                         >
@@ -118,7 +116,7 @@ export const ClusterRoleBindingView = ({
                       </div>
                       <div>
                         <h4 className="text-sm font-medium">API Group</h4>
-                        <Badge 
+                        <Badge
                           variant="outline"
                           className="bg-purple-50 text-purple-700 dark:bg-purple-900 dark:text-purple-300 mt-1"
                         >
@@ -137,7 +135,7 @@ export const ClusterRoleBindingView = ({
                             <div className="grid grid-cols-2 gap-4">
                               <div>
                                 <h4 className="text-sm font-medium">Kind</h4>
-                                <Badge 
+                                <Badge
                                   variant="outline"
                                   className="bg-blue-50 text-blue-700 dark:bg-blue-900 dark:text-blue-300 mt-1"
                                 >
@@ -146,7 +144,7 @@ export const ClusterRoleBindingView = ({
                               </div>
                               <div>
                                 <h4 className="text-sm font-medium">Name</h4>
-                                <Badge 
+                                <Badge
                                   variant="outline"
                                   className="bg-green-50 text-green-700 dark:bg-green-900 dark:text-green-300 mt-1"
                                 >
@@ -155,8 +153,10 @@ export const ClusterRoleBindingView = ({
                               </div>
                               {subject.namespace && (
                                 <div>
-                                  <h4 className="text-sm font-medium">Namespace</h4>
-                                  <Badge 
+                                  <h4 className="text-sm font-medium">
+                                    Namespace
+                                  </h4>
+                                  <Badge
                                     variant="outline"
                                     className="bg-yellow-50 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300 mt-1"
                                   >
@@ -166,8 +166,10 @@ export const ClusterRoleBindingView = ({
                               )}
                               {subject.apiGroup && (
                                 <div>
-                                  <h4 className="text-sm font-medium">API Group</h4>
-                                  <Badge 
+                                  <h4 className="text-sm font-medium">
+                                    API Group
+                                  </h4>
+                                  <Badge
                                     variant="outline"
                                     className="bg-purple-50 text-purple-700 dark:bg-purple-900 dark:text-purple-300 mt-1"
                                   >
@@ -206,4 +208,4 @@ export const ClusterRoleBindingView = ({
       </CardContent>
     </Card>
   );
-}; 
+};

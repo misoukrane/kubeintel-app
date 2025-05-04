@@ -11,7 +11,7 @@ import { LabelsAnnotations } from '@/components/metadata/labels-annotations';
 import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { ResourceActions } from '@/components/resources/resource-actions';
 import { Badge } from '@/components/ui/badge';
-import { Network, ExternalLink } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { Link } from 'react-router';
 import { ROUTES } from '@/lib/routes';
 import {
@@ -96,7 +96,6 @@ export const ServiceView = ({
     <Card className="max-w-6xl mx-auto">
       <CardHeader className="flex flex-row items-center justify-between">
         <div className="flex items-center">
-          <Network className="h-5 w-5 mr-2 text-blue-500" />
           <div>
             <CardTitle className="text-2xl">{metadata?.name}</CardTitle>
             <div className="text-sm text-muted-foreground">

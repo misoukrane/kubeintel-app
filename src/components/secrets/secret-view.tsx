@@ -15,7 +15,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useState } from 'react';
 import { Button } from '../ui/button';
 import { ResourceTypes } from '@/lib/strings';
-import { ShieldAlert, AlertTriangle, Lock } from 'lucide-react';
+import { ShieldAlert, AlertTriangle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 interface SecretViewProps {
@@ -48,7 +48,6 @@ export const SecretView = ({
     <Card className="max-w-6xl mx-auto">
       <CardHeader className="flex flex-row items-center justify-between">
         <div className="flex items-center">
-          <Lock className="h-5 w-5 mr-2 text-amber-500" />
           <div>
             <CardTitle className="text-2xl">{metadata?.name}</CardTitle>
             <div className="text-sm text-muted-foreground">

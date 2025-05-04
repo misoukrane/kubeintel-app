@@ -36,7 +36,6 @@ import { MultiSelect } from '@/components/ui/multi-select';
 import { getAge } from '@/lib/time';
 import { arrayToLabelSelector, labelSelectorToArray } from '@/lib/labels';
 import { Badge } from '@/components/ui/badge';
-import { Lock } from 'lucide-react';
 
 interface SecretsTableProps {
   secrets: Array<V1Secret>;
@@ -84,7 +83,7 @@ export const SecretsTable = ({
 
   // Add useEffect to update visibility when props change
   useEffect(() => {
-    setVisibility(prev => ({
+    setVisibility((prev) => ({
       ...prev,
       ...columnVisibility,
     }));
@@ -135,7 +134,6 @@ export const SecretsTable = ({
 
         return (
           <div className="flex items-center">
-            <Lock className="h-4 w-4 mr-2 text-amber-500" />
             <Button
               variant="link"
               className="underline"

@@ -36,7 +36,6 @@ import { MultiSelect } from '@/components/ui/multi-select';
 import { getAge } from '@/lib/time';
 import { arrayToLabelSelector, labelSelectorToArray } from '@/lib/labels';
 import { Badge } from '@/components/ui/badge';
-import { Key } from 'lucide-react';
 
 interface ServiceAccountsTableProps {
   serviceAccounts: Array<V1ServiceAccount>;
@@ -80,7 +79,7 @@ export const ServiceAccountsTable = ({
 
   // Add useEffect to update visibility when props change
   useEffect(() => {
-    setVisibility(prev => ({
+    setVisibility((prev) => ({
       ...prev,
       ...columnVisibility,
     }));
@@ -112,12 +111,13 @@ export const ServiceAccountsTable = ({
 
         return (
           <div className="flex items-center">
-            <Key className="h-4 w-4 mr-2 text-yellow-500" />
             <Button
               variant="link"
               className="underline"
               onClick={() =>
-                navigateToServiceAccount ? navigateToServiceAccount(namespace, name) : null
+                navigateToServiceAccount
+                  ? navigateToServiceAccount(namespace, name)
+                  : null
               }
             >
               {name}
@@ -143,14 +143,30 @@ export const ServiceAccountsTable = ({
       cell: ({ row }) => {
         const automountToken = row.original.automountServiceAccountToken;
         if (automountToken === false) {
-          return <Badge variant="outline" className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300">Disabled</Badge>;
+          return (
+            <Badge
+              variant="outline"
+              className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
+            >
+              Disabled
+            </Badge>
+          );
         }
-        return <Badge variant="outline" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">Enabled</Badge>;
+        return (
+          <Badge
+            variant="outline"
+            className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+          >
+            Enabled
+          </Badge>
+        );
       },
     },
     {
       id: 'secrets',
-      header: ({ column }) => <SortableHeader column={column} title="Secrets" />,
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Secrets" />
+      ),
       cell: ({ row }) => {
         const secretCount = row.original.secrets?.length || 0;
         return secretCount;

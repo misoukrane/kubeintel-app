@@ -11,7 +11,6 @@ import { LabelsAnnotations } from '@/components/metadata/labels-annotations';
 import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { ResourceActions } from '@/components/resources/resource-actions';
 import { Badge } from '@/components/ui/badge';
-import { ShieldCheck } from 'lucide-react';
 import { ResourceTypes } from '@/lib/strings';
 
 interface ClusterRoleViewProps {
@@ -35,7 +34,6 @@ export const ClusterRoleView = ({
     <Card className="max-w-6xl mx-auto">
       <CardHeader className="flex flex-row items-center justify-between">
         <div className="flex items-center">
-          <ShieldCheck className="h-5 w-5 mr-2 text-blue-500" />
           <div>
             <CardTitle className="text-2xl">{metadata?.name}</CardTitle>
             <div className="text-sm text-muted-foreground">
@@ -102,12 +100,16 @@ export const ClusterRoleView = ({
                   <div className="space-y-6">
                     {rules.map((rule, ruleIndex) => (
                       <div key={ruleIndex} className="border rounded-md p-4">
-                        <h3 className="font-medium mb-3">Rule {ruleIndex + 1}</h3>
-                        
+                        <h3 className="font-medium mb-3">
+                          Rule {ruleIndex + 1}
+                        </h3>
+
                         <div className="space-y-4">
                           {rule.apiGroups && rule.apiGroups.length > 0 && (
                             <div>
-                              <h4 className="text-sm font-medium">API Groups</h4>
+                              <h4 className="text-sm font-medium">
+                                API Groups
+                              </h4>
                               <div className="flex flex-wrap gap-1 mt-1">
                                 {rule.apiGroups.map((group, idx) => (
                                   <Badge
@@ -156,21 +158,21 @@ export const ClusterRoleView = ({
                             </div>
                           )}
 
-                          {rule.resourceNames && rule.resourceNames.length > 0 && (
-                            <div>
-                              <h4 className="text-sm font-medium">Resource Names</h4>
-                              <div className="flex flex-wrap gap-1 mt-1">
-                                {rule.resourceNames.map((name, idx) => (
-                                  <Badge
-                                    key={idx}
-                                    variant="outline"
-                                  >
-                                    {name}
-                                  </Badge>
-                                ))}
+                          {rule.resourceNames &&
+                            rule.resourceNames.length > 0 && (
+                              <div>
+                                <h4 className="text-sm font-medium">
+                                  Resource Names
+                                </h4>
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {rule.resourceNames.map((name, idx) => (
+                                    <Badge key={idx} variant="outline">
+                                      {name}
+                                    </Badge>
+                                  ))}
+                                </div>
                               </div>
-                            </div>
-                          )}
+                            )}
                         </div>
                       </div>
                     ))}
@@ -200,4 +202,4 @@ export const ClusterRoleView = ({
       </CardContent>
     </Card>
   );
-}; 
+};

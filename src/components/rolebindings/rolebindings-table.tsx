@@ -30,7 +30,6 @@ import { MultiSelect } from '@/components/ui/multi-select';
 import { getAge } from '@/lib/time';
 import { arrayToLabelSelector, labelSelectorToArray } from '@/lib/labels';
 import { Badge } from '@/components/ui/badge';
-import { Link2 } from 'lucide-react';
 
 interface RoleBindingsTableProps {
   roleBindings: Array<V1RoleBinding>;
@@ -74,7 +73,7 @@ export const RoleBindingsTable = ({
 
   // Add useEffect to update visibility when props change
   useEffect(() => {
-    setVisibility(prev => ({
+    setVisibility((prev) => ({
       ...prev,
       ...columnVisibility,
     }));
@@ -106,7 +105,6 @@ export const RoleBindingsTable = ({
 
         return (
           <div className="flex items-center">
-            <Link2 className="h-4 w-4 mr-2 text-blue-500" />
             <Button
               variant="link"
               className="underline"
@@ -132,28 +130,31 @@ export const RoleBindingsTable = ({
     },
     {
       id: 'subjects',
-      header: ({ column }) => <SortableHeader column={column} title="Subjects" />,
+      header: ({ column }) => (
+        <SortableHeader column={column} title="Subjects" />
+      ),
       cell: ({ row }) => {
         const subjects = row.original.subjects || [];
         return subjects.length > 0
           ? subjects
-            .map(
-              (subject) =>
-                `${subject.kind}/${subject.name}${subject.namespace ? ` (${subject.namespace})` : ''
-                }`
-            )
-            .join(', ')
+              .map(
+                (subject) =>
+                  `${subject.kind}/${subject.name}${
+                    subject.namespace ? ` (${subject.namespace})` : ''
+                  }`
+              )
+              .join(', ')
           : 'None';
       },
     },
     {
       id: 'roleRef',
-      header: ({ column }) => <SortableHeader column={column} title="References" />,
+      header: ({ column }) => (
+        <SortableHeader column={column} title="References" />
+      ),
       cell: ({ row }) => {
         const roleRef = row.original.roleRef;
-        return roleRef
-          ? `${roleRef.kind}/${roleRef.name}`
-          : 'Not defined';
+        return roleRef ? `${roleRef.kind}/${roleRef.name}` : 'Not defined';
       },
     },
     {
@@ -173,17 +174,15 @@ export const RoleBindingsTable = ({
     },
     {
       id: 'labels',
-      header: ({ column }) => (
-        <SortableHeader column={column} title="Labels" />
-      ),
+      header: ({ column }) => <SortableHeader column={column} title="Labels" />,
       cell: ({ row }) => {
         const labels = row.original.metadata?.labels || {};
         return Object.entries(labels).length > 0
           ? Object.entries(labels).map(([key, value]) => (
-            <Badge key={key} variant="outline" className="mr-1 mb-1">
-              {key}={value}
-            </Badge>
-          ))
+              <Badge key={key} variant="outline" className="mr-1 mb-1">
+                {key}={value}
+              </Badge>
+            ))
           : 'None';
       },
       filterFn: (row, _, filterValue) => {
@@ -232,7 +231,9 @@ export const RoleBindingsTable = ({
           <div className="flex flex-1 items-center space-x-2">
             <Input
               placeholder="Filter by name..."
-              value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+              value={
+                (table.getColumn('name')?.getFilterValue() as string) ?? ''
+              }
               onChange={(e) =>
                 table.getColumn('name')?.setFilterValue(e.target.value)
               }
@@ -248,9 +249,7 @@ export const RoleBindingsTable = ({
                 onValueChange={(values) => {
                   const labelColumn = table.getColumn('labels');
                   if (labelColumn) {
-                    labelColumn.setFilterValue(
-                      arrayToLabelSelector(values)
-                    );
+                    labelColumn.setFilterValue(arrayToLabelSelector(values));
                   }
                 }}
                 className="max-w-xs"
@@ -262,7 +261,9 @@ export const RoleBindingsTable = ({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setVisibility({ ...visibility, labels: !visibility.labels })}
+              onClick={() =>
+                setVisibility({ ...visibility, labels: !visibility.labels })
+              }
             >
               {visibility.labels ? 'Hide Labels' : 'Show Labels'}
             </Button>
@@ -279,9 +280,9 @@ export const RoleBindingsTable = ({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </TableHead>
                   ))}
                 </TableRow>
@@ -321,4 +322,4 @@ export const RoleBindingsTable = ({
       </CardContent>
     </Card>
   );
-}; 
+};

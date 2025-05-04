@@ -35,7 +35,6 @@ import { DataTablePagination } from '@/components/table/data-table-pagination';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { getAge } from '@/lib/time';
 import { arrayToLabelSelector, labelSelectorToArray } from '@/lib/labels';
-import { ShieldCheck } from 'lucide-react';
 
 interface RolesTableProps {
   roles: Array<V1Role>;
@@ -79,7 +78,7 @@ export const RolesTable = ({
 
   // Add useEffect to update visibility when props change
   useEffect(() => {
-    setVisibility(prev => ({
+    setVisibility((prev) => ({
       ...prev,
       ...columnVisibility,
     }));
@@ -103,14 +102,14 @@ export const RolesTable = ({
   // Get resources string
   const getResourcesString = (role: V1Role): string => {
     if (!role.rules || role.rules.length === 0) return 'None';
-    
+
     const resources = new Set<string>();
     role.rules.forEach((rule) => {
       if (rule.resources) {
         rule.resources.forEach((resource) => resources.add(resource));
       }
     });
-    
+
     if (resources.size === 0) return 'None';
     return Array.from(resources).join(', ');
   };
@@ -126,7 +125,6 @@ export const RolesTable = ({
 
         return (
           <div className="flex items-center">
-            <ShieldCheck className="h-4 w-4 mr-2 text-green-500" />
             <Button
               variant="link"
               className="underline"
@@ -324,4 +322,4 @@ export const RolesTable = ({
       </CardContent>
     </Card>
   );
-}; 
+};

@@ -36,7 +36,6 @@ import { MultiSelect } from '@/components/ui/multi-select';
 import { getAge } from '@/lib/time';
 import { arrayToLabelSelector, labelSelectorToArray } from '@/lib/labels';
 import { Badge } from '@/components/ui/badge';
-import { Network } from 'lucide-react';
 import { getExternalAddresses, getPortsString } from '@/lib/services';
 
 interface ServicesTableProps {
@@ -85,7 +84,7 @@ export const ServicesTable = ({
 
   // Add useEffect to update visibility when props change
   useEffect(() => {
-    setVisibility(prev => ({
+    setVisibility((prev) => ({
       ...prev,
       ...columnVisibility,
     }));
@@ -176,7 +175,6 @@ export const ServicesTable = ({
 
         return (
           <div className="flex items-center">
-            <Network className="h-4 w-4 mr-2 text-blue-500" />
             <Button
               variant="link"
               className="underline"

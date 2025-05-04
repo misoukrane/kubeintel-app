@@ -11,7 +11,6 @@ import { LabelsAnnotations } from '@/components/metadata/labels-annotations';
 import { ScrollAreaCode } from '@/components/scroll-area-code';
 import { ResourceActions } from '@/components/resources/resource-actions';
 import { Badge } from '@/components/ui/badge';
-import { Link2 } from 'lucide-react';
 import { ResourceTypes } from '@/lib/strings';
 
 interface RoleBindingViewProps {
@@ -35,7 +34,6 @@ export const RoleBindingView = ({
     <Card className="max-w-6xl mx-auto">
       <CardHeader className="flex flex-row items-center justify-between">
         <div className="flex items-center">
-          <Link2 className="h-5 w-5 mr-2 text-blue-500" />
           <div>
             <CardTitle className="text-2xl">{metadata?.name}</CardTitle>
             <div className="text-sm text-muted-foreground">
@@ -87,7 +85,9 @@ export const RoleBindingView = ({
                             </Badge>
                           </div>
                           <div>
-                            <span className="text-muted-foreground">API Group:</span>{' '}
+                            <span className="text-muted-foreground">
+                              API Group:
+                            </span>{' '}
                             <Badge
                               variant="outline"
                               className="bg-green-50 text-green-700 dark:bg-green-900 dark:text-green-300"
@@ -97,7 +97,9 @@ export const RoleBindingView = ({
                           </div>
                         </div>
                       ) : (
-                        <div className="text-muted-foreground">None defined</div>
+                        <div className="text-muted-foreground">
+                          None defined
+                        </div>
                       )}
                     </div>
 
@@ -105,7 +107,9 @@ export const RoleBindingView = ({
                       <h3 className="font-medium">Created</h3>
                       <p className="mt-2">
                         {metadata?.creationTimestamp
-                          ? new Date(metadata.creationTimestamp).toLocaleString()
+                          ? new Date(
+                              metadata.creationTimestamp
+                            ).toLocaleString()
                           : 'N/A'}
                       </p>
                     </div>
@@ -137,8 +141,10 @@ export const RoleBindingView = ({
                   <div className="space-y-6">
                     {subjects.map((subject, index) => (
                       <div key={index} className="border rounded-md p-4">
-                        <h3 className="font-medium mb-3">Subject {index + 1}</h3>
-                        
+                        <h3 className="font-medium mb-3">
+                          Subject {index + 1}
+                        </h3>
+
                         <div className="space-y-4">
                           <div>
                             <h4 className="text-sm font-medium">Kind</h4>
@@ -220,4 +226,4 @@ export const RoleBindingView = ({
       </CardContent>
     </Card>
   );
-}; 
+};
