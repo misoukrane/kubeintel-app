@@ -31,4 +31,5 @@ export enum ResourceTypes {
   RoleBinding = 'RoleBinding',
   ClusterRole = 'ClusterRole',
   ClusterRoleBinding = 'ClusterRoleBinding',
+  PersistentVolume = 'PersistentVolume',
 }

@@ -2,7 +2,7 @@ use crate::k8s_client;
 use crate::kubectl::run_kubectl_command;
 use k8s_openapi::api::apps::v1::{DaemonSet, Deployment, StatefulSet};
 use k8s_openapi::api::batch::v1::{CronJob, Job};
-use k8s_openapi::api::core::v1::{ConfigMap, Event, Node, Pod, Secret, Service, ServiceAccount};
+use k8s_openapi::api::core::v1::{ConfigMap, Event, Node, PersistentVolume, Pod, Secret, Service, ServiceAccount};
 use k8s_openapi::api::rbac::v1::{ClusterRole, ClusterRoleBinding, Role, RoleBinding};
 use serde::{Deserialize, Serialize};
 
@@ -24,6 +24,7 @@ pub enum KubeResource {
     RoleBinding(RoleBinding),
     ClusterRole(ClusterRole),
     ClusterRoleBinding(ClusterRoleBinding),
+    PersistentVolume(PersistentVolume),
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -44,6 +45,7 @@ pub enum ResourceType {
     RoleBinding,
     ClusterRole,
     ClusterRoleBinding,
+    PersistentVolume,
 }
 
 impl ResourceType {
@@ -64,6 +66,7 @@ impl ResourceType {
             ResourceType::RoleBinding => "rolebinding",
             ResourceType::ClusterRole => "clusterrole",
             ResourceType::ClusterRoleBinding => "clusterrolebinding",
+            ResourceType::PersistentVolume => "persistentvolume",
         }
     }
 
@@ -84,6 +87,7 @@ impl ResourceType {
             ResourceType::RoleBinding => "RoleBinding".to_string(),
             ResourceType::ClusterRole => "ClusterRole".to_string(),
             ResourceType::ClusterRoleBinding => "ClusterRoleBinding".to_string(),
+            ResourceType::PersistentVolume => "PersistentVolume".to_string(),
         }
     }
 }
@@ -138,6 +142,9 @@ pub async fn delete_resource(
         }
         ResourceType::ClusterRoleBinding => {
             k8s_client::delete_cluster_resource::<ClusterRoleBinding>(client, &name).await
+        }
+        ResourceType::PersistentVolume => {
+            k8s_client::delete_cluster_resource::<PersistentVolume>(client, &name).await
         }
     }
 }
@@ -282,6 +289,10 @@ pub async fn get_resource(
             let resource = k8s_client::get_cluster_resource::<ClusterRoleBinding>(client, &name).await?;
             Ok(KubeResource::ClusterRoleBinding(resource))
         }
+        ResourceType::PersistentVolume => {
+            let resource = k8s_client::get_cluster_resource::<PersistentVolume>(client, &name).await?;
+            Ok(KubeResource::PersistentVolume(resource))
+        }
     }
 }
 
@@ -364,6 +375,10 @@ pub async fn list_resource(
             // For ClusterRoleBindings, we ignore the namespace parameter since they are cluster-scoped
             let resources = k8s_client::list_cluster_resources::<ClusterRoleBinding>(client).await?;
             Ok(resources.into_iter().map(KubeResource::ClusterRoleBinding).collect())
+        }
+        ResourceType::PersistentVolume => {
+            let resources = k8s_client::list_cluster_resources::<PersistentVolume>(client).await?;
+            Ok(resources.into_iter().map(KubeResource::PersistentVolume).collect())
         }
     }
 }
@@ -505,6 +520,10 @@ pub async fn list_resource_events(
         ResourceType::ClusterRoleBinding => {
             // ClusterRoleBinding events would be in "" namespace
             let events = k8s_client::list_events::<ClusterRoleBinding>(client, "", &name).await?;
+            Ok(events)
+        }
+        ResourceType::PersistentVolume => {
+            let events = k8s_client::list_events::<PersistentVolume>(client, "", &name).await?;
             Ok(events)
         }
         _ => Err(format!("Unsupported resource type: {:?}", resource_type)),

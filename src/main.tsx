@@ -44,6 +44,8 @@ import { ClusterRoles } from './pages/cluster-roles';
 import { ClusterRole } from './pages/cluster-role';
 import { ClusterRoleBindings } from './pages/cluster-role-bindings';
 import { ClusterRoleBinding } from './pages/cluster-role-binding';
+import PersistentVolumesPage from './pages/persistent-volumes';
+import PersistentVolumePage from './pages/persistent-volume';
 
 const queryClient = new QueryClient();
 
@@ -195,6 +197,14 @@ const router = createBrowserRouter([
       {
         path: ROUTES.CLUSTER_ROLE_BINDING,
         element: <ClusterRoleBinding />,
+      },
+      {
+        path: ROUTES.PERSISTENT_VOLUMES,
+        element: <PersistentVolumesPage />,
+      },
+      {
+        path: ROUTES.PERSISTENT_VOLUME,
+        element: <PersistentVolumePage />,
       },
     ],
   },

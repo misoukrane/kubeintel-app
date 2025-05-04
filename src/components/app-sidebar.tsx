@@ -31,6 +31,7 @@ import { RoleLogo } from '@/assets/role';
 import { RoleBindingLogo } from '@/assets/role-binding';
 import { ClusterRoleLogo } from '@/assets/cluster-role';
 import { ClusterRoleBindingLogo } from '@/assets/cluster-role-binding';
+import { PersistentVolumeLogo } from '@/assets/persistent-volume';
 import { ROUTES } from '@/lib/routes';
 
 // Menu items using ROUTES constants
@@ -84,6 +85,11 @@ const items = [
     title: 'ConfigMaps',
     url: ROUTES.CONFIGMAPS,
     icon: CmLogo,
+  },
+  {
+    title: 'Volumes',
+    url: ROUTES.PERSISTENT_VOLUMES,
+    icon: PersistentVolumeLogo,
   },
   {
     title: 'Secrets',

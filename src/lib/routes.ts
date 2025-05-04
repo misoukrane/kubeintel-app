@@ -19,6 +19,8 @@ export const ROUTES = {
   NODES: '/nodes',
   NODE: '/nodes/:nodeName',
   NODE_PODS: '/nodes/:nodeName/pods',
+  PERSISTENT_VOLUMES: '/persistent-volumes',
+  PERSISTENT_VOLUME: '/persistent-volumes/:persistentVolumeName',
   CONFIGMAPS: '/configmaps',
   CONFIGMAP: '/configmaps/:configMapName',
   SECRETS: '/secrets',
