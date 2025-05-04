@@ -32,10 +32,18 @@ import { RoleBindingLogo } from '@/assets/role-binding';
 import { ClusterRoleLogo } from '@/assets/cluster-role';
 import { ClusterRoleBindingLogo } from '@/assets/cluster-role-binding';
 import { PersistentVolumeLogo } from '@/assets/persistent-volume';
+import { PersistentVolumeClaimLogo } from '@/assets/persistent-volume-claim';
 import { ROUTES } from '@/lib/routes';
 
+interface MenuItem {
+  title: string;
+  url: string | ((namespace?: string) => string);
+  icon: React.ComponentType<any>;
+  requiresNamespace?: boolean;
+}
+
 // Menu items using ROUTES constants
-const items = [
+const items: MenuItem[] = [
   {
     title: 'Cluster Info',
     url: ROUTES.CLUSTER,
@@ -90,6 +98,15 @@ const items = [
     title: 'Volumes',
     url: ROUTES.PERSISTENT_VOLUMES,
     icon: PersistentVolumeLogo,
+  },
+  {
+    title: 'Volume Claims',
+    url: (namespace?: string) =>
+      namespace
+        ? `/namespaces/${namespace}/persistent-volume-claims`
+        : '/persistent-volume-claims',
+    icon: PersistentVolumeClaimLogo,
+    requiresNamespace: true,
   },
   {
     title: 'Secrets',
@@ -160,28 +177,40 @@ export function AppSidebar(props: AppSidebarProps) {
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink to={item.url}>
-                      {({ isActive }) => (
-                        <>
-                          <item.icon
-                            className="transition-all duration-250 ease-in-out transform"
-                            style={{
-                              width: isActive && open ? '2rem' : '1.5rem',
-                              height: isActive && open ? '2rem' : '1.5rem',
-                            }}
-                          />
-                          <span className={isActive ? 'font-bold ' : ''}>
-                            {item.title}
-                          </span>
-                        </>
-                      )}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {items.map((item) => {
+                // Skip items that require namespace if none is selected
+                if (item.requiresNamespace && !props.currentNamespace) {
+                  return null;
+                }
+
+                const itemUrl =
+                  typeof item.url === 'function'
+                    ? item.url(props.currentNamespace)
+                    : item.url;
+
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <NavLink to={itemUrl}>
+                        {({ isActive }) => (
+                          <>
+                            <item.icon
+                              className="transition-all duration-250 ease-in-out transform"
+                              style={{
+                                width: isActive && open ? '2rem' : '1.5rem',
+                                height: isActive && open ? '2rem' : '1.5rem',
+                              }}
+                            />
+                            <span className={isActive ? 'font-bold ' : ''}>
+                              {item.title}
+                            </span>
+                          </>
+                        )}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

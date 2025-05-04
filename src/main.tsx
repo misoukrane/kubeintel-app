@@ -46,6 +46,8 @@ import { ClusterRoleBindings } from './pages/cluster-role-bindings';
 import { ClusterRoleBinding } from './pages/cluster-role-binding';
 import PersistentVolumesPage from './pages/persistent-volumes';
 import PersistentVolumePage from './pages/persistent-volume';
+import PersistentVolumeClaimsPage from './pages/persistent-volume-claims';
+import PersistentVolumeClaimPage from './pages/persistent-volume-claim';
 
 const queryClient = new QueryClient();
 
@@ -205,6 +207,14 @@ const router = createBrowserRouter([
       {
         path: ROUTES.PERSISTENT_VOLUME,
         element: <PersistentVolumePage />,
+      },
+      {
+        path: ROUTES.PERSISTENT_VOLUME_CLAIMS,
+        element: <PersistentVolumeClaimsPage />,
+      },
+      {
+        path: ROUTES.PERSISTENT_VOLUME_CLAIM,
+        element: <PersistentVolumeClaimPage />,
       },
     ],
   },

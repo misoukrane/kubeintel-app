@@ -21,6 +21,9 @@ export const ROUTES = {
   NODE_PODS: '/nodes/:nodeName/pods',
   PERSISTENT_VOLUMES: '/persistent-volumes',
   PERSISTENT_VOLUME: '/persistent-volumes/:persistentVolumeName',
+  PERSISTENT_VOLUME_CLAIMS: '/namespaces/:namespace/persistent-volume-claims',
+  PERSISTENT_VOLUME_CLAIM:
+    '/namespaces/:namespace/persistent-volume-claims/:persistentVolumeClaimName',
   CONFIGMAPS: '/configmaps',
   CONFIGMAP: '/configmaps/:configMapName',
   SECRETS: '/secrets',
