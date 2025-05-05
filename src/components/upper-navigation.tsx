@@ -9,6 +9,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import { ROUTES } from '@/lib/routes';
 
 interface MainNavigationProps {
   location: string;
@@ -32,7 +33,7 @@ export const MainNavigation = ({
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
-            <Link to="/">Home</Link>
+            <Link to={ROUTES.CLUSTER}>Home</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
 
