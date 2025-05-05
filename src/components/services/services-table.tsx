@@ -38,6 +38,7 @@ import { arrayToLabelSelector, labelSelectorToArray } from '@/lib/labels';
 import { Badge } from '@/components/ui/badge';
 import { getExternalAddresses } from '@/lib/services';
 import { ServicePortsList } from './service-ports-list'; // Import the new component
+import { ExternalIPList } from './external-ip-list'; // Import the new ExternalIPList component
 
 interface ServicesTableProps {
   services: Array<V1Service>;
@@ -234,7 +235,8 @@ export const ServicesTable = ({
       ),
       cell: ({ row }) => {
         const externalAddresses = getExternalAddresses(row.original);
-        return externalAddresses || 'None';
+        // Use the new ExternalIPList component
+        return <ExternalIPList addresses={externalAddresses} />;
       },
     },
     {
