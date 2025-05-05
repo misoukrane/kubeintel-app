@@ -228,7 +228,9 @@ export function AppSidebar(props: AppSidebarProps) {
         {menuGroups.map((group) => (
           <Collapsible
             key={group.title}
-            defaultOpen
+            defaultOpen={
+              group.title === 'Cluster' || group.title === 'Workloads'
+            } // Set defaultOpen conditionally
             className="group/collapsible"
           >
             <SidebarGroup>
