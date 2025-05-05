@@ -36,7 +36,8 @@ import { MultiSelect } from '@/components/ui/multi-select';
 import { getAge } from '@/lib/time';
 import { arrayToLabelSelector, labelSelectorToArray } from '@/lib/labels';
 import { Badge } from '@/components/ui/badge';
-import { getExternalAddresses, getPortsString } from '@/lib/services';
+import { getExternalAddresses } from '@/lib/services';
+import { ServicePortsList } from './service-ports-list'; // Import the new component
 
 interface ServicesTableProps {
   services: Array<V1Service>;
@@ -222,8 +223,8 @@ export const ServicesTable = ({
       id: 'ports',
       header: ({ column }) => <SortableHeader column={column} title="Ports" />,
       cell: ({ row }) => {
-        const portsString = getPortsString(row.original);
-        return portsString || 'None';
+        // Use the new ServicePortsList component
+        return <ServicePortsList ports={row.original.spec?.ports} />;
       },
     },
     {

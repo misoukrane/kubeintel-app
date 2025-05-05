@@ -16,12 +16,6 @@ export const formatPort = (port: V1ServicePort): string => {
   return `${portStr}/${port.protocol || 'TCP'}`;
 };
 
-// Get ports as string
-export const getPortsString = (service: V1Service): string => {
-  const ports = service.spec?.ports || [];
-  return ports.map(formatPort).join(', ');
-};
-
 // Get external IP(s) as array
 export const getExternalIPs = (svc: V1Service): string[] => {
   const { spec, status } = svc;
