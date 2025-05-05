@@ -33,7 +33,7 @@
       "identifier": "shell:allow-spawn",
       "allow": [
         {
-          "name": "kubectl",
+          "name": "kubectl-cluster-info",
           "cmd": "kubectl",
           "args": [
             "cluster-info",
@@ -43,6 +43,14 @@
             {
               "validator": "\\S+"
             }
+          ]
+        },
+        {
+          "name": "kubectl-auth-whoami",
+          "cmd": "kubectl",
+          "args": [
+            "auth",
+            "whoami"
           ]
         }
       ]

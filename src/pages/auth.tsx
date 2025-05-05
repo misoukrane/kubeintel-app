@@ -16,6 +16,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { invoke } from '@tauri-apps/api/core';
 import { useToast } from '@/hooks/use-toast';
+import { Spinner } from '@/components/spinner';
 
 // authenticate the cluster
 export const Auth = () => {
@@ -30,11 +31,7 @@ export const Auth = () => {
     useState<boolean>(false);
   const kubeconfig = selectedKubeconfig ?? '';
   const context = currentContext ?? '';
-  const cmdArgs = [
-    'cluster-info',
-    `--kubeconfig=${kubeconfig}`,
-    `--context=${context}`,
-  ];
+  const cmdArgs = ['auth', 'whoami'];
   const hasRun = useRef(false);
 
   const runCommand = async () => {
@@ -42,7 +39,7 @@ export const Auth = () => {
     setCmdOutput([]);
     setError(null);
     setCode(-1);
-    const command = Command.create('kubectl', cmdArgs);
+    const command = Command.create('kubectl-auth-whoami');
     command.on('close', (data) => {
       console.log(
         `command finished with code ${data.code} and signal ${data.signal}`
@@ -107,6 +104,7 @@ export const Auth = () => {
     <div className="w-full max-w-7xl mx-auto p-1">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold pt-2">Authenticate Cluster</h1>
+        {executing && <Spinner className="ml-2" />}
       </div>
 
       <div className="space-y-1">

@@ -55,12 +55,23 @@ export default function Layout() {
     try {
       await loadNamespaces(selectedKubeconfig, currentContext);
     } catch (error) {
-      toast({
-        variant: 'destructive',
-        title: 'Error loading namespaces',
-        description:
-          error instanceof Error ? error.message : JSON.stringify(error),
-      });
+      const err =
+        error instanceof Error ? error.message : JSON.stringify(error);
+      if (err.includes('namespaces is forbidden')) {
+        toast({
+          variant: 'default',
+          title: 'List Namespaces: Forbidden',
+          description: 'Use top left menu to manage namespaces',
+          className:
+            'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+        });
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Error loading namespaces',
+          description: err,
+        });
+      }
     }
   };
 
