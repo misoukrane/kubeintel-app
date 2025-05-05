@@ -15,7 +15,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useState } from 'react';
 import { Button } from '../ui/button';
 import { ResourceTypes } from '@/lib/strings';
-import { ShieldAlert, AlertTriangle } from 'lucide-react';
+import { ShieldAlert, AlertTriangle, Eye, EyeOff } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 interface SecretViewProps {
@@ -40,9 +40,31 @@ export const SecretView = ({
   const [selectedKey, setSelectedKey] = useState<string | null>(
     Object.keys(data || {}).length > 0 ? Object.keys(data || {})[0] : null
   );
+  const [showSecretValue, setShowSecretValue] = useState(false);
 
   // Determine if this is a system secret
   const isSystemSecret = type?.startsWith('kubernetes.io/') || false;
+
+  // Function to mask the secret value
+  const maskValue = (value: string) => {
+    if (!value) return '';
+    const visiblePartLength = 3;
+    if (value.length > visiblePartLength + 3) {
+      const visiblePart = value.substring(0, visiblePartLength);
+      const maskedPart = '*x'.repeat(
+        Math.max(4, (value.length - visiblePartLength) / 2)
+      );
+      return visiblePart + maskedPart;
+    }
+    // If the string is 6 characters or less, mask the whole string
+    return '*'.repeat(value.length);
+  };
+
+  // Reset visibility when key changes
+  const handleKeySelection = (key: string) => {
+    setSelectedKey(key);
+    setShowSecretValue(false);
+  };
 
   return (
     <Card className="max-w-6xl mx-auto">
@@ -163,7 +185,7 @@ export const SecretView = ({
                                   ? 'bg-muted font-medium'
                                   : ''
                               }`}
-                              onClick={() => setSelectedKey(key)}
+                              onClick={() => handleKeySelection(key)}
                             >
                               {key}
                             </button>
@@ -172,10 +194,24 @@ export const SecretView = ({
                       </ScrollArea>
                     </div>
                     <div className="col-span-3 border rounded p-4">
-                      <div className="flex justify-between mb-2">
+                      <div className="flex justify-between items-center mb-2">
                         <h3 className="font-medium">{selectedKey}</h3>
-                        <div className="space-x-2">
+                        <div className="flex items-center space-x-2">
                           <Badge variant="outline">base64 encoded</Badge>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            onClick={() => setShowSecretValue(!showSecretValue)}
+                            title={
+                              showSecretValue ? 'Hide value' : 'Show value'
+                            }
+                          >
+                            {showSecretValue ? (
+                              <EyeOff className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
+                            )}
+                          </Button>
                           <Button
                             size="sm"
                             variant="ghost"
@@ -187,8 +223,12 @@ export const SecretView = ({
                           </Button>
                         </div>
                       </div>
-                      <div className="bg-slate-100 dark:bg-slate-900 p-2 rounded font-mono text-sm break-all">
-                        {selectedKey && data ? data[selectedKey] : ''}
+                      <div className="bg-slate-100 dark:bg-slate-900 p-2 rounded font-mono text-xs break-all">
+                        {selectedKey && data
+                          ? showSecretValue
+                            ? data[selectedKey]
+                            : maskValue(data[selectedKey])
+                          : ''}
                       </div>
                       <p className="text-muted-foreground text-xs mt-2">
                         Note: Decode this value with{' '}
