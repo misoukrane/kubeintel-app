@@ -34,13 +34,13 @@ import { ClusterRoleBindingLogo } from '@/assets/cluster-role-binding';
 import { PersistentVolumeLogo } from '@/assets/persistent-volume';
 import { PersistentVolumeClaimLogo } from '@/assets/persistent-volume-claim';
 import { ROUTES } from '@/lib/routes';
-import { SvcLogo } from '@/assets/svc'; // Assuming you have a ServiceLogo
+import { SvcLogo } from '@/assets/svc';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/components/ui/collapsible'; // Import Collapsible components
-import { ChevronDown } from 'lucide-react'; // Import an icon for the trigger
+} from '@/components/ui/collapsible';
+import { ChevronDown } from 'lucide-react';
 
 interface MenuItem {
   title: string;
@@ -123,7 +123,7 @@ const menuGroups: MenuGroup[] = [
       {
         title: 'Services',
         url: ROUTES.SERVICES,
-        icon: SvcLogo, // Use the imported ServiceLogo
+        icon: SvcLogo,
         requiresNamespace: true,
       },
       // Add Ingress, NetworkPolicy etc. here later
@@ -139,7 +139,7 @@ const menuGroups: MenuGroup[] = [
       },
       {
         title: 'Volume Claims',
-        url: ROUTES.PERSISTENT_VOLUME_CLAIMS, // Use the constant
+        url: ROUTES.PERSISTENT_VOLUME_CLAIMS,
         icon: PersistentVolumeClaimLogo,
         requiresNamespace: true,
       },
@@ -235,7 +235,7 @@ export function AppSidebar(props: AppSidebarProps) {
             key={group.title}
             defaultOpen={
               group.title === 'Cluster' || group.title === 'Workloads'
-            } // Set defaultOpen conditionally
+            }
             className="group/collapsible"
           >
             <SidebarGroup>
@@ -271,20 +271,27 @@ export function AppSidebar(props: AppSidebarProps) {
                               {({ isActive }) => (
                                 <>
                                   <item.icon
-                                    className="transition-all duration-250 ease-in-out transform mr-2" // Added margin-right
+                                    className={`transition-all duration-250 ease-in-out transform mr-2 ${
+                                      isActive ? 'text-primary' : ''
+                                    }`}
                                     style={{
                                       width:
                                         isActive && open
                                           ? '1.75rem'
-                                          : '1.25rem', // Adjusted sizes slightly
+                                          : '1.25rem',
                                       height:
                                         isActive && open
                                           ? '1.75rem'
                                           : '1.25rem',
                                     }}
                                   />
-                                  {open && <span>{item.title}</span>}{' '}
-                                  {/* Conditionally render text */}
+                                  {open && (
+                                    <span
+                                      className={isActive ? 'font-bold' : ''}
+                                    >
+                                      {item.title}
+                                    </span>
+                                  )}{' '}
                                 </>
                               )}
                             </NavLink>
