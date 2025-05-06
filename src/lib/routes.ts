@@ -40,4 +40,5 @@ export const ROUTES = {
   CLUSTER_ROLE: '/clusterroles/:clusterRoleName',
   CLUSTER_ROLE_BINDINGS: '/clusterrolebindings',
   CLUSTER_ROLE_BINDING: '/clusterrolebindings/:clusterRoleBindingName',
+  EVENTS: '/events',
 } as const;

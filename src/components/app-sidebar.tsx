@@ -69,6 +69,11 @@ const menuGroups: MenuGroup[] = [
         url: ROUTES.NODES,
         icon: NodeLogo,
       },
+      {
+        title: 'Events',
+        url: ROUTES.EVENTS,
+        icon: ControlPlaneLogo,
+      },
     ],
   },
   {

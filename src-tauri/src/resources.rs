@@ -26,6 +26,7 @@ pub enum KubeResource {
     ClusterRoleBinding(ClusterRoleBinding),
     PersistentVolume(PersistentVolume),
     PersistentVolumeClaim(PersistentVolumeClaim),
+    Event(Event),
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -48,6 +49,7 @@ pub enum ResourceType {
     ClusterRoleBinding,
     PersistentVolume,
     PersistentVolumeClaim,
+    Event,
 }
 
 impl ResourceType {
@@ -70,6 +72,7 @@ impl ResourceType {
             ResourceType::ClusterRoleBinding => "clusterrolebinding",
             ResourceType::PersistentVolume => "persistentvolume",
             ResourceType::PersistentVolumeClaim => "persistentvolumeclaim",
+            ResourceType::Event => "event",
         }
     }
 
@@ -92,6 +95,7 @@ impl ResourceType {
             ResourceType::ClusterRoleBinding => "ClusterRoleBinding".to_string(),
             ResourceType::PersistentVolume => "PersistentVolume".to_string(),
             ResourceType::PersistentVolumeClaim => "PersistentVolumeClaim".to_string(),
+            ResourceType::Event => "Event".to_string(),
         }
     }
 }
@@ -153,6 +157,7 @@ pub async fn delete_resource(
         ResourceType::PersistentVolumeClaim => {
             k8s_client::delete_resource::<PersistentVolumeClaim>(client, &namespace, &name).await
         }
+        ResourceType::Event => Err("Event resources cannot be deleted".to_string()),
     }
 }
 
@@ -304,6 +309,10 @@ pub async fn get_resource(
             let resource = k8s_client::get_resource::<PersistentVolumeClaim>(client, &namespace, &name).await?;
             Ok(KubeResource::PersistentVolumeClaim(resource))
         }
+        ResourceType::Event => {
+            let resource = k8s_client::get_resource::<Event>(client, &namespace, &name).await?;
+            Ok(KubeResource::Event(resource))
+        }
     }
 }
 
@@ -394,6 +403,10 @@ pub async fn list_resource(
         ResourceType::PersistentVolumeClaim => {
             let resources = k8s_client::list_resources::<PersistentVolumeClaim>(client, &namespace, list_all_namespaces).await?;
             Ok(resources.into_iter().map(KubeResource::PersistentVolumeClaim).collect())
+        }
+        ResourceType::Event => {
+            let resources = k8s_client::list_resources::<Event>(client, &namespace, list_all_namespaces).await?;
+            Ok(resources.into_iter().map(KubeResource::Event).collect())
         }
     }
 }
@@ -543,6 +556,10 @@ pub async fn list_resource_events(
         }
         ResourceType::PersistentVolumeClaim => {
             let events = k8s_client::list_events::<PersistentVolumeClaim>(client, &namespace, &name).await?;
+            Ok(events)
+        }
+        ResourceType::Event => {
+            let events = k8s_client::list_events::<Event>(client, &namespace, &name).await?;
             Ok(events)
         }
         _ => Err(format!("Unsupported resource type: {:?}", resource_type)),

@@ -48,6 +48,7 @@ import PersistentVolumesPage from './pages/persistent-volumes';
 import PersistentVolumePage from './pages/persistent-volume';
 import PersistentVolumeClaimsPage from './pages/persistent-volume-claims';
 import PersistentVolumeClaimPage from './pages/persistent-volume-claim';
+import { EventsPage } from './pages/events';
 
 const queryClient = new QueryClient();
 
@@ -215,6 +216,10 @@ const router = createBrowserRouter([
       {
         path: ROUTES.PERSISTENT_VOLUME_CLAIM,
         element: <PersistentVolumeClaimPage />,
+      },
+      {
+        path: ROUTES.EVENTS,
+        element: <EventsPage />,
       },
     ],
   },

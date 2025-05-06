@@ -33,4 +33,5 @@ export enum ResourceTypes {
   ClusterRoleBinding = 'ClusterRoleBinding',
   PersistentVolume = 'PersistentVolume',
   PersistentVolumeClaim = 'PersistentVolumeClaim',
+  Event = 'Event',
 }
