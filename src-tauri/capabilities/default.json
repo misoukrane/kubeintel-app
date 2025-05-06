@@ -50,7 +50,10 @@
           "cmd": "kubectl",
           "args": [
             "auth",
-            "whoami"
+            "whoami",
+            {
+              "validator": "\\S+"
+            }
           ]
         }
       ]

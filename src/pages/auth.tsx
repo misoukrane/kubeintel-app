@@ -31,7 +31,9 @@ export const Auth = () => {
     useState<boolean>(false);
   const kubeconfig = selectedKubeconfig ?? '';
   const context = currentContext ?? '';
-  const cmdArgs = ['auth', 'whoami'];
+  const kubeconfigFlag = kubeconfig ? `--kubeconfig=${kubeconfig}` : '';
+  const cmdArgs = ['auth', 'whoami', kubeconfigFlag];
+
   const hasRun = useRef(false);
 
   const runCommand = async () => {
@@ -39,7 +41,7 @@ export const Auth = () => {
     setCmdOutput([]);
     setError(null);
     setCode(-1);
-    const command = Command.create('kubectl-auth-whoami');
+    const command = Command.create('kubectl-auth-whoami', cmdArgs);
     command.on('close', (data) => {
       console.log(
         `command finished with code ${data.code} and signal ${data.signal}`
