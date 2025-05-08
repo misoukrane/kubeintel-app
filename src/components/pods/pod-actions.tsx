@@ -3,7 +3,13 @@ import { useForm, ControllerRenderProps } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
-import { Bug, Trash2, FileTerminal, AlertTriangle } from 'lucide-react';
+import {
+  Bug,
+  Trash2,
+  FileTerminal,
+  AlertTriangle,
+  Terminal,
+} from 'lucide-react';
 import {
   Command,
   CommandEmpty,
@@ -42,6 +48,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { V1Container } from '@kubernetes/client-node';
 import { Input } from '../ui/input';
+import { useNavigate } from 'react-router';
+import { ROUTES } from '@/lib/routes';
 
 // Define a Zod schema for our debug form fields
 const debugFormSchema = z.object({
@@ -70,6 +78,8 @@ export const PodActions = ({
 }: PodActionsProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
   const [debugDialogOpen, setDebugDialogOpen] = React.useState(false);
+  const navigate = useNavigate();
+  const eventsLink = `${ROUTES.EVENTS}?name=${podName}`;
 
   // Form setup for debug dialog
   const form = useForm<DebugFormValues>({
@@ -114,9 +124,14 @@ export const PodActions = ({
               <span>Debug Pod</span>
             </CommandItem>
 
-            <CommandItem onSelect={onOpenEvents}>
+            <CommandItem onSelect={() => navigate(eventsLink)}>
               <FileTerminal className="mr-2 h-4 w-4" />
-              <span>View Events</span>
+              <span> View Events</span>
+            </CommandItem>
+
+            <CommandItem onSelect={onOpenEvents}>
+              <Terminal className="mr-2 h-4 w-4" />
+              <span>View Events in Terminal</span>
             </CommandItem>
           </CommandGroup>
 

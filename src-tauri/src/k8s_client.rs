@@ -23,7 +23,11 @@ pub async fn create_k8s_client(kubeconfig_path: String, context: String) -> Resu
     Client::try_from(config).map_err(|e| e.to_string())
 }
 
-pub async fn list_resources<T>(client: Client, namespace: &str, list_all_namespaces: bool) -> Result<Vec<T>, String>
+pub async fn list_resources<T>(
+    client: Client,
+    namespace: &str,
+    list_all_namespaces: bool,
+) -> Result<Vec<T>, String>
 where
     T: Resource<Scope = kube::core::NamespaceResourceScope>
         + Clone

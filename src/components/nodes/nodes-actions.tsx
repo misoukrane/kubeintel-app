@@ -10,6 +10,7 @@ import {
   Trash2,
   FileTerminal,
   AlertTriangle,
+  Terminal,
 } from 'lucide-react';
 import {
   Command,
@@ -39,6 +40,8 @@ import {
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useNavigate } from 'react-router';
+import { ROUTES } from '@/lib/routes';
 
 // Define a Zod schema for our debug form fields
 const debugFormSchema = z.object({
@@ -71,6 +74,9 @@ export const NodesActions = ({
   const [drainDialogOpen, setDrainDialogOpen] = React.useState(false);
   const [cordonDialogOpen, setCordonDialogOpen] = React.useState(false);
   const [uncordonDialogOpen, setUncordonDialogOpen] = React.useState(false);
+
+  const navigate = useNavigate();
+  const eventsLink = `${ROUTES.EVENTS}?message=${nodeName}`;
 
   // Form setup for debug dialog
   const form = useForm<DebugFormValues>({
@@ -129,9 +135,13 @@ export const NodesActions = ({
               <Bug className="mr-2 h-4 w-4" />
               <span>Debug Node</span>
             </CommandItem>
-            <CommandItem onSelect={onOpenEvents}>
+            <CommandItem onSelect={() => navigate(eventsLink)}>
               <FileTerminal className="mr-2 h-4 w-4" />
               <span>View Events</span>
+            </CommandItem>
+            <CommandItem onSelect={onOpenEvents}>
+              <Terminal className="mr-2 h-4 w-4" />
+              <span>View Events In Terminal</span>
             </CommandItem>
           </CommandGroup>
 

@@ -8,6 +8,7 @@ import {
   Trash2,
   FileTerminal,
   AlertTriangle,
+  Terminal,
 } from 'lucide-react';
 import {
   Command,
@@ -38,6 +39,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ResourceTypes } from '@/lib/strings';
+import { useNavigate } from 'react-router';
+import { ROUTES } from '@/lib/routes';
 
 // Define the schema for form validation
 const scaleFormSchema = z.object({
@@ -78,6 +81,8 @@ export const ResourceActions = ({
 }: ResourceActionsProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
   const [scaleDialogOpen, setScaleDialogOpen] = React.useState(false);
+  const navigate = useNavigate();
+  const eventsLink = `${ROUTES.EVENTS}?name=${resourceName}`;
 
   // Check if resource supports restart
   const supportsRestart = kind !== 'Job' && kind !== 'CronJob';
@@ -137,10 +142,16 @@ export const ResourceActions = ({
               </CommandItem>
             )}
             {onOpenEvents && (
-              <CommandItem onSelect={() => onOpenEvents()}>
-                <FileTerminal className="mr-2 h-4 w-4" />
-                <span>View Events</span>
-              </CommandItem>
+              <>
+                <CommandItem onSelect={() => navigate(eventsLink)}>
+                  <FileTerminal className="mr-2 h-4 w-4" />
+                  <span>View Events</span>
+                </CommandItem>
+                <CommandItem onSelect={() => onOpenEvents()}>
+                  <Terminal className="mr-2 h-4 w-4" />
+                  <span>View Events in Terminal</span>
+                </CommandItem>
+              </>
             )}
           </CommandGroup>
 

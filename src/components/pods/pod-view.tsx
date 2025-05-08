@@ -182,7 +182,7 @@ export const PodView = ({
 
           <TabsContent value="actions" className="">
             <PodActions
-              podName="my-pod"
+              podName={metadata?.name || ''}
               containers={spec?.containers || []}
               onDelete={onDelete}
               onLogs={onOpenLogs}
