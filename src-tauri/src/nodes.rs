@@ -1,7 +1,8 @@
 use crate::k8s_client;
-use k8s_openapi::api::core::v1::Pod;
-use kube::api::ListParams;
+use k8s_openapi::api::core::v1::{Node, Pod}; // Added Node
+use kube::api::{ListParams, Patch, PatchParams}; // Added Patch, PatchParams
 use kube::Api;
+use serde_json::json; // Added for creating the patch
 
 #[tauri::command]
 pub async fn list_pods_on_node(
@@ -39,11 +40,9 @@ pub async fn cordon_node(
     context: String,
     node_name: String,
 ) -> Result<(), String> {
-    let cmd_string = format!(
-        "--kubeconfig {} --context {} cordon {}",
-        kubeconfig_path, context, node_name,
-    );
-    crate::kubectl::run_kubectl_command(&cmd_string)?;
+    let client = k8s_client::create_k8s_client(kubeconfig_path, context).await?;
+    let nodes: Api<Node> = Api::all(client);
+    nodes.cordon(&node_name).await.map_err(|e| e.to_string())?;
     Ok(())
 }
 
@@ -69,10 +68,11 @@ pub async fn uncordon_node(
     context: String,
     node_name: String,
 ) -> Result<(), String> {
-    let cmd_string = format!(
-        "--kubeconfig {} --context {} uncordon {}",
-        kubeconfig_path, context, node_name,
-    );
-    crate::kubectl::run_kubectl_command(&cmd_string)?;
+    let client = k8s_client::create_k8s_client(kubeconfig_path, context).await?;
+    let nodes: Api<Node> = Api::all(client);
+    nodes
+        .uncordon(&node_name)
+        .await
+        .map_err(|e| e.to_string())?;
     Ok(())
 }
