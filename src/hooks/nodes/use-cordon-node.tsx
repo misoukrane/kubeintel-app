@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { invoke } from '@tauri-apps/api/core';
 import { useToast } from '@/hooks/use-toast';
+import { ToastSuccessClassName } from '@/lib/styles';
 
 interface UseCordonNodeProps {
   kubeconfigPath?: string;
@@ -36,6 +37,7 @@ export const useCordonNode = ({
 
       toast({
         title: 'Node cordoned',
+        className: ToastSuccessClassName,
         description: (
           <>
             Successfully cordoned node: <b>{nodeName}</b>

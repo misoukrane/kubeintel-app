@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { invoke } from '@tauri-apps/api/core';
 import { useToast } from '@/hooks/use-toast';
+import { ToastSuccessClassName } from '@/lib/styles';
 
 interface UseUncordonNodeProps {
   kubeconfigPath?: string;
@@ -36,6 +37,7 @@ export const useUncordonNode = ({
 
       toast({
         title: 'Node uncordoned',
+        className: ToastSuccessClassName,
         description: (
           <>
             Successfully uncordoned node: <b>{nodeName}</b>

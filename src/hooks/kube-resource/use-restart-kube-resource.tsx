@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { invoke } from '@tauri-apps/api/core';
 import { useToast } from '@/hooks/use-toast';
 import { BaseKubeResourceProps } from '../../lib/types';
+import { ToastSuccessClassName } from '@/lib/styles';
 
 export const useRestartKubeResource = ({
   kubeconfigPath,
@@ -52,6 +53,7 @@ export const useRestartKubeResource = ({
 
       toast({
         title: 'Success',
+        className: ToastSuccessClassName,
         description: `${resourceType} ${name} was restarted successfully`,
       });
     },
