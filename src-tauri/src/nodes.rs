@@ -1,8 +1,7 @@
 use crate::k8s_client;
-use k8s_openapi::api::core::v1::{Node, Pod}; // Added Node
-use kube::api::{ListParams, Patch, PatchParams}; // Added Patch, PatchParams
+use k8s_openapi::api::core::v1::{Node, Pod};
+use kube::api::ListParams;
 use kube::Api;
-use serde_json::json; // Added for creating the patch
 
 #[tauri::command]
 pub async fn list_pods_on_node(

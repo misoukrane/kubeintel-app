@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router';
 import { invoke } from '@tauri-apps/api/core';
 import { useToast } from '@/hooks/use-toast';
 import { Spinner } from '@/components/spinner';
+import { ToastSuccessClassName } from '@/lib/styles';
 
 // authenticate the cluster
 export const Auth = () => {
@@ -80,7 +81,7 @@ export const Auth = () => {
       // toast auth success
       toast({
         title: 'Cluster authenticated',
-        className: 'bg-green-500 text-white dark:bg-green-700',
+        className: ToastSuccessClassName,
         description: 'Cluster authenticated successfully.',
         variant: 'default',
       });
