@@ -8,6 +8,12 @@ A modern desktop application for Kubernetes cluster management built with Tauri,
 
 KubeIntel provides a powerful, user-friendly interface for browsing Kubernetes resources and leveraging AI to quickly troubleshoot pods and containers.
 
+## Demo
+
+<img src="demo-screenshot.jpg" alt="KubeIntel Demo - Pod Details View" width="800px" height="auto" />
+
+*KubeIntel's intuitive interface showing pod health analysis and AI-powered troubleshooting capabilities*
+
 ## Installation
 
 ### Downloads
@@ -18,8 +24,6 @@ Ready to try KubeIntel? Download the latest version for your operating system:
 <a href="https://github.com/misoukrane/kubeintel-app/releases" target="_blank">
     <img src="https://img.shields.io/github/v/release/misoukrane/kubeintel-app?label=Download%20Latest%20Release&style=for-the-badge" alt="Download KubeIntel" />
 </a>
-
-
 
 
 ## Features
